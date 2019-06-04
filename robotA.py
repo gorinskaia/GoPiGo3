@@ -6,11 +6,13 @@ print("Testing movement")
 gpg = EasyGoPiGo3()
 my_distance_sensor = gpg.init_distance_sensor()
 
-curr_time = time.time() 
+curr_time = time.time()
+curr_speed = 100
 
 # Avoiding obstacles, movement
 
 while True:
+    gpg.set_speed(curr_speed)
     gpg.forward()
     dist = my_distance_sensor.read_mm()
     rand = random.randint(20,360)
@@ -24,17 +26,3 @@ while True:
         gpg.stop()
         break
 
-    
-
-"""time.sleep(1)
-gpg.stop()
-time.sleep(1)
-gpg.left()
-time.sleep(1)
-
-gpg.orbit(180, 20) # draw half a circle
-gpg.turn_degrees(180) # rotate around
-gpg.orbit(-180, 20) # return on the initial path
-gpg.turn_degrees(180) # and put it in the initial position
-gpg.stop()
-"""
