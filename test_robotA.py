@@ -1,18 +1,8 @@
 import time
 import random
 from easygopigo3 import EasyGoPiGo3
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import cv2
 
-# initialize the camera and grab a reference to the raw camera capture
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(640, 480))
-
-# allow the camera to warmup
-time.sleep(0.1)
+print("Testing movement")
 
 gpg = EasyGoPiGo3()
 my_distance_sensor = gpg.init_distance_sensor()
@@ -25,16 +15,8 @@ gpg.set_speed(curr_speed)
 time.sleep(1)
 count = 0
 
-# capture frames from the camera
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+while True:
     gpg.forward()
-    image = frame.array
- 
-    # show the frame
-    cv2.imshow("Frame", image)
- 
-    # clear the stream in preparation for the next frame
-    rawCapture.truncate(0)
     dist = my_distance_sensor.read_mm()
 
     if dist < 120 and dist > 99:
@@ -46,6 +28,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         print("Turning 90")
         count+=1
     else:
+        print("Distance Sensor Reading (mm): " + str(dist))
         count = 0
 
     if count>3:
@@ -53,9 +36,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         print("Tired of turning...")
         count = 0
                
-    if (time.time() - curr_time) > 15 or cv2.waitKey(1) & 0xFF == ord("q"):     # turn off
+    if (time.time() - curr_time) > 20:     # turn off after 10 seconds
         gpg.stop()
         break
-
-
+    
 gpg.stop()
