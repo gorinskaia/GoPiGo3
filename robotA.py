@@ -48,6 +48,15 @@ class Dexter:
     def stop(self):
         gpg.stop()
 
+    def move_square(self):
+       
+        for i in range(4):
+          gpg.forward() # drive forward for length cm
+          time.sleep(2)
+          gpg.steer(100, -50)
+          time.sleep(0.6)
+          
+
     
 # Camera Thread
 
@@ -79,10 +88,13 @@ threading.Thread(target=image_stream).start()
 
 robot = Dexter(320)
 
-while True:
+"""while True:
     robot.move()
     robot.print_distance()
     if robot.stop_time() == True:
         robot.stop()
-        break
+        break"""
+
+robot.move_square()
+robot.stop()
     
