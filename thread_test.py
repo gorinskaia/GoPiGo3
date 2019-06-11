@@ -3,37 +3,32 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import threading
+import numpy as np
     
 def taking_photo ():
     camera = PiCamera()
     camera.resolution = (320, 240)
-    rawCapture = PiRGBArray(camera)
-    
-    print ("Smile!")
-    
-    camera.capture(rawCapture, format="bgr")
-    
-    image = rawCapture.array
-    print('1')
-    cv2.imshow("image", image)
-    print('2')
-    cv2.waitKey(0) & 0xFF
-    cv2.destroyAllWindows()
-    rawCapture.truncate(0)
- 
-curr_time = time.time()
-time.sleep(0.1)
+    camera.framerate = 30
+    rawCapture = PiRGBArray(camera, size=(320, 240))
 
-cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+    display_window = cv2.namedWindow("Image")
+    time.sleep(0.1)
+
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+        image = frame.array
+        cv2.imshow("Image", image)
+        key = cv2.waitKey(1)
+        rawCapture.truncate(0)
+
+        if key == ord("q"):
+            camera.close()
+            cv2.destroyAllWindows()
+            break
+
+
 print ("Hello!")
 
-while True:
-    key = cv2.waitKey(1) & 0xFF
+threading.Thread(target=taking_photo).start()
 
-    if key == ord("t"):
-        print ("Here it comes...")
-        threading.Thread(target=taking_photo).start()
-               
-    if  key == ord("q"):     # turn off 
-        break
-
+#while True:
+    
