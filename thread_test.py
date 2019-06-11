@@ -5,7 +5,7 @@ import cv2
 import threading
 from easygopigo3 import EasyGoPiGo3
     
-def taking_photo ():
+def image_stream ():
     camera = PiCamera()
     camera.resolution = (320, 240)
     camera.framerate = 30
@@ -25,7 +25,6 @@ def taking_photo ():
             cv2.destroyAllWindows()
             break
 
-
 gpg = EasyGoPiGo3()
 my_distance_sensor = gpg.init_distance_sensor()
 
@@ -37,10 +36,10 @@ count = 0
 
 print ("Hello!")
 
-threading.Thread(target=taking_photo).start()
+threading.Thread(target=image_stream).start()
 
 while True:
-    gpg.forward()
+    #gpg.forward()
     dist = my_distance_sensor.read_mm()
 
     if dist < 100:
@@ -56,6 +55,8 @@ while True:
         print("Tired of turning...")
         count = 0
                
-    if (time.time() - curr_time) > 20:     # turn off after 10 seconds
+    if (time.time() - curr_time) > 10:     # turn off after 10 seconds
         gpg.stop()
         break
+
+gpg.stop()
