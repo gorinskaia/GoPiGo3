@@ -33,15 +33,8 @@ print ('Start.')
 
 threading.Thread(target=image_stream).start()
 
-robot = Dexter(320)
+robot = Dexter(320, 100)
 
-while True:
-    #robot.move()
-    robot.print_distance()
-    if robot.stop_time() == True:
-        robot.stop()
-        break
+while not robot.stop():
+    robot.update()
 
-#robot.move_square()
-robot.stop()
-    
