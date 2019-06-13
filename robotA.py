@@ -44,7 +44,7 @@ robot2 = ControllerForward(dexter, 250, 100)
 robot2.start()
 while not robot2.stop():
     robot2.update()
-    time.sleep(0.25)
+    time.sleep(0.05)
 
-robot2.shutdown()
+dexter.shutdown()
 
