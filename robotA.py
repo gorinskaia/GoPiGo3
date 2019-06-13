@@ -3,8 +3,9 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import threading
+from Dexter import ControllerForward
 from Dexter import Dexter
-
+#from viewer import Viewer
 
 # Camera Thread
 
@@ -33,8 +34,10 @@ print ('Start.')
 
 threading.Thread(target=image_stream).start()
 
-robot = Dexter(320, 100)
+gpg = EasyGoPiGo3()
+robot = Dexter(gpg)
+robotA = ControllerForward(Dexter, 320, 80)
 
-while not robot.stop():
-    robot.update()
+while not robotA.stop():
+    robotA.update()
 
