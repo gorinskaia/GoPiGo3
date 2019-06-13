@@ -50,12 +50,10 @@ class ControllerInit:
     def update(self):
         pass
     
-
     
 class ControllerForward:
     'Politics to move forward'
-    def __init__(self, Dexter, speed = 300, dist = 100):
-        print("init")
+    def __init__(self, Dexter, speed = 300, dist = 150):
         self.speed = speed
         self.dist = dist
         self.gpg = Dexter
@@ -63,7 +61,26 @@ class ControllerForward:
     def start(self):
         print("start")
         self.gpg.reset_encoders()
-        self.gpg.set_speed(self.speed,self.speed)
+
+    def stop(self):
+        return self.gpg.get_dist() <= self.dist
+    
+    def update(self):
+        if self.stop(): 
+            return
+        self.gpg.forward(self.speed)
+
+'''class ControllerTurn:
+    'Politics to turn'
+    def __init__(self, Dexter, speed = 300, angle = 90):
+        print("init")
+        self.speed = speed
+        self.angle = angle
+        self.gpg = Dexter
+        
+    def start(self):
+        print("start")
+        self.gpg.reset_encoders()
 
     def stop(self):
         res = self.gpg.get_dist() <= self.dist
@@ -77,5 +94,5 @@ class ControllerForward:
         print("update")
         if self.stop(): 
             return
-        self.gpg.forward(self.speed)
+        self.gpg.forward(self.speed)'''
     

@@ -4,7 +4,7 @@ from picamera import PiCamera
 import cv2
 import threading
 from Dexter import ControllerForward
-from Dexter import ControllerInit
+#from Dexter import ControllerTurn
 from Dexter import Dexter
 from easygopigo3 import EasyGoPiGo3
 
@@ -38,13 +38,13 @@ threading.Thread(target=image_stream).start()
 gpg = EasyGoPiGo3()
 dexter = Dexter(gpg)
 
-robot1 = ControllerInit(dexter)
-robot2 = ControllerForward(dexter, 250, 100)
+#robot1 = ControllerTurn(dexter,250,90)
+robot2 = ControllerForward(dexter, 250, 150)
 
 robot2.start()
 while not robot2.stop():
     robot2.update()
-    time.sleep(0.05)
+    time.sleep(0.01)
 
 dexter.shutdown()
 
