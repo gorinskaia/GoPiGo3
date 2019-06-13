@@ -5,6 +5,7 @@ import cv2
 import threading
 from Dexter import ControllerForward
 from Dexter import ControllerTurn
+from Dexter import ControllerSequence
 from Dexter import Dexter
 from easygopigo3 import EasyGoPiGo3
 
@@ -38,12 +39,18 @@ threading.Thread(target=image_stream).start()
 gpg = EasyGoPiGo3()
 dexter = Dexter(gpg)
 
-robot1 = ControllerTurn(dexter,350,180)
-robot2 = ControllerForward(dexter, 350, 100)
+com1 = ControllerForward(dexter, 350, 150)
+com2 = ControllerTurn(dexter,350,100)
+com3 = ControllerForward(dexter, 350, 150)
 
-robot1.start()
-while not robot1.stop():
-    robot1.update()
+sequence = [com1, com2, com3]
+
+robot = ControllerSequence(dexter, sequence)
+
+robot.start()
+
+while not robot.stop():
+    robot.update()
     time.sleep(0.01)
 
 dexter.shutdown()

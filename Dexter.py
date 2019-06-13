@@ -69,6 +69,7 @@ class ControllerForward:
         self.gpg.reset_encoders()
 
     def stop(self):
+        print ('stop')
         return self.gpg.get_dist() <= self.dist
     
     def update(self):
@@ -80,7 +81,6 @@ class ControllerForward:
 class ControllerTurn:
     'Politics to turn'
     def __init__(self, Dexter, speed = 300, angle = 90):
-        print("init")
         self.speed = speed
         self.angle = angle
         self.gpg = Dexter
@@ -92,7 +92,6 @@ class ControllerTurn:
     def stop(self):
         res = self.gpg.get_offset()
         offset = max(abs(res[1]), abs(res[0]))
-        print(offset)
         turn = ((self.gpg.gpg.WHEEL_CIRCUMFERENCE*offset)/(self.gpg.gpg.WHEEL_BASE_CIRCUMFERENCE))/2
         return abs(turn)>=abs(self.angle)   
     
@@ -103,5 +102,33 @@ class ControllerTurn:
             self.gpg.turnRight(self.speed)
         else:
             self.gpg.turnLeft(self.speed)
+
+class ControllerSequence:
+    'Sequence of commands'
+    def __init__(self, Dexter,commands = []):
+        self.gpg = Dexter
+        
+        self.commands = []
+        self.commands = [x for x in commands]
+        print(self.commands)
+        self.count = 0 # Number of a command counter
+        
+    def start(self):
+        self.count = -1
+    
+    def stop(self):
+        print (self.count, len(self.commands))
+        return self.count >= len(self.commands)
+
+    def update(self):
+        print(self.count)
+        if self.stop():
+            return
+        if self.count < 0 or self.commands[self.count].stop():
+            self.count+=1
+            if self.stop():
+                return
+            self.commands[self.count].start()
+        self.commands[self.count].update()
         
     
