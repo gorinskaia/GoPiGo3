@@ -19,7 +19,7 @@ class Environment():
         self.robot.reparentTo(render) # Reparent the model to render.
         self.robot.setPos(0, 30, 0)
 
-        self.robot_tex = loader.loadTexture("models/robot.jpeg")
+        self.robot_tex = loader.loadTexture("textures/robot.jpeg")
         self.robot.setTexture(self.robot_tex, 1)
                     
 app = Environment()
