@@ -39,13 +39,12 @@ threading.Thread(target=image_stream).start()
 gpg = EasyGoPiGo3()
 dexter = Dexter(gpg)
 
-com1 = ControllerForward(dexter, 350, 150)
-com2 = ControllerTurn(dexter,350,100)
-com3 = ControllerForward(dexter, 350, 150)
+forward = ControllerForward(dexter, 350, 150)
+turn90 = ControllerTurn(dexter,350,90)
 
-sequence = [com1, com2, com3]
+sequenceSquare = [forward, turn90, forward, turn90, forward, turn90, forward]
 
-robot = ControllerSequence(dexter, sequence)
+robot = ControllerSequence(dexter, sequenceSquare)
 
 robot.start()
 

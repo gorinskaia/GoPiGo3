@@ -65,11 +65,10 @@ class ControllerForward:
         self.gpg = Dexter
         
     def start(self):
-        print("start")
+        print("start forward")
         self.gpg.reset_encoders()
 
     def stop(self):
-        print ('stop')
         return self.gpg.get_dist() <= self.dist
     
     def update(self):
@@ -86,7 +85,7 @@ class ControllerTurn:
         self.gpg = Dexter
         
     def start(self):
-        print("start")
+        print("start turn")
         self.gpg.reset_encoders()
 
     def stop(self):
@@ -110,18 +109,15 @@ class ControllerSequence:
         
         self.commands = []
         self.commands = [x for x in commands]
-        print(self.commands)
         self.count = 0 # Number of a command counter
         
     def start(self):
         self.count = -1
     
     def stop(self):
-        print (self.count, len(self.commands))
         return self.count >= len(self.commands)
 
     def update(self):
-        print(self.count)
         if self.stop():
             return
         if self.count < 0 or self.commands[self.count].stop():
