@@ -21,7 +21,7 @@ class Environment():
         base.disableMouse()
         
         world = OdeWorld()
-        #world.setGravity(0, 0, -9.81)
+        world.setGravity(0, 0, -9.81)
         
         self.robot = loader.loadModel("cube") # Static Robot model
         self.robot.reparentTo(render) # Reparent the model to render = load an object onto the scene.
@@ -89,19 +89,21 @@ class Environment():
           self.robot.setPosQuat(render, robotBody.getPosition(), Quat(robotBody.getQuaternion()))
 
           return task.cont
-
         taskMgr.doMethodLater(0.5, simulationTask, "Physics Simulation")
 
-
-        '''PosInterval1 = self.robot.posInterval(13, Point3(0, 30, -5), startPos=Point3(0,30, 5))
-        PosInterval2 = self.robot.posInterval(13, Point3(0, 30, 5), startPos=Point3(0, 30, -5))
+        robotBody.setForce(0, 5000000,  0)
+        
+        '''PosInterval1 = self.robot.posInterval(13, Point3(0, 30, -5), startPos=Point3(0, 30, 0))
+        PosInterval2 = self.robot.posInterval(13, Point3(0, 30, 0), startPos=Point3(0, 30, -5))
         HprInterval1 = self.robot.hprInterval(3, Point3( 0,  0, 180), startHpr=Point3(0, 0, 0))
-        HprInterval2 = self.robot.hprInterval(3, Point3(0, 0, 0), startHpr=Point3( 0, 0, 180))
+        HprInterval2 = self.robot.hprInterval(3, Point3(0, 0, -5), startHpr=Point3( 0, 0, 180))
  
         # Create and play the sequence that coordinates the intervals.
         self.Pace = Sequence(PosInterval1, HprInterval1, PosInterval2, HprInterval2, name="Pace")
 
         self.Pace.loop()'''
+
+       # base.localAvatar.physControls.avatarControlForwardSpeed= +speed #sets speed - try this
         
 app = Environment()
 base.run()
