@@ -1,12 +1,8 @@
-from panda3d.bullet import BulletWorld
+from panda3d.bullet import *
 from panda3d.core import *
 from direct.task import Task
 import direct.directbase.DirectStart
-from panda3d.bullet import BulletPlaneShape
-from panda3d.bullet import BulletRigidBodyNode
-from panda3d.bullet import BulletBoxShape
-from panda3d.bullet import BulletVehicle
-from panda3d.bullet import ZUp
+
 
 class Robot (BulletVehicle):
     def __init__ (self, render, world):
@@ -69,27 +65,11 @@ class Robot (BulletVehicle):
         wheel.setRollInfluence(0.1)
 
 
-    def getPosXYZ(self):
-        # gettingPos
-        position = self.getWheel(0).getNode()
-        try:
-            arrayOfStrings = str(position).split()
-            z = arrayOfStrings[5]
-            posXYZ = [float(arrayOfStrings[3]), float(arrayOfStrings[4]), float(z[:-1])]
-            return (posXYZ)
-        except IndexError:
-            return ([0.0 , 0.0 , -200.0])   
-
-
-    #function chor changin steering of front wheels
-    def setAngle(self, left, dt):
-        if(left):
-            self.steering += dt * self.steeringIncrement
-            self.steering = min(self.steering, self.steeringClamp)
-        else:
-            self.steering -= dt * self.steeringIncrement
-            self.steering = max(self.steering, -self.steeringClamp)
-        # Apply steering to front wheels
+    def setAngle(self, angle, dt):
+        
+        steering += dt * angle
+        steering = max(self.steering, -self.steeringClamp)
+    
         self.setSteeringValue(self.steering, 0)
         self.setSteeringValue(self.steering, 1)
 
@@ -107,3 +87,6 @@ class Robot (BulletVehicle):
      #function that returns current steering of front wheels
     def getAngle(self):
         return self.steering
+
+
+
