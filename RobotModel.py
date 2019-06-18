@@ -17,8 +17,7 @@ class Robot (BulletVehicle):
         chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         chassisNP.node().addShape(shape, ts)
         chassisNP.setPos(-1, 0, 0)
-        #chassisNP.setScale(1.5,1.5,1.5)
-        chassisNP.node().setMass(700.0)
+        chassisNP.node().setMass(2.0)
         chassisNP.node().setDeactivationEnabled(False)
          
         world.attachRigidBody(chassisNP.node())
@@ -45,10 +44,10 @@ class Robot (BulletVehicle):
 
         self.addWheel(Point3(-0.60, -0.95, 0.3), wheelL)
 
-        # Steering info
-        """steering = 0.0            # degree
-        steeringClamp = 45.0      # degree
-        steeringIncrement = 120.0 # degree per second"""
+    # Steering info
+    steering = 0.0            # degree
+    steeringClamp = 45.0      # degree
+    steeringIncrement = 120.0 # degree per second
         
     def addWheel(self, pos, np):
         print('Adding a wheel')

@@ -16,7 +16,7 @@ class Simulation(ShowBase):
     def __init__(self):
         #base.setBackgroundColor(0.1, 0.1, 0.8)
         base.setFrameRateMeter(True)
-        base.cam.setPos(0, -50, 0)
+        base.cam.setPos(0, 0, 50)
         base.cam.lookAt(0, 0, 0)
         taskMgr.add(self.update, 'updateWorld')
         self.setup()
@@ -24,7 +24,9 @@ class Simulation(ShowBase):
 
     def update(self, task):
         dt = globalClock.getDt()
-
+        
+        #self.robot.setAngle(90, dt)
+        
         self.processInput(dt)
         self.world.doPhysics(dt, 10, 0.008)
 
@@ -42,19 +44,17 @@ class Simulation(ShowBase):
         node = BulletRigidBodyNode('Ground')        # Create a rigid body
         node.addShape(shape)                        # Add existing shape to it
         np = render.attachNewNode(node)
-        np.setPos(0, 0, -2)
+        np.setPos(0, 0, -1.5)
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world"""
 
     def processInput(self, dt):
-        engineForce = 1000.0
+        engineForce = 10.0
         brakeForce = 0.0
-        
-        #self.robot.setEngineForce(engineForce)
-        #self.robot.setBrakeForce(brakeForce)
 
-        self.robot.applyEngineForce(engineForce, 0)
+        self.robot.applyEngineForce(0, 0)
         self.robot.applyEngineForce(engineForce, 1)
-
+        
+        #self.robot.setAngle(True, dt)
 
         """ if inputState.isSet('forward'):
                 engineForce = 1000.0
@@ -74,18 +74,10 @@ class Simulation(ShowBase):
             if inputState.isSet('right'):
                 vehicle.setAngle(False, dt)"""
 
-
     def cleanup(self):
         self.world = None
         self.worldNP.removeNode()
 
-    #function that navigates a vehicle to go in a square
-    def goSquare(self, vehicle, size):
-        while(True):
-            goTo([size, size], vehicle)
-            goTo([size, -size], vehicle)
-            goTo([-size, -size], vehicle)
-            goTo([-size, size], vehicle)
 
 sim = Simulation()
 base.run()
