@@ -7,6 +7,7 @@ from direct.showbase.ShowBase import ShowBase
 
 from panda3d.core import *
 from panda3d.bullet import *
+
 from direct.task import Task
 
 
@@ -29,14 +30,12 @@ class Simulation(ShowBase):
 
         return task.cont
 
-    
     def setup(self):
         self.worldNP = render.attachNewNode('World')
         self.world = BulletWorld()
         self.world.setGravity(Vec3(0, 0, -9.81))
 
-        self.controlVehicles = []
-        self.controlVehicles.append(Robot(self.worldNP, self.world))
+        self.robot = Robot(self.worldNP, self.world)
 
         # Make a plane
         shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape
@@ -47,11 +46,17 @@ class Simulation(ShowBase):
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world"""
 
     def processInput(self, dt):
-        for vehicle in self.controlVehicles:
-            engineForce = 1000.0
-            brakeForce = 0.0
+        engineForce = 1000.0
+        brakeForce = 0.0
+        
+        #self.robot.setEngineForce(engineForce)
+        #self.robot.setBrakeForce(brakeForce)
 
-            """ if inputState.isSet('forward'):
+        self.robot.applyEngineForce(engineForce, 0)
+        self.robot.applyEngineForce(engineForce, 1)
+
+
+        """ if inputState.isSet('forward'):
                 engineForce = 1000.0
                 brakeForce = 0.0
 
@@ -68,6 +73,7 @@ class Simulation(ShowBase):
 
             if inputState.isSet('right'):
                 vehicle.setAngle(False, dt)"""
+
 
     def cleanup(self):
         self.world = None

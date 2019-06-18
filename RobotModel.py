@@ -46,9 +46,9 @@ class Robot (BulletVehicle):
         self.addWheel(Point3(-0.60, -0.95, 0.3), wheelL)
 
         # Steering info
-        steering = 0.0            # degree
+        """steering = 0.0            # degree
         steeringClamp = 45.0      # degree
-        steeringIncrement = 120.0 # degree per second
+        steeringIncrement = 120.0 # degree per second"""
         
     def addWheel(self, pos, np):
         print('Adding a wheel')
@@ -108,35 +108,3 @@ class Robot (BulletVehicle):
      #function that returns current steering of front wheels
     def getAngle(self):
         return self.steering
-
-
-
-
-        # Apply steering to front wheels
-        #vehicle.setSteeringValue(steering, 0)
-        #vehicle.setSteeringValue(steering, 1)
-         
-        # Apply engine and brake to rear wheels
-        #vehicle.applyEngineForce(engineForce, 0)
-        #vehicle.applyEngineForce(engineForce, 3)
-        #vehicle.setBrake(brakeForce, 2)
-        #vehicle.setBrake(brakeForce, 3)
-
-
-
-        #print(vehicle.getNumWheels())
-        ###
-
-"""def update(task):
-    dt = globalClock.getDt()
-    world.doPhysics(dt)
-     
-    vehicle.setSteeringValue(steering, 0)
-    vehicle.applyEngineForce(engineForce, 0)
-
-    return task.cont
-
-
-taskMgr.add(update, 'update')
-
-run()"""
