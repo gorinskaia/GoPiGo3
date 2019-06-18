@@ -13,21 +13,12 @@ from direct.task import Task
 class Simulation(ShowBase):
     
     def __init__(self):
-        
-        base.setBackgroundColor(0.1, 0.1, 0.8, 1)
+        #base.setBackgroundColor(0.1, 0.1, 0.8)
         base.setFrameRateMeter(True)
         base.cam.setPos(0, -50, 0)
         base.cam.lookAt(0, 0, 0)
-                
-        self.accept('escape', self.doExit)
-
-        taskMgr.add(self.update, 'updateWorld')
-
+        #taskMgr.add(self.update, 'updateWorld')
         self.setup()
-
-    def doExit(self):
-        self.cleanup()
-        sys.exit(1)
 
 
     def update(self, task):
@@ -49,7 +40,7 @@ class Simulation(ShowBase):
         self.controlVehicles.append(Robot(self.worldNP, self.world))
 
         # Make a plane
-        """shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape
+        shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape
         node = BulletRigidBodyNode('Ground')        # Create a rigid body
         node.addShape(shape)                        # Add existing shape to it
         np = render.attachNewNode(node)

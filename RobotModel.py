@@ -19,14 +19,14 @@ class Robot (BulletVehicle):
         
         chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         chassisNP.node().addShape(shape, ts)
-        chassisNP.setPos(0, 0, 1)
+        chassisNP.setPos(-1, 0, 0)
         #chassisNP.setScale(1.5,1.5,1.5)
         chassisNP.node().setMass(700.0)
         chassisNP.node().setDeactivationEnabled(False)
          
         world.attachRigidBody(chassisNP.node())
 
-        robot = loader.loadModel("cube") # Static Robot model
+        robot = loader.loadModel("models/robot.egg") # Static Robot model
         robot.reparentTo (chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         robot.setTexture(robot_tex, 1)
@@ -43,15 +43,15 @@ class Robot (BulletVehicle):
         wheel_tex = loader.loadTexture("textures/red.jpg")
         wheelR.setTexture(wheel_tex, 1)
 
-        self.addWheel(Point3(0.60, 0.95, 0.3), chassisNP)
+        self.addWheel(Point3(-1, -0.95, 0.3), wheelR)
 
         # Wheel Left
-        wheelR = loader.loadModel('models/wheel.egg')
-        wheelR.reparentTo(render)
-        wheel_tex = loader.loadTexture("textures/red.jpg")
-        wheelR.setTexture(wheel_tex, 1)
+        wheelL = loader.loadModel('models/wheel.egg')
+        wheelL.reparentTo(render)
+        wheel_tex = loader.loadTexture("textures/wheel.jpeg")
+        wheelL.setTexture(wheel_tex, 1)
 
-        self.addWheel(Point3(-0.60, 0.95, 0.3), chassisNP)
+        self.addWheel(Point3(-0.60, -0.95, 0.3), wheelL)
 
         # Steering info
         steering = 0.0            # degree
@@ -59,7 +59,7 @@ class Robot (BulletVehicle):
         steeringIncrement = 120.0 # degree per second
         
     def addWheel(self, pos, np):
-        
+        print('Adding a wheel')
         wheel = self.createWheel()
         
         wheel.setNode(np.node())
