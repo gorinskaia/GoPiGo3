@@ -17,7 +17,7 @@ class Simulation(ShowBase):
         base.setFrameRateMeter(True)
         base.cam.setPos(0, -50, 0)
         base.cam.lookAt(0, 0, 0)
-        #taskMgr.add(self.update, 'updateWorld')
+        taskMgr.add(self.update, 'updateWorld')
         self.setup()
 
 
@@ -26,7 +26,6 @@ class Simulation(ShowBase):
 
         self.processInput(dt)
         self.world.doPhysics(dt, 10, 0.008)
-        self.terrain.update()
 
         return task.cont
 

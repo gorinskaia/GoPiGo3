@@ -13,9 +13,6 @@ class Robot (BulletVehicle):
         # Chassis body
         shape = BulletBoxShape(Vec3(0.45, 0.98, 0.25))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
-
-        self.render = render
-        self.world = world
         
         chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         chassisNP.node().addShape(shape, ts)
@@ -26,7 +23,7 @@ class Robot (BulletVehicle):
          
         world.attachRigidBody(chassisNP.node())
 
-        robot = loader.loadModel("models/robot.egg") # Static Robot model
+        robot = loader.loadModel("cube") # Static Robot model
         robot.reparentTo (chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         robot.setTexture(robot_tex, 1)
@@ -40,16 +37,11 @@ class Robot (BulletVehicle):
         # Wheel Right
         wheelR = loader.loadModel('models/wheel.egg')
         wheelR.reparentTo(render)
-        wheel_tex = loader.loadTexture("textures/red.jpg")
-        wheelR.setTexture(wheel_tex, 1)
-
-        self.addWheel(Point3(-1, -0.95, 0.3), wheelR)
+        self.addWheel(Point3(0.6, -0.95, 0.3), wheelR)
 
         # Wheel Left
         wheelL = loader.loadModel('models/wheel.egg')
         wheelL.reparentTo(render)
-        wheel_tex = loader.loadTexture("textures/wheel.jpeg")
-        wheelL.setTexture(wheel_tex, 1)
 
         self.addWheel(Point3(-0.60, -0.95, 0.3), wheelL)
 
