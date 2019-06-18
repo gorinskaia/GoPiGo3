@@ -66,7 +66,6 @@ class Robot (BulletVehicle):
 
 
     def setAngle(self, angle, dt):
-        
         steering += dt * angle
         steering = max(self.steering, -self.steeringClamp)
     
@@ -75,7 +74,7 @@ class Robot (BulletVehicle):
 
     #function that sets engine force of front wheels
     def setEngineForce(self, engineForce):
-        self.applyEngineForce(engineForce, 0)
+        self.applyEngineForce(engineForce-2, 0)
         self.applyEngineForce(engineForce, 1)
 
     #function that sets brake
@@ -86,7 +85,7 @@ class Robot (BulletVehicle):
 
      #function that returns current steering of front wheels
     def getAngle(self):
-        return self.steering
+        return self.steering # Change and actually get the value
 
 
 

@@ -20,7 +20,7 @@ class Simulation(ShowBase):
 
     def update(self, task):
         dt = globalClock.getDt()
-        self.processInput(dt, 'goStraight', 10)
+        self.processInput(dt, 'goStraight', 4)
         self.world.doPhysics(dt, 10, 0.008)
 
         return task.cont
@@ -46,11 +46,12 @@ class Simulation(ShowBase):
 
         if command == 'goStraight':
             self.robot.setEngineForce(value)
+            print(self.robot.getAngle())
             
         if command == 'stop':
             setBrakeForce(self, value)
             
-        if command == 'turn':               #Change set angle to create an actual angle
+        if command == 'turn':               #Change set angle to create an actual angle. Maybe with position, check the original robot formula.
                 vehicle.setAngle(True, dt)
                 
 
