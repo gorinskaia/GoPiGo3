@@ -31,7 +31,8 @@ class Simulation(ShowBase):
         self.world.doPhysics(dt, 50, 0.008)
 
         for command in sequence:
-            command.update()
+            if not command.stop():
+                command.update()
                 
         #self.processInput(dt, sequence, self.robot)
         return task.cont

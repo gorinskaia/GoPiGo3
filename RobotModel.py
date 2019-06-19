@@ -116,4 +116,6 @@ class ControllerForward:
         return False
     
     def update(self):
+        if self.stop():
+            return
         self.robot.setEngineForce(self.speed)
