@@ -6,10 +6,8 @@ from RobotModel import ControllerSequence
 import sys
 
 from direct.showbase.ShowBase import ShowBase
-
 from panda3d.core import *
 from panda3d.bullet import *
-
 from direct.task import Task
 
 
@@ -20,9 +18,14 @@ class Simulation(ShowBase):
         base.cam.setPos(0, 0, 35)
         base.cam.lookAt(0, 0, 0)
 
+        self.worldNP = render.attachNewNode('World')
+        self.world = BulletWorld()
+        self.world.setGravity(Vec3(0, 0, -9.81))
+
+        self.robot = Robot(self.worldNP, self.world)
+        
         self.setup()
         self.walls()
-        self.robot = Robot(self.worldNP, self.world)    # Create a rosbot, pass this later as a parameter to the sequence
         
         taskMgr.add(self.update, 'updateWorld')
         #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
@@ -33,10 +36,6 @@ class Simulation(ShowBase):
                 
         self.ctrl = ControllerSequence(self.robot, sequence)
         self.ctrl.start()
-        
-        '''self.cTrav = CollisionTraverser()
-        self.queue = CollisionHandlerQueue()'''
-
 
     def update(self, task):
         dt = globalClock.getDt()
@@ -47,19 +46,10 @@ class Simulation(ShowBase):
         else:
             return
 
-        '''self.cTrav.addCollider(self.robot.chassisNP, self.queue)
-        self.cTrav.traverse(render)
-        for entry in self.queue.getEntries():
-            print(entry)'''
-    
-
         return task.cont
 
     def setup(self):
-        self.worldNP = render.attachNewNode('World')
-        self.world = BulletWorld()
-        self.world.setGravity(Vec3(0, 0, -9.81))
-
+     
         shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape: Plane
         node = BulletRigidBodyNode('Ground')        # Create a rigid body
         node.addShape(shape)                        # Add existing shape to it
@@ -67,6 +57,10 @@ class Simulation(ShowBase):
         np.setPos(0, 0, -1.5)
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world
 
+        robotModel = loader.loadModel("cube") # Static Robot model
+        robotModel.reparentTo (self.robot.chassisNP) # Reparent the model to the node
+        robot_tex = loader.loadTexture("textures/robot.jpeg")
+        robotModel.setTexture(robot_tex, 1)
 
 
     def walls (self):

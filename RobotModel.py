@@ -20,10 +20,7 @@ class Robot (BulletVehicle):
          
         world.attachRigidBody(self.chassisNP.node())
 
-        robot = loader.loadModel("cube") # Static Robot model
-        robot.reparentTo (self.chassisNP) # Reparent the model to the node
-        robot_tex = loader.loadTexture("textures/robot.jpeg")
-        robot.setTexture(robot_tex, 1)
+       
 
         # Vehicle
         super(Robot , self).__init__(world, self.chassisNP.node())
