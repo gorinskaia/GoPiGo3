@@ -1,4 +1,5 @@
 from RobotModel import Robot
+from RobotModel import ControllerForward
 
 import sys
 
@@ -15,15 +16,24 @@ class Simulation(ShowBase):
         base.setFrameRateMeter(True)
         base.cam.setPos(0, 0, 35)
         base.cam.lookAt(0, 0, 0)
-        taskMgr.add(self.update, 'updateWorld')
+
         self.setup()
         self.walls()
-        self.robot = Robot(self.worldNP, self.world)    # Create a robot, pass this later as a parameter to the sequence
+        self.robot = Robot(self.worldNP, self.world)    # Create a rosbot, pass this later as a parameter to the sequence
+        
+        taskMgr.add(self.update, 'updateWorld')
+        #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
 
     def update(self, task):
         dt = globalClock.getDt()
-        self.processInput(dt, 'goStraight', 4)
+        forward = ControllerForward(self.robot, 15)
+        sequence = [forward]
         self.world.doPhysics(dt, 50, 0.008)
+
+        for command in sequence:
+            command.update()
+                
+        #self.processInput(dt, sequence, self.robot)
         return task.cont
 
     def setup(self):
@@ -31,17 +41,14 @@ class Simulation(ShowBase):
         self.world = BulletWorld()
         self.world.setGravity(Vec3(0, 0, -9.81))
 
-        # Make a plane
-        shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape
+        shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape: Plane
         node = BulletRigidBodyNode('Ground')        # Create a rigid body
         node.addShape(shape)                        # Add existing shape to it
         np = render.attachNewNode(node)
         np.setPos(0, 0, -1.5)
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world
 
-
     def walls (self):
-
         shape = BulletBoxShape(Vec3(10, 0.1, 5))
         tex = loader.loadTexture("textures/wall.jpg")
         
@@ -91,26 +98,6 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        
-        
-    def processInput(self, dt, command, value=0):
-        engineForce = 0.0
-        brakeForce = 0.0
-
-        if command == 'goStraight':
-            self.robot.setEngineForce(value)
-            
-        if command == 'stop':
-            setBrakeForce(self, value)
-            
-        if command == 'turn':               #Change set angle to create an actual angle. Maybe with position, check the original robot formula.
-                vehicle.setAngle(True, dt)
-                
-
-    def cleanup(self):
-        self.world = None
-        self.worldNP.removeNode()
-
-
+ 
 sim = Simulation()
 base.run()
