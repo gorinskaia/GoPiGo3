@@ -4,7 +4,6 @@ from direct.task import Task
 import direct.directbase.DirectStart
 import time
 
-start_time = time.time()
 
 class Robot (BulletVehicle):
     def __init__ (self, render, world):
@@ -88,14 +87,14 @@ class Robot (BulletVehicle):
         else:                               # Turn left
             self.applyEngineForce(50, 0)
             self.applyEngineForce(0, 1)
-            self.setBrake(10, 2)
+            self.setBrake(1, 2)
 
     def setEngineForce(self, engineForce):
         self.applyEngineForce(engineForce, 0)
         self.applyEngineForce(engineForce, 1)
 
     def getAngle(self):
-        return self.steering # Change and actually get the value
+        return # Change and actually get the value
 
     def checkGhost(self, task):
         if task.time < 0.5:
@@ -110,13 +109,15 @@ class ControllerForward:
     def __init__(self, robot, speed = 30):
         self.speed = speed
         self.robot = robot
-        
+        self.start_time = 0
+
     def start(self):
-        pass
+        engineForce = 0.0
+        brakeForce = 0.0
+        self.start_time = time.time()
 
     def stop(self):
-        if time.time() - start_time > 3:
-            print ('True')
+        if time.time() - self.start_time > 3:
             return True
         return False
     
@@ -127,17 +128,17 @@ class ControllerForward:
 
 class ControllerTurn:
     def __init__(self, robot, angle = 90):
+        self.start_time = 0
         self.robot = robot
         self.angle = angle
         
     def start(self):
-        #print ('Start Turn')
-        pass
+        engineForce = 0.0
+        brakeForce = 0.0
+        self.start_time = time.time()
 
     def stop(self):
-        print ('stop t')
-        if time.time() - start_time > 3:
-            print ('True')
+        if time.time() - self.start_time > 3:
             return True
         return False
     
@@ -166,6 +167,8 @@ class ControllerSequence:
             self.count+=1
             if self.stop():
                 return
+            print (self.count)
+            print(self.commands[self.count])
             self.commands[self.count].start()
         self.commands[self.count].update()
 

@@ -26,22 +26,23 @@ class Simulation(ShowBase):
         taskMgr.add(self.update, 'updateWorld')
         #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
 
-        forward = ControllerForward(self.robot, 15)
+        forward = ControllerForward(self.robot, 70)
         turn = ControllerTurn(self.robot, 90)
         sequence = [turn, forward]
                 
         self.ctrl = ControllerSequence(self.robot, sequence)
         self.ctrl.start()
 
-        if not self.ctrl.stop():
-            self.ctrl.update()
-
 
     def update(self, task):
         dt = globalClock.getDt()
         self.world.doPhysics(dt, 50, 0.008)
         
-        #self.processInput(dt, sequence, self.robot)
+        if not self.ctrl.stop():
+            self.ctrl.update()
+        else:
+            return
+
         return task.cont
 
     def setup(self):
