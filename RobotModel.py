@@ -11,22 +11,22 @@ class Robot (BulletVehicle):
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
         
-        chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
-        chassisNP.node().addShape(shape, ts)
-        chassisNP.setPos(0, 0, 0)
-        chassisNP.node().setMass(5.0)
-        chassisNP.node().setDeactivationEnabled(False)
-        chassisNP.setScale (0.5,0.9,0.5)
+        self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
+        self.chassisNP.node().addShape(shape, ts)
+        self.chassisNP.setPos(0, 0, 0)
+        self.chassisNP.node().setMass(5.0)
+        self.chassisNP.node().setDeactivationEnabled(False)
+        self.chassisNP.setScale (0.5,0.9,0.5)
          
-        world.attachRigidBody(chassisNP.node())
+        world.attachRigidBody(self.chassisNP.node())
 
         robot = loader.loadModel("cube") # Static Robot model
-        robot.reparentTo (chassisNP) # Reparent the model to the node
+        robot.reparentTo (self.chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         robot.setTexture(robot_tex, 1)
 
         # Vehicle
-        super(Robot , self).__init__(world, chassisNP.node())
+        super(Robot , self).__init__(world, self.chassisNP.node())
         self.setCoordinateSystem(ZUp)
         world.attachVehicle(self)
 
@@ -167,8 +167,6 @@ class ControllerSequence:
             self.count+=1
             if self.stop():
                 return
-            print (self.count)
-            print(self.commands[self.count])
             self.commands[self.count].start()
         self.commands[self.count].update()
 

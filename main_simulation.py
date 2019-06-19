@@ -9,6 +9,7 @@ from direct.showbase.ShowBase import ShowBase
 
 from panda3d.core import *
 from panda3d.bullet import *
+
 from direct.task import Task
 
 
@@ -26,12 +27,15 @@ class Simulation(ShowBase):
         taskMgr.add(self.update, 'updateWorld')
         #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
 
-        forward = ControllerForward(self.robot, 70)
+        forward = ControllerForward(self.robot, 65)
         turn = ControllerTurn(self.robot, 90)
-        sequence = [turn, forward]
+        sequence = [turn, forward, turn]
                 
         self.ctrl = ControllerSequence(self.robot, sequence)
         self.ctrl.start()
+        
+        '''self.cTrav = CollisionTraverser()
+        self.queue = CollisionHandlerQueue()'''
 
 
     def update(self, task):
@@ -42,6 +46,12 @@ class Simulation(ShowBase):
             self.ctrl.update()
         else:
             return
+
+        '''self.cTrav.addCollider(self.robot.chassisNP, self.queue)
+        self.cTrav.traverse(render)
+        for entry in self.queue.getEntries():
+            print(entry)'''
+    
 
         return task.cont
 
@@ -56,6 +66,8 @@ class Simulation(ShowBase):
         np = render.attachNewNode(node)
         np.setPos(0, 0, -1.5)
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world
+
+
 
     def walls (self):
         shape = BulletBoxShape(Vec3(10, 0.1, 5))
