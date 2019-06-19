@@ -1,5 +1,7 @@
 from RobotModel import Robot
 from RobotModel import ControllerForward
+from RobotModel import ControllerTurn
+from RobotModel import ControllerSequence
 
 import sys
 
@@ -24,16 +26,21 @@ class Simulation(ShowBase):
         taskMgr.add(self.update, 'updateWorld')
         #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
 
+        forward = ControllerForward(self.robot, 15)
+        turn = ControllerTurn(self.robot, 90)
+        sequence = [turn, forward]
+                
+        self.ctrl = ControllerSequence(self.robot, sequence)
+        self.ctrl.start()
+
+        if not self.ctrl.stop():
+            self.ctrl.update()
+
+
     def update(self, task):
         dt = globalClock.getDt()
-        forward = ControllerForward(self.robot, 15)
-        sequence = [forward]
         self.world.doPhysics(dt, 50, 0.008)
-
-        for command in sequence:
-            if not command.stop():
-                command.update()
-                
+        
         #self.processInput(dt, sequence, self.robot)
         return task.cont
 
@@ -99,6 +106,9 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
- 
 sim = Simulation()
 base.run()
+
+
+
+

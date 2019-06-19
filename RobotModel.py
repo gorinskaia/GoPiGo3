@@ -2,7 +2,9 @@ from panda3d.bullet import *
 from panda3d.core import *
 from direct.task import Task
 import direct.directbase.DirectStart
+import time
 
+start_time = time.time()
 
 class Robot (BulletVehicle):
     def __init__ (self, render, world):
@@ -13,7 +15,7 @@ class Robot (BulletVehicle):
         chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         chassisNP.node().addShape(shape, ts)
         chassisNP.setPos(0, 0, 0)
-        chassisNP.node().setMass(10.0)
+        chassisNP.node().setMass(5.0)
         chassisNP.node().setDeactivationEnabled(False)
         chassisNP.setScale (0.5,0.9,0.5)
          
@@ -78,13 +80,13 @@ class Robot (BulletVehicle):
         wheel.setFrictionSlip(100.0)
         wheel.setRollInfluence(0.1)
 
-    def setAngle(self, angle, dt):
+    def setAngle(self, angle):
         if angle>0:                         # Turn right
                 self.applyEngineForce(0, 0)
-                self.applyEngineForce(20, 1)
+                self.applyEngineForce(50, 1)
                 self.setBrake(1, 2)
         else:                               # Turn left
-            self.applyEngineForce(20, 0)
+            self.applyEngineForce(50, 0)
             self.applyEngineForce(0, 1)
             self.setBrake(10, 2)
 
@@ -110,12 +112,60 @@ class ControllerForward:
         self.robot = robot
         
     def start(self):
-        print("start forward")
+        pass
 
     def stop(self):
+        if time.time() - start_time > 3:
+            print ('True')
+            return True
         return False
     
     def update(self):
         if self.stop():
             return
         self.robot.setEngineForce(self.speed)
+
+class ControllerTurn:
+    def __init__(self, robot, angle = 90):
+        self.robot = robot
+        self.angle = angle
+        
+    def start(self):
+        #print ('Start Turn')
+        pass
+
+    def stop(self):
+        print ('stop t')
+        if time.time() - start_time > 3:
+            print ('True')
+            return True
+        return False
+    
+    def update(self):
+        if self.stop():
+            return
+        self.robot.setAngle(self.angle)
+
+class ControllerSequence:
+    def __init__(self, robot, commands = []):
+        self.robot = robot
+        self.commands = []
+        self.commands = [x for x in commands]
+        self.count = 0 # Number of a command counter
+        
+    def start(self):
+        self.count = -1
+
+    def stop(self):
+        return self.count >= len(self.commands)
+    
+    def update(self):
+        if self.stop():
+            return
+        if self.count < 0 or self.commands[self.count].stop():
+            self.count+=1
+            if self.stop():
+                return
+            self.commands[self.count].start()
+        self.commands[self.count].update()
+
