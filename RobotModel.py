@@ -7,14 +7,15 @@ import direct.directbase.DirectStart
 class Robot (BulletVehicle):
     def __init__ (self, render, world):
         # Chassis body
-        shape = BulletBoxShape(Vec3(0.45, 0.98, 0.25))
+        shape = BulletBoxShape(Vec3(0.5,0.7,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
         
         chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         chassisNP.node().addShape(shape, ts)
-        chassisNP.setPos(-1, 0, 0)
-        chassisNP.node().setMass(2.0)
+        chassisNP.setPos(0, 0, 0)
+        chassisNP.node().setMass(5.0)
         chassisNP.node().setDeactivationEnabled(False)
+        chassisNP.setScale (0.5,0.9,0.5)
          
         world.attachRigidBody(chassisNP.node())
 
@@ -32,18 +33,18 @@ class Robot (BulletVehicle):
         # Wheel Right
         wheelR = loader.loadModel('models/wheel.egg')
         wheelR.reparentTo(render)
-        self.addWheel(Point3(0.6, -0.95, 0.3), wheelR)
+        self.addWheel(Point3(0.60, 0.75, 0.3), wheelR)
 
         # Wheel Left
         wheelL = loader.loadModel('models/wheel.egg')
         wheelL.reparentTo(render)
+        self.addWheel(Point3(-0.60, 0.75, 0.3), wheelL)
 
-        self.addWheel(Point3(-0.60, -0.95, 0.3), wheelL)
+        # Wheel back
+        wheelB = loader.loadModel('models/wheel.egg')
+        wheelB.reparentTo(render)
+        self.addWheel(Point3(-0, -0.75, 0.3), wheelB)
 
-    # Steering info
-    steering = 0.0            # degree
-    steeringClamp = 45.0      # degree
-    steeringIncrement = 120.0 # degree per second
         
     def addWheel(self, pos, np):
         print('Adding a wheel')
@@ -66,21 +67,20 @@ class Robot (BulletVehicle):
 
 
     def setAngle(self, angle, dt):
-        steering += dt * angle
-        steering = max(self.steering, -self.steeringClamp)
-    
-        self.setSteeringValue(self.steering, 0)
-        self.setSteeringValue(self.steering, 1)
+        if angle>0:                         # Turn right
+                self.applyEngineForce(0, 0)
+                self.applyEngineForce(30, 1)
+                self.setBrake(1, 2)
+        else:                               # Turn left
+            self.applyEngineForce(30, 0)
+            self.applyEngineForce(0, 1)
+            self.setBrake(10, 2)
 
     #function that sets engine force of front wheels
     def setEngineForce(self, engineForce):
-        self.applyEngineForce(engineForce-2, 0)
-        self.applyEngineForce(engineForce, 1)
-
-    #function that sets brake
-    def setBrakeForce(self, brakeForce):
-        self.setBrake(brakeForce, 2)
-        self.setBrake(brakeForce, 3)
+        self.applyEngineForce(30, 0)
+        self.applyEngineForce(0, 1)
+        #self.setBrake(1, 2)
 
 
      #function that returns current steering of front wheels
