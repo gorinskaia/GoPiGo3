@@ -36,7 +36,7 @@ class Simulation(ShowBase):
  
         taskMgr.add(self.update, 'updateWorld')
 
-        forward = ControllerForward(self.robot, 75)
+        forward = ControllerForward(self.robot, 65)
         turn = ControllerTurn(self.robot, 90)
         sequence = [turn, forward, turn]
                 
@@ -51,7 +51,7 @@ class Simulation(ShowBase):
             self.ctrl.update()
         else:
             return
-
+        
         return task.cont
 
     def setup(self):
@@ -63,7 +63,7 @@ class Simulation(ShowBase):
         np.setPos(0, 0, -1.5)
         self.world.attachRigidBody(node)            # Attach the rigid body node to the world
 
-        robotModel = loader.loadModel("cube") # Static Robot model
+        robotModel = loader.loadModel("cube")       # Static Robot model
         robotModel.reparentTo (self.robot.chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         robotModel.setTexture(robot_tex, 1)
@@ -74,7 +74,9 @@ class Simulation(ShowBase):
         self.accept('into-' + sColl[1], self.collide)
 
     def collide(self, collEntry):
-        print("Object has collided into another object 1")
+        print("Minimal Distance")
+        self.ctrl.next()
+        
 
     def initCollisionWall(self, obj, show, dist, center):
         bounds = obj.getChild(0).getBounds()
@@ -91,7 +93,7 @@ class Simulation(ShowBase):
     def initCollisionSphere(self, obj, show=False):
 
         bounds = obj.getChild(0).getBounds()
-        center = (0,3,1)
+        center = (0,3,1)        # y parameter == the distance of the sensor area
         radius = 1.5
  
         collSphereStr = 'CollisionRobot' + str(self.collCount) + "_" + obj.getName()
@@ -121,7 +123,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
         
-        tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))  # Setup a collision solid for this model.
+        tColl = self.initCollisionWall( self.box1, False, Point3(1, 0.05, 2.5), Point3(-1,-9,0))  # Setup a collision solid for this model.
         base.cTrav.addCollider(tColl[0], self.collHandEvent) # Add this object to the traverser.
 
         node = BulletRigidBodyNode('Box')
@@ -135,7 +137,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
+        tColl = self.initCollisionWall( self.box1, False, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
         shape = BulletBoxShape(Vec3(0.1, 10, 5))
@@ -151,7 +153,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
                 
-        tColl = self.initCollisionWall( self.box1, True, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
+        tColl = self.initCollisionWall( self.box1, False, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
         node = BulletRigidBodyNode('Box')
@@ -165,7 +167,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
        
-        tColl = self.initCollisionWall( self.box1, True, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
+        tColl = self.initCollisionWall( self.box1, False, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
 sim = Simulation()

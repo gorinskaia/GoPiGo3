@@ -101,6 +101,7 @@ class ControllerForward:
         self.speed = speed
         self.robot = robot
         self.start_time = 0
+        self.flag = False
 
     def start(self):
         engineForce = 0.0
@@ -108,7 +109,8 @@ class ControllerForward:
         self.start_time = time.time()
 
     def stop(self):
-        if time.time() - self.start_time > 3:
+        if self.flag == True:
+            self.robot.setBrake(1, 2)
             return True
         return False
     
@@ -122,6 +124,7 @@ class ControllerTurn:
         self.start_time = 0
         self.robot = robot
         self.angle = angle
+        self.flag = False   # not useful for now
         
     def start(self):
         engineForce = 0.0
@@ -159,5 +162,10 @@ class ControllerSequence:
             if self.stop():
                 return
             self.commands[self.count].start()
+            print (self.commands[self.count])
         self.commands[self.count].update()
+        
+    def next (self):
+        self.commands[self.count].flag = True
+        print('next')
 
