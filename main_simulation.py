@@ -14,6 +14,13 @@ from direct.task import Task
 class Simulation(ShowBase):
     
     def __init__(self):
+
+        base.cTrav = CollisionTraverser()
+        self.collHandEvent = CollisionHandlerEvent()
+        self.collHandEvent.addInPattern('into-%in')
+ 
+        self.collCount = 0  # unique collision string count.
+
         base.setFrameRateMeter(True)
         base.cam.setPos(0, 0, 35)
         base.cam.lookAt(0, 0, 0)
@@ -26,11 +33,10 @@ class Simulation(ShowBase):
         
         self.setup()
         self.walls()
-        
+ 
         taskMgr.add(self.update, 'updateWorld')
-        #taskMgr.add(self.robot.checkGhost, 'checkGhost') # Later
 
-        forward = ControllerForward(self.robot, 65)
+        forward = ControllerForward(self.robot, 75)
         turn = ControllerTurn(self.robot, 90)
         sequence = [turn, forward, turn]
                 
@@ -61,6 +67,43 @@ class Simulation(ShowBase):
         robotModel.reparentTo (self.robot.chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         robotModel.setTexture(robot_tex, 1)
+        
+        # Setup a collision solid for this model.
+        sColl = self.initCollisionSphere(robotModel, True)
+        base.cTrav.addCollider(sColl[0], self.collHandEvent)
+        self.accept('into-' + sColl[1], self.collide)
+
+    def collide(self, collEntry):
+        print("Object has collided into another object 1")
+
+    def initCollisionWall(self, obj, show, dist, center):
+        bounds = obj.getChild(0).getBounds()
+        collWallStr = 'CollisionWall' + str(self.collCount) + "_" + obj.getName()
+        cNode = CollisionNode(collWallStr)
+        cNode.addSolid(CollisionBox(center, dist))
+        cNodepath = obj.attachNewNode(cNode) # boundaries
+
+        if show:
+            cNodepath.show()
+
+        return (cNodepath, collWallStr)
+        
+    def initCollisionSphere(self, obj, show=False):
+
+        bounds = obj.getChild(0).getBounds()
+        center = (0,3,1)
+        radius = 1.5
+ 
+        collSphereStr = 'CollisionRobot' + str(self.collCount) + "_" + obj.getName()
+        self.collCount += 1
+        cNode = CollisionNode(collSphereStr)
+        cNode.addSolid(CollisionSphere(center, radius))
+        cNodepath = obj.attachNewNode(cNode) # boundaries
+ 
+        if show:
+            cNodepath.show()
+
+        return (cNodepath, collSphereStr)
 
 
     def walls (self):
@@ -77,6 +120,9 @@ class Simulation(ShowBase):
         self.box1.setScale(10, 0.1, 5)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
+        
+        tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))  # Setup a collision solid for this model.
+        base.cTrav.addCollider(tColl[0], self.collHandEvent) # Add this object to the traverser.
 
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
@@ -88,6 +134,9 @@ class Simulation(ShowBase):
         self.box1.setScale(10, 0.1, 5)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
+
+        tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
+        base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
         shape = BulletBoxShape(Vec3(0.1, 10, 5))
 
@@ -101,6 +150,9 @@ class Simulation(ShowBase):
         self.box1.setScale(0.1, 10, 5)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
+                
+        tColl = self.initCollisionWall( self.box1, True, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
+        base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
@@ -112,6 +164,9 @@ class Simulation(ShowBase):
         self.box1.setScale(0.1, 10, 5)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
+       
+        tColl = self.initCollisionWall( self.box1, True, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
+        base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
 sim = Simulation()
 base.run()

@@ -20,8 +20,6 @@ class Robot (BulletVehicle):
          
         world.attachRigidBody(self.chassisNP.node())
 
-       
-
         # Vehicle
         super(Robot , self).__init__(world, self.chassisNP.node())
         self.setCoordinateSystem(ZUp)
@@ -42,10 +40,6 @@ class Robot (BulletVehicle):
         wheelB.reparentTo(render)
         self.addWheel(Point3(0, -0.75, 0.3), wheelB)
 
-        #self.addObstacle(Point3(0,9,0), Vec3(10, 1, 5), world) # Later
-        #self.addObstacle(Point3(0,-9,0), Vec3(10, 1, 5), world)
-        #self.addObstacle(Point3(-10,0,0), Vec3(1, 10, 5), world)
-        #self.addObstacle(Point3(10,0,0), Vec3(1, 10, 5), world)
         engineForce = 0.0
         brakeForce = 0.0
 
