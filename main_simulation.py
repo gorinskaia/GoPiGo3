@@ -36,9 +36,11 @@ class Simulation(ShowBase):
  
         taskMgr.add(self.update, 'updateWorld')
 
-        forward = ControllerForward(self.robot, 65)
-        turn = ControllerTurn(self.robot, 90)
-        sequence = [turn, forward, turn]
+        forward = ControllerForward(self.robot, 67)
+        turn90 = ControllerTurn(self.robot, 90)
+        turn45 = ControllerTurn(self.robot, -45)
+        turn180 = ControllerTurn(self.robot, 180)
+        sequence = [turn90, forward, turn180, turn45, forward]
                 
         self.ctrl = ControllerSequence(self.robot, sequence)
         self.ctrl.start()
@@ -137,7 +139,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        tColl = self.initCollisionWall( self.box1, False, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
+        tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
         shape = BulletBoxShape(Vec3(0.1, 10, 5))

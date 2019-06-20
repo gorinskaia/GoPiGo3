@@ -87,13 +87,6 @@ class Robot (BulletVehicle):
     def getAngle(self):
         return # Change and actually get the value
 
-    def checkGhost(self, task):
-        if task.time < 0.5:
-            ghost = self.ghostNP.node()
-            print(ghost.getNumOverlappingNodes())
-            for node in ghost.getOverlappingNodes():
-               print (node)
-            return task.cont
 
 
 class ControllerForward:
@@ -107,6 +100,7 @@ class ControllerForward:
         engineForce = 0.0
         brakeForce = 0.0
         self.start_time = time.time()
+        self.flag = False
 
     def stop(self):
         if self.flag == True:
@@ -125,14 +119,14 @@ class ControllerTurn:
         self.robot = robot
         self.angle = angle
         self.flag = False   # not useful for now
-        
+        self.t_rotation = abs(angle/32.7)        # for 90 degrees is 2,75 sec of rotation
     def start(self):
         engineForce = 0.0
         brakeForce = 0.0
         self.start_time = time.time()
 
     def stop(self):
-        if time.time() - self.start_time > 3:
+        if time.time() - self.start_time > self.t_rotation:
             return True
         return False
     
@@ -162,10 +156,8 @@ class ControllerSequence:
             if self.stop():
                 return
             self.commands[self.count].start()
-            print (self.commands[self.count])
         self.commands[self.count].update()
         
     def next (self):
         self.commands[self.count].flag = True
-        print('next')
 
