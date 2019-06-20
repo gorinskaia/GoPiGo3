@@ -7,6 +7,8 @@ import time
 
 class Robot (BulletVehicle):
     def __init__ (self, render, world):
+
+        self.world = world
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
@@ -14,11 +16,14 @@ class Robot (BulletVehicle):
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
         self.chassisNP.setPos(0, 0, 0)
-        self.chassisNP.node().setMass(5.0)
+        self.chassisNP.node().setMass(5)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
-         
-        world.attachRigidBody(self.chassisNP.node())
+
+        self.chassisNP.node().setCcdMotionThreshold(1e-7)
+        self.chassisNP.node().setCcdSweptSphereRadius(5)
+
+        self.world.attachRigidBody(self.chassisNP.node())
 
         # Vehicle
         super(Robot , self).__init__(world, self.chassisNP.node())
@@ -42,6 +47,7 @@ class Robot (BulletVehicle):
 
         engineForce = 0.0
         brakeForce = 0.0
+
 
     def addObstacle(self, pos, scale, world):
         shape = BulletBoxShape(scale) # To be changes later ar a sensor distance
@@ -87,11 +93,9 @@ class Robot (BulletVehicle):
     def getAngle(self):
         return # Change and actually get the value
 
-
-
 class ControllerForward:
-    def __init__(self, robot, speed = 30):
-        self.speed = speed
+    def __init__(self, robot, speed = 300, collision = 150):
+        self.speed = speed/4.5
         self.robot = robot
         self.start_time = 0
         self.flag = False
@@ -104,6 +108,7 @@ class ControllerForward:
 
     def stop(self):
         if self.flag == True:
+            self.robot.setEngineForce(0)
             self.robot.setBrake(1, 2)
             return True
         return False
