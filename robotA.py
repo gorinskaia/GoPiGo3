@@ -9,7 +9,8 @@ from Dexter import ControllerSequence
 from Dexter import Dexter
 from easygopigo3 import EasyGoPiGo3
 
-#from viewer import Viewer
+COLLISION_DIST = 100
+SPEED = 300
 
 # Camera Thread
 
@@ -39,8 +40,8 @@ threading.Thread(target=image_stream).start()
 gpg = EasyGoPiGo3()
 dexter = Dexter(gpg)
 
-forward = ControllerForward(dexter, 350, 150)
-turn90 = ControllerTurn(dexter,350,90)
+forward = ControllerForward(dexter, SPEED, COLLISION_DIST)
+turn90 = ControllerTurn(dexter,SPEED,90)
 
 sequenceSquare = [forward, turn90, forward, turn90, forward, turn90, forward]
 
@@ -53,4 +54,3 @@ while not robot.stop():
     time.sleep(0.01)
 
 dexter.shutdown()
-
