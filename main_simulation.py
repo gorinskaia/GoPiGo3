@@ -22,14 +22,9 @@ class Simulation(ShowBase):
         self.collHandEvent = CollisionHandlerEvent()
         self.collHandEvent.addInPattern('into-%in')
 
-        self.collCount = 0  # unique collision string count.
-        
         self.robot = Robot (worldNP, world)
-
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
-        
-
-        
+  
         base.setFrameRateMeter(True)
         base.cam.setPos(0, 0, 35)
         base.cam.lookAt(0, 0, 0)
@@ -56,9 +51,6 @@ class Simulation(ShowBase):
         np = render.attachNewNode(node)
         np.setPos(0, 0, -1.5)
         world.attachRigidBody(node) 
-    
-        # Setup a collision solid for this model.
-        
 
     def collide(self, collEntry):
         print ('collide')
@@ -66,7 +58,7 @@ class Simulation(ShowBase):
         
     def initCollisionWall(self, obj, show, dist, center):
 
-        collWallStr = 'CollisionWall' + str(self.collCount) + "_" + obj.getName()
+        collWallStr = 'CollisionWall' + "_" + obj.getName()
         cNode = CollisionNode(collWallStr)
         cNode.addSolid(CollisionBox(center, dist))
         cNodepath = obj.attachNewNode(cNode)
@@ -76,8 +68,7 @@ class Simulation(ShowBase):
         
     def initCollisionSphere(self, obj, show, center):
         
-        collSphereStr = 'CollisionRobot' + str(self.collCount) + "_" + obj.getName()
-        self.collCount += 1
+        collSphereStr = 'CollisionRobot' + "_" + obj.getName()
         cNode = CollisionNode(collSphereStr)
         cNode.addSolid(CollisionSphere (center, 0.5))
         cNodepath = obj.attachNewNode(cNode) 

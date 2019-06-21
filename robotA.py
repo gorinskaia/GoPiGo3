@@ -33,24 +33,5 @@ def image_stream ():
             cv2.destroyAllWindows()
             break
 
-# Main
-
 threading.Thread(target=image_stream).start()
 
-#gpg = EasyGoPiGo3()
-#dexter = Dexter(gpg)
-
-#forward = ControllerForward(dexter, SPEED, COLLISION_DIST)
-#turn90 = ControllerTurn(dexter, SPEED,90)
-
-sequenceSquare = [forward, turn90, forward, turn90, forward, turn90, forward]
-
-robot = ControllerSequence(dexter, sequenceSquare)
-
-robot.start()
-
-while not robot.stop():
-    robot.update()
-    time.sleep(0.01)
-
-dexter.shutdown()

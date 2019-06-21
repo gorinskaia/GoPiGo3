@@ -35,10 +35,8 @@ if option == "a":
     sim.accept('into-' + sim.sColl[1], sim.collide)
     robot = sim.robot
 
-
 elif option == "b":
     import robotA
-
     gpg = EasyGoPiGo3()
     dexter = Dexter(gpg)
 
@@ -51,15 +49,17 @@ sequence = [turn90, forward,turn90]
 # --- End Your Code ---
 
 if option == "a":
-
     sim.ctrl = ControllerSequence(robot, sequence)
     sim.ctrl.start()
     base.run()
-    
-
 
 elif option == "b":
-    import robotA
+    robot = ControllerSequence(dexter, sequenceSquare)
+    robot.start()
+    while not robot.stop():
+        robot.update()
+        time.sleep(0.01)
+    dexter.shutdown()
 
     
 
