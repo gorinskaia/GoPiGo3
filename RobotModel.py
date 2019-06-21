@@ -18,7 +18,7 @@ class Robot (BulletVehicle):
         
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
-        self.chassisNP.setPos(0, 5, 0)
+        self.chassisNP.setPos(0, -5, 0)
         self.chassisNP.node().setMass(5)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
@@ -113,7 +113,7 @@ class ControllerInit:
     
 class ControllerForward:
     def __init__(self, robot, speed = 300, collision = 150):
-        self.speed = speed/60
+        self.speed = speed/100
         self.robot = robot
         self.start_time = 0
         self.flag = False

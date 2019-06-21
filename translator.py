@@ -1,30 +1,24 @@
-from Dexter import ControllerForward
-from Dexter import ControllerTurn
-from Dexter import ControllerSequence
-from Dexter import Dexter
-from easygopigo3 import EasyGoPiGo3
-
-#from RobotModel import ControllerForward
-#from RobotModel import ControllerTurn
-#from RobotModel import ControllerSequence
-
-#from panda3d.core import *
-#from panda3d.bullet import *
-
+# --- Global libraries --- 
 import time
 
-
-COLLISION_DIST = 150
+# --- Global variables --- 
+COLLISION_DIST = 100
 SPEED = 300
 
+# --- Choose an option between 3D Simulation and Real World Action
 while True:
-    
     option = input ("Do you want to: A) Play simulation B) Control the robot. [a/b]? : ")
     if option in ['a', 'b']:
         break
 
 if option == "a":
 
+    # --- Import local libraries --- 
+    from RobotModel import ControllerForward
+    from RobotModel import ControllerTurn
+    from RobotModel import ControllerSequence
+    from panda3d.core import *
+    from panda3d.bullet import *
     import direct.directbase.DirectStart
     from RobotModel import Robot
     from main_simulation import Simulation
@@ -36,11 +30,20 @@ if option == "a":
     robot = sim.robot
 
 elif option == "b":
+    
+    # --- Import local libraries --- 
+    from Dexter import ControllerForward
+    from Dexter import ControllerTurn
+    from Dexter import ControllerSequence
+    from Dexter import Dexter
+    from easygopigo3 import EasyGoPiGo3
     import robotA
+    
     gpg = EasyGoPiGo3()
     robot = Dexter(gpg)
 
-# --- Your Code Goes Here ---
+# --------------------------
+# --- Your Sequence Goes Here ---
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 320, 90)
@@ -48,7 +51,9 @@ turn90 = ControllerTurn(robot, 320, 90)
 sequence = [forward, turn90, forward, turn90]
 
 # --- End Your Code ---
+# --------------------------
 
+# --- Run ---
 if option == "a":
     sim.ctrl = ControllerSequence(robot, sequence)
     sim.ctrl.start()
@@ -61,6 +66,3 @@ elif option == "b":
         ctrl.update()
         time.sleep(0.01)
     robot.shutdown()
-
-    
-
