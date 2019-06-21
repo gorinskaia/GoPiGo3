@@ -13,33 +13,38 @@ from panda3d.bullet import *
 COLLISION_DIST = 100
 SPEED = 300
 
-"""while True:
+while True:
     
     option = input ("Do you want to: A) Play simulation B) Control the robot. [a/b]? : ")
     if option in ['a', 'b']:
         break
 
-if option == "a":"""
+if option == "a":
 
-import direct.directbase.DirectStart
-from RobotModel import Robot
-from main_simulation import Simulation
+    import direct.directbase.DirectStart
+    from RobotModel import Robot
+    from main_simulation import Simulation
 
-sim = Simulation()
-
-forward = ControllerForward(sim.robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(sim.robot, 300, 90) #make another variable for sim.robot nd gopigo
-sim.sequence = [turn90, forward,turn90]
+    sim = Simulation()
+    sim.sColl = sim.initCollisionSphere(sim.robot.robotModel, True, Point3(0,COLLISION_DIST/30,1))
+    base.cTrav.addCollider(sim.sColl[0], sim.collHandEvent)
+    sim.accept('into-' + sim.sColl[1], sim.collide)
     
-sim.ctrl = ControllerSequence(sim.robot, sim.sequence)
-sim.ctrl.start()
+    robot = sim.robot
 
-base.run()
+    forward = ControllerForward(robot, 300, COLLISION_DIST)
+    turn90 = ControllerTurn(robot, 300, 90) #make another variable for sim.robot nd gopigo
+    sequence = [turn90, forward,turn90]
+        
+    sim.ctrl = ControllerSequence(robot, sequence)
+    sim.ctrl.start()
 
-"""elif option == "b":
-    import robotA"""
+    base.run()
+
+elif option == "b":
+    import robotA
     
-#class Translator:
+
     
     
 """gpg = EasyGoPiGo3()
