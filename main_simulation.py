@@ -2,8 +2,10 @@ from RobotModel import Robot
 from RobotModel import ControllerForward
 from RobotModel import ControllerTurn
 from RobotModel import ControllerSequence
+from RobotModel import ControllerInit
 
 import sys
+import math
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
@@ -16,6 +18,8 @@ SPEED = 300
 class Simulation(ShowBase):
     
     def __init__(self):
+
+        import direct.directbase.DirectStart
 
         base.cTrav = CollisionTraverser()
         self.collHandEvent = CollisionHandlerEvent()
@@ -32,28 +36,29 @@ class Simulation(ShowBase):
  
         taskMgr.add(self.update, 'updateWorld')
 
-        forward = ControllerForward(robot, SPEED, COLLISION_DIST)
-        turn90 = ControllerTurn(robot, 90)
-        turn45 = ControllerTurn(robot, -45)
-        turn180 = ControllerTurn(robot, 180)
-        sequence = [turn90, forward, turn180, turn45, forward]
-                
-        self.ctrl = ControllerSequence(robot, sequence)
-        self.ctrl.start()
+        #forward = ControllerForward(robot, 300, COLLISION_DIST)
+        #turn90 = ControllerTurn(robot, 300, 90)
+        #turn45 = ControllerTurn(robot, SPEED, -45)
+        #turn180 = ControllerTurn(robot, 300, -90)
+        #sequence = [turn90, forward, turn180, turn45, forward]
+        #self.sequence = [turn90, forward,turn90]
+        self.sequence = []  
+        self.ctrl = ControllerInit(robot)
+        #self.ctrl.start()
 
     def update(self, task):
         dt = globalClock.getDt()
         world.doPhysics(dt, 50, 0.008)
-        
+    
         if not self.ctrl.stop():
             self.ctrl.update()
+
         else:
             return
         
         return task.cont
 
     def setup(self):
-     
         shape = BulletPlaneShape(Vec3(0, 0, 1), 1)  # Collision shape: Plane
         node = BulletRigidBodyNode('Ground')        # Create a rigid body
         node.addShape(shape)                        # Add existing shape to it
@@ -91,7 +96,7 @@ class Simulation(ShowBase):
         collSphereStr = 'CollisionRobot' + str(self.collCount) + "_" + obj.getName()
         self.collCount += 1
         cNode = CollisionNode(collSphereStr)
-        cNode.addSolid(CollisionSphere (center, 1.5))
+        cNode.addSolid(CollisionSphere (center, 0.5))
         cNodepath = obj.attachNewNode(cNode) # boundaries
         if show:
             cNodepath.show()
@@ -112,10 +117,7 @@ class Simulation(ShowBase):
         self.box1.setScale(10, 0.1, 5)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
-        #self.box1.node().setCcdMotionThreshold(1e-7)
-        #self.box1.node().setCcdSweptSphereRadius(0.50)
 
-        
         tColl = self.initCollisionWall( self.box1, True, Point3(1, 0.05, 2.5), Point3(-1,-9,0))  # Setup a collision solid for this model.
         base.cTrav.addCollider(tColl[0], self.collHandEvent) # Add this object to the traverser.
 
@@ -163,17 +165,11 @@ class Simulation(ShowBase):
         tColl = self.initCollisionWall( self.box1, True, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
-
 worldNP = render.attachNewNode('World')
 world = BulletWorld()
 world.setGravity(Vec3(0, 0, -9.81))
-
+    
 robot = Robot(worldNP, world)
-
-
-sim = Simulation()
-base.run()
-
 
 
 
