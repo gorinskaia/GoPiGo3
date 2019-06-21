@@ -1,21 +1,21 @@
-#from Dexter import ControllerForward
-#from Dexter import ControllerTurn
-#from Dexter import ControllerSequence
-#from Dexter import Dexter
-from RobotModel import ControllerForward
-from RobotModel import ControllerTurn
-from RobotModel import ControllerSequence
+from Dexter import ControllerForward
+from Dexter import ControllerTurn
+from Dexter import ControllerSequence
+from Dexter import Dexter
+from easygopigo3 import EasyGoPiGo3
 
-from panda3d.core import *
-from panda3d.bullet import *
+#from RobotModel import ControllerForward
+#from RobotModel import ControllerTurn
+#from RobotModel import ControllerSequence
+
+#from panda3d.core import *
+#from panda3d.bullet import *
+
+import time
 
 
-COLLISION_DIST = 100
+COLLISION_DIST = 150
 SPEED = 300
-
-"""def start():
-    if ctrl = sim.ctrl:"""
-    
 
 while True:
     
@@ -38,13 +38,14 @@ if option == "a":
 elif option == "b":
     import robotA
     gpg = EasyGoPiGo3()
-    dexter = Dexter(gpg)
+    robot = Dexter(gpg)
 
 # --- Your Code Goes Here ---
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 300, 90)
-sequence = [turn90, forward,turn90]
+turn90 = ControllerTurn(robot, 320, 90)
+
+sequence = [forward, turn90, forward, turn90]
 
 # --- End Your Code ---
 
@@ -54,12 +55,12 @@ if option == "a":
     base.run()
 
 elif option == "b":
-    robot = ControllerSequence(dexter, sequenceSquare)
-    robot.start()
-    while not robot.stop():
-        robot.update()
+    ctrl = ControllerSequence(robot, sequence)
+    ctrl.start()
+    while not ctrl.stop():
+        ctrl.update()
         time.sleep(0.01)
-    dexter.shutdown()
+    robot.shutdown()
 
     
 

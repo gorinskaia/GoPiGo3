@@ -1,11 +1,10 @@
 import time
-from easygopigo3 import EasyGoPiGo3
 import math
 
 class Dexter:
     'Robot class'
     def __init__(self, gpg):
-        self.gpg = EasyGoPiGo3()
+        self.gpg = gpg
         self.dist_mm = gpg.init_distance_sensor()
 
     def set_speed(self, left_speed, right_speed):
@@ -126,3 +125,5 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
+        
+    
