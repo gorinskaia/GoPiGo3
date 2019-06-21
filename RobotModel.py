@@ -23,8 +23,10 @@ class Robot (BulletVehicle):
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
 
-        self.chassisNP.node().setCcdMotionThreshold(1e-7)
-        self.chassisNP.node().setCcdSweptSphereRadius(5)
+        self.robotModel = loader.loadModel("cube")       # Static Robot model
+        self.robotModel.reparentTo (self.chassisNP) # Reparent the model to the node
+        robot_tex = loader.loadTexture("textures/robot.jpeg")
+        self.robotModel.setTexture(robot_tex, 1)
 
         self.world.attachRigidBody(self.chassisNP.node())
 

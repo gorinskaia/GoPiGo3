@@ -24,9 +24,11 @@ class Simulation(ShowBase):
         base.cTrav = CollisionTraverser()
         self.collHandEvent = CollisionHandlerEvent()
         self.collHandEvent.addInPattern('into-%in')
- 
-        self.collCount = 0  # unique collision string count.
 
+        self.collCount = 0  # unique collision string count.
+        
+        self.robot = Robot (worldNP, world)
+        
         base.setFrameRateMeter(True)
         base.cam.setPos(0, 0, 35)
         base.cam.lookAt(0, 0, 0)
@@ -36,6 +38,8 @@ class Simulation(ShowBase):
  
         taskMgr.add(self.update, 'updateWorld')
 
+        
+
         #forward = ControllerForward(robot, 300, COLLISION_DIST)
         #turn90 = ControllerTurn(robot, 300, 90)
         #turn45 = ControllerTurn(robot, SPEED, -45)
@@ -43,7 +47,7 @@ class Simulation(ShowBase):
         #sequence = [turn90, forward, turn180, turn45, forward]
         #self.sequence = [turn90, forward,turn90]
         self.sequence = []  
-        self.ctrl = ControllerInit(robot)
+        #self.ctrl = ControllerInit(robot)
         #self.ctrl.start()
 
     def update(self, task):
@@ -66,13 +70,9 @@ class Simulation(ShowBase):
         np.setPos(0, 0, -1.5)
         world.attachRigidBody(node)            # Attach the rigid body node to the world
 
-        robotModel = loader.loadModel("cube")       # Static Robot model
-        robotModel.reparentTo (robot.chassisNP) # Reparent the model to the node
-        robot_tex = loader.loadTexture("textures/robot.jpeg")
-        robotModel.setTexture(robot_tex, 1)
-
+    
         # Setup a collision solid for this model.
-        sColl = self.initCollisionSphere(robotModel, True, Point3(0,COLLISION_DIST/30,1))
+        sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,COLLISION_DIST/30,1))
         base.cTrav.addCollider(sColl[0], self.collHandEvent)
         self.accept('into-' + sColl[1], self.collide)
 
@@ -169,7 +169,7 @@ worldNP = render.attachNewNode('World')
 world = BulletWorld()
 world.setGravity(Vec3(0, 0, -9.81))
     
-robot = Robot(worldNP, world)
+
 
 
 
