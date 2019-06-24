@@ -11,6 +11,11 @@ class Robot (BulletVehicle):
     def __init__ (self, render, world):
 
         self.world = world
+
+        WHEEL_BASE_WIDTH         = 117  # distance (mm) de la roue gauche a la roue droite.
+        WHEEL_DIAMETER           = 66.5 #  diametre de la roue (mm)
+        WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # perimetre du cercle de rotation (mm)
+        WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # perimetre de la roue (mm)
         
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
@@ -81,60 +86,52 @@ class Robot (BulletVehicle):
             self.applyEngineForce(0, 1)
             self.setBrake(1, 2)
 
-    def setEngineForce(self, engineForce):
-        self.applyEngineForce(engineForce, 0)
-        self.applyEngineForce(engineForce, 1)
+    def forward(self, engineForce):
+        self.applyEngineForce(engineForce/100, 0)
+        self.applyEngineForce(engineForce/100, 1)
 
+    def reset(self):
+        print ('reset')
+        self.forward(0)
+        self.setBrake(0, 2)
+        self.flag = False
+        
+    def condition(self):
+        return self.flag
+        
     def getOffset(self):
-        pl = self.wheelL.getPos(self.wheelB)
-        pr = self.wheelR.getPos(self.wheelB)
-        left_pos = math.atan2(pl[2], pl[1])*(180/math.pi)
-        right_pos = math.atan2(pr[2], pr[1])*(180/math.pi)
-        #print (left_pos, right_pos)
-        return (left_pos, right_pos)
+        pl = self.chassisNP.getPos()*100
+        #pr = self.wheelR.getPos()*100
+        #print (pl[1])
+
+        left_pos = math.atan2(pl[1], pl[0])*(180/math.pi)
+        #right_pos = math.atan2(pr[1], pr[0])*(180/math.pi)
+        #print ("%.2f" % left_pos)
+        return (left_pos)
 
 
 
 #--- Controllers ---
 
-class ControllerInit:
-    'Initial state'
-    def __init__(self,gpg):
-        self.gpg = gpg
-        
-    def start(self):
-        pass
-    
-    def stop(self):
-        pass
-    
-    def update(self):
-        pass
-    
+"""
 class ControllerForward:
     def __init__(self, robot, speed = 300, collision = 150):
         self.speed = speed/100
         self.robot = robot
-        self.start_time = 0
         self.flag = False
 
     def start(self):
         self.robot.setEngineForce(0)
         self.robot.setBrake(0, 2)
-        self.start_time = time.time()
         self.flag = False
 
     def stop(self):
-        if self.flag == True:
-            self.robot.setBrake(5, 2)
-            self.robot.setEngineForce(0)
-            return True
-        return False
+        return self.flag
     
     def update(self):
         if self.stop():
             return
-        self.robot.setEngineForce(self.speed)
+        self.robot.setEngineForce(self.speed)"""
 
 class ControllerTurn:
     def __init__(self, robot , speed = 300, angle = 90):
@@ -145,7 +142,7 @@ class ControllerTurn:
         self.speed = speed
         self.t_rotation = abs(angle/32.7)        # for 90 degrees is 2,75 sec of rotation
     def start(self):
-        self.robot.setEngineForce(0)
+        self.robot.forward(0)
         self.start_time = time.time()
 
     def stop(self):
@@ -161,6 +158,7 @@ class ControllerTurn:
         if self.stop():
             return
         self.robot.setAngle(self.angle, self.speed)
+        
 
 class ControllerSequence:
     def __init__(self, robot, commands = []):
@@ -185,7 +183,5 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
-        
-    def next (self):
-        self.commands[self.count].flag = True
+
 
