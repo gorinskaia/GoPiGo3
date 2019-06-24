@@ -23,7 +23,7 @@ class Dexter:
     def shutdown(self):
         self.forward(0)
 
-    def reset_encoders(self):
+    def reset(self):
         left_target = self.gpg.get_motor_encoder(self.gpg.MOTOR_LEFT)
         right_target = self.gpg.get_motor_encoder(self.gpg.MOTOR_RIGHT)
         self.gpg.offset_motor_encoder(self.gpg.MOTOR_LEFT, left_target)
@@ -39,9 +39,13 @@ class Dexter:
 
     def shutdown(self):
         self.set_speed(0,0)
+
+
+    def condition(self, ctrl):
+        return self.gpg.get_dist() <= self.dist
         
     
-class ControllerInit:
+"""class ControllerInit:
     'Initial state'
     def __init__(self,gpg):
         self.gpg = gpg
@@ -73,7 +77,7 @@ class ControllerForward:
     def update(self):
         if self.stop(): 
             return
-        self.gpg.forward(self.speed)
+        self.gpg.forward(self.speed)"""
 
 
 class ControllerTurn:
@@ -126,4 +130,3 @@ class ControllerSequence:
             self.commands[self.count].start()
         self.commands[self.count].update()
         
-    

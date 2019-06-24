@@ -1,10 +1,9 @@
-
 import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import threading
-from Dexter import ControllerForward
+from Controller import ControllerForward
 from Dexter import ControllerTurn
 from Dexter import ControllerSequence
 from Dexter import Dexter
@@ -35,4 +34,3 @@ def image_stream ():
             break
 
 threading.Thread(target=image_stream).start()
-

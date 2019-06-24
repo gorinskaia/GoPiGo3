@@ -1,20 +1,23 @@
 # --- Global libraries --- 
 import time
+from Controller import ControllerForward
 
 # --- Global variables --- 
 COLLISION_DIST = 100
 SPEED = 300
 
 # --- Choose an option between 3D Simulation and Real World Action
-while True:
+"""while True:
     option = input ("Do you want to: A) Play simulation B) Control the robot. [a/b]? : ")
     if option in ['a', 'b']:
-        break
+        break"""
+
+option = "a"
 
 if option == "a":
 
     # --- Import local libraries --- 
-    from RobotModel import ControllerForward
+    
     from RobotModel import ControllerTurn
     from RobotModel import ControllerSequence
     from panda3d.core import *
@@ -32,7 +35,7 @@ if option == "a":
 elif option == "b":
     
     # --- Import local libraries --- 
-    from Dexter import ControllerForward
+    #from Dexter import ControllerForward
     from Dexter import ControllerTurn
     from Dexter import ControllerSequence
     from Dexter import Dexter
@@ -46,9 +49,10 @@ elif option == "b":
 # --- Your Sequence Goes Here ---
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 320, 90)
+turn90 = ControllerTurn(robot, 300, 90)
+turn360 = ControllerTurn(robot, 300, 360)
 
-sequence = [forward, turn90, forward, turn90]
+sequence = [turn90, forward, turn90]
 
 # --- End Your Code ---
 # --------------------------

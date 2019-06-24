@@ -1,8 +1,8 @@
 from RobotModel import Robot
-from RobotModel import ControllerForward
+from Controller import ControllerForward
 from RobotModel import ControllerTurn
 from RobotModel import ControllerSequence
-from RobotModel import ControllerInit
+from Controller import ControllerInit
 
 import sys
 import math
@@ -53,8 +53,8 @@ class Simulation(ShowBase):
         world.attachRigidBody(node) 
 
     def collide(self, collEntry):
-        print ('collide')
-        self.ctrl.next()
+        print('collide')
+        self.ctrl.commands[self.ctrl.count].flag = True
         
     def initCollisionWall(self, obj, show, dist, center):
 
