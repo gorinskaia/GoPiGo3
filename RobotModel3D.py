@@ -12,11 +12,6 @@ class Robot (BulletVehicle):
 
         self.world = world
 
-        WHEEL_BASE_WIDTH         = 117  # distance (mm) de la roue gauche a la roue droite.
-        WHEEL_DIAMETER           = 66.5 #  diametre de la roue (mm)
-        WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # perimetre du cercle de rotation (mm)
-        WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # perimetre de la roue (mm)
-
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
@@ -91,7 +86,6 @@ class Robot (BulletVehicle):
         self.applyEngineForce(engineForce/100, 1)
 
     def reset(self):
-        print ('reset')
         self.forward(0)
         self.setBrake(0, 2)
         

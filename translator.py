@@ -10,12 +10,13 @@ COLLISION_DIST = 100
 SPEED = 300
 
 # --- Choose an option between 3D Simulation and Real World Action
-"""while True:
+while True:
     option = input ("Do you want to: A) Play simulation B) Control the robot. [a/b]? : ")
     if option in ['a', 'b']:
-        break"""
+        break
 
-option = "a"
+#option = "a"
+#option = "b"
 
 if option == "a":
 
@@ -48,7 +49,7 @@ forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 300, 90)
 turn360 = ControllerTurn(robot, 300, 360)
 
-sequence = [turn90, forward, turn90]
+sequence = [turn90, forward, turn90, forward, turn90, forward, turn90, forward, turn90]
 
 # --- End Your Code ---
 # --------------------------

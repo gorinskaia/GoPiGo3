@@ -15,7 +15,6 @@ from direct.task import Task
 class Simulation(ShowBase):
     
     def __init__(self):
-
         import direct.directbase.DirectStart
 
         base.cTrav = CollisionTraverser()
@@ -30,7 +29,10 @@ class Simulation(ShowBase):
         base.cam.lookAt(0, 0, 0)
         
         self.setup()
-        self.walls()
+        self.walls(Point3(0,9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
+        self.walls(Point3(0,-9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
+        self.walls(Point3(-10,0,0), Point3(0.1, 10, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
+        self.walls(Point3(10,0,0), Point3(0.1, 10, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
  
         taskMgr.add(self.update, 'updateWorld')
 
@@ -57,7 +59,6 @@ class Simulation(ShowBase):
         self.ctrl.commands[self.ctrl.count].flag = True
         
     def initCollisionWall(self, obj, show, dist, center):
-
         collWallStr = 'CollisionWall' + "_" + obj.getName()
         cNode = CollisionNode(collWallStr)
         cNode.addSolid(CollisionBox(center, dist))
@@ -67,7 +68,6 @@ class Simulation(ShowBase):
         return (cNodepath, collWallStr)
         
     def initCollisionSphere(self, obj, show, center):
-        
         collSphereStr = 'CollisionRobot' + "_" + obj.getName()
         cNode = CollisionNode(collSphereStr)
         cNode.addSolid(CollisionSphere (center, 0.5))
@@ -77,67 +77,23 @@ class Simulation(ShowBase):
         return (cNodepath, collSphereStr)
 
 
-    def walls (self):
-        shape = BulletBoxShape(Vec3(10, 0.1, 5))
+    def walls (self, pos, scale, wall1, wall2, shape):
         tex = loader.loadTexture("textures/wall.jpg")
         
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
         node.addShape(shape)
         np = render.attachNewNode(node)
-        np.setPos(0,9,0)
+        np.setPos(pos)
         world.attachRigidBody(node)
         self.box1 = loader.loadModel("cube")
-        self.box1.setScale(10, 0.1, 5)
+        self.box1.setScale(scale)
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        tColl = self.initCollisionWall( self.box1, False, Point3(1, 0.05, 2.5), Point3(-1,-9,0))  # Setup a collision solid for this model.
-        base.cTrav.addCollider(tColl[0], self.collHandEvent) # Add this object to the traverser.
+        tColl = self.initCollisionWall( self.box1, False, wall1, wall2) 
+        base.cTrav.addCollider(tColl[0], self.collHandEvent) 
 
-        node = BulletRigidBodyNode('Box')
-        node.setMass(0)
-        node.addShape(shape)
-        np = render.attachNewNode(node)
-        np.setPos(0,-9,0)
-        world.attachRigidBody(node)
-        self.box1 = loader.loadModel("cube")
-        self.box1.setScale(10, 0.1, 5)
-        self.box1.reparentTo(np)
-        self.box1.setTexture(tex, 1)
-
-        tColl = self.initCollisionWall( self.box1, False, Point3(1, 0.05, 2.5), Point3(-1,-9,0))
-        base.cTrav.addCollider(tColl[0], self.collHandEvent)
-
-        shape = BulletBoxShape(Vec3(0.1, 10, 5))
-
-        node = BulletRigidBodyNode('Box')
-        node.setMass(0)
-        node.addShape(shape)
-        np = render.attachNewNode(node)
-        np.setPos(-10,0,0)
-        world.attachRigidBody(node)
-        self.box1 = loader.loadModel("cube")
-        self.box1.setScale(0.1, 10, 5)
-        self.box1.reparentTo(np)
-        self.box1.setTexture(tex, 1)
-                
-        tColl = self.initCollisionWall( self.box1, False, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
-        base.cTrav.addCollider(tColl[0], self.collHandEvent)
-
-        node = BulletRigidBodyNode('Box')
-        node.setMass(0)
-        node.addShape(shape)
-        np = render.attachNewNode(node)
-        np.setPos(10,0,0)
-        world.attachRigidBody(node)
-        self.box1 = loader.loadModel("cube")
-        self.box1.setScale(0.1, 10, 5)
-        self.box1.reparentTo(np)
-        self.box1.setTexture(tex, 1)
-       
-        tColl = self.initCollisionWall( self.box1, False, Point3(0.05, 1, 2.5), Point3(-10,-1,0))
-        base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
 worldNP = render.attachNewNode('World')
 world = BulletWorld()

@@ -9,11 +9,7 @@ from Controller import ControllerSequence
 from RobotDexter import Dexter
 from easygopigo3 import EasyGoPiGo3
 
-COLLISION_DIST = 100
-SPEED = 300
-
 # Camera Thread
-
 def image_stream ():
     camera = PiCamera()
     camera.resolution = (320, 240)
