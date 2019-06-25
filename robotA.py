@@ -4,8 +4,8 @@ from picamera import PiCamera
 import cv2
 import threading
 from Controller import ControllerForward
-from Dexter import ControllerTurn
-from Dexter import ControllerSequence
+from Controller import ControllerTurn
+from Controller import ControllerSequence
 from Dexter import Dexter
 from easygopigo3 import EasyGoPiGo3
 

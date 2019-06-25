@@ -1,7 +1,7 @@
 from RobotModel import Robot
 from Controller import ControllerForward
-from RobotModel import ControllerTurn
-from RobotModel import ControllerSequence
+from Controller import ControllerTurn
+from Controller import ControllerSequence
 from Controller import ControllerInit
 
 import sys

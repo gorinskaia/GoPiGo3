@@ -1,6 +1,9 @@
 # --- Global libraries --- 
 import time
+from Controller import ControllerInit
 from Controller import ControllerForward
+from Controller import ControllerTurn
+from Controller import ControllerSequence
 
 # --- Global variables --- 
 COLLISION_DIST = 100
@@ -16,10 +19,7 @@ option = "a"
 
 if option == "a":
 
-    # --- Import local libraries --- 
-    
-    from RobotModel import ControllerTurn
-    from RobotModel import ControllerSequence
+    # --- Import local libraries ---
     from panda3d.core import *
     from panda3d.bullet import *
     import direct.directbase.DirectStart
@@ -35,10 +35,6 @@ if option == "a":
 elif option == "b":
     
     # --- Import local libraries --- 
-    #from Dexter import ControllerForward
-    from Dexter import ControllerTurn
-    from Dexter import ControllerSequence
-    from Dexter import Dexter
     from easygopigo3 import EasyGoPiGo3
     import robotA
     
@@ -59,12 +55,12 @@ sequence = [turn90, forward, turn90]
 
 # --- Run ---
 if option == "a":
-    sim.ctrl = ControllerSequence(robot, sequence)
+    sim.ctrl = ControllerSequence(sequence)
     sim.ctrl.start()
     base.run()
 
 elif option == "b":
-    ctrl = ControllerSequence(robot, sequence)
+    ctrl = ControllerSequence(sequence)
     ctrl.start()
     while not ctrl.stop():
         ctrl.update()

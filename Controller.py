@@ -56,4 +56,27 @@ class ControllerTurn:
         if self.stop(): 
             return
         self.robot.setAngle(self.angle, self.speed)
+
+class ControllerSequence:
+    'Sequence of commands'
+    def __init__(self, commands = []):
+        self.commands = []
+        self.commands = [x for x in commands]
+        self.count = 0
+        
+    def start(self):
+        self.count = -1
+
+    def stop(self):
+        return self.count >= len(self.commands)
+    
+    def update(self):
+        if self.stop():
+            return
+        if self.count < 0 or self.commands[self.count].stop():
+            self.count+=1
+            if self.stop():
+                return
+            self.commands[self.count].start()
+        self.commands[self.count].update()
         
