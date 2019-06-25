@@ -1,3 +1,5 @@
+import time
+
 class ControllerInit:
     'Initial state'
     def __init__(self,gpg):
@@ -32,3 +34,26 @@ class ControllerForward:
         if self.stop():
             return
         self.robot.forward(self.speed)
+
+
+class ControllerTurn:
+    'Politics to turn'
+    def __init__(self, robot, speed = 300, angle = 90):
+        self.speed = speed
+        self.angle = angle
+        self.robot = robot
+        self.start_time = 0
+        self.t_rotation = abs(angle/32.7)
+        
+    def start(self):
+        self.robot.reset()
+        self.start_time = time.time()
+
+    def stop(self):
+        return self.robot.angle_reached(self)
+         
+    def update(self):
+        if self.stop(): 
+            return
+        self.robot.setAngle(self.angle, self.speed)
+        

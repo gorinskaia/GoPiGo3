@@ -13,12 +13,13 @@ class Dexter:
 
     def forward(self,speed):
         self.set_speed(speed, speed)
-        
-    def turnRight(self,speed):
-        self.set_speed(speed,0)
-        
-    def turnLeft(self,speed):
-        self.set_speed(0,speed)
+
+
+    def setAngle(self, angle, speed = 300):
+        if angle>0:                         # Turn right
+            self.set_speed(speed,0)
+        else:                               # Turn left
+            self.set_speed(0,speed)    
         
     def shutdown(self):
         self.forward(0)
@@ -43,44 +44,15 @@ class Dexter:
 
     def condition(self, ctrl):
         return self.gpg.get_dist() <= self.dist
-        
-    
-"""class ControllerInit:
-    'Initial state'
-    def __init__(self,gpg):
-        self.gpg = gpg
-        
-    def start(self):
-        pass
-    
-    def stop(self):
-        pass
-    
-    def update(self):
-        pass
-    
-    
-class ControllerForward:
-    'Politics to move forward'
-    def __init__(self, Dexter, speed = 300, dist = 150):
-        self.speed = speed
-        self.dist = dist
-        self.gpg = Dexter
-        
-    def start(self):
-        print("start forward")
-        self.gpg.reset_encoders()
 
-    def stop(self):
-        return self.gpg.get_dist() <= self.dist
+    def angle_reached(self, ctrl):
+        res = self.gpg.get_offset()
+        offset = max(abs(res[1]), abs(res[0]))
+        turn = ((self.gpg.gpg.WHEEL_CIRCUMFERENCE*offset)/(self.gpg.gpg.WHEEL_BASE_CIRCUMFERENCE))/2
+        return abs(turn)>=abs(self.angle)  
     
-    def update(self):
-        if self.stop(): 
-            return
-        self.gpg.forward(self.speed)"""
 
-
-class ControllerTurn:
+"""class ControllerTurn:
     'Politics to turn'
     def __init__(self, Dexter, speed = 300, angle = 90):
         self.speed = speed
@@ -103,7 +75,7 @@ class ControllerTurn:
         if self.angle>=0:
             self.gpg.turnRight(self.speed)
         else:
-            self.gpg.turnLeft(self.speed)
+            self.gpg.turnLeft(self.speed)"""
 
 class ControllerSequence:
     'Sequence of commands'
