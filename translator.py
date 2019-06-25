@@ -23,8 +23,8 @@ if option == "a":
     from panda3d.core import *
     from panda3d.bullet import *
     import direct.directbase.DirectStart
-    from RobotModel import Robot
-    from main_simulation import Simulation
+    from RobotModel3D import Robot
+    from main_simulation3d import Simulation
 
     sim = Simulation()
     sim.sColl = sim.initCollisionSphere(sim.robot.robotModel, True, Point3(0,COLLISION_DIST/30,1))
@@ -36,7 +36,7 @@ elif option == "b":
     
     # --- Import local libraries --- 
     from easygopigo3 import EasyGoPiGo3
-    import robotA
+    import main_robotA
     
     gpg = EasyGoPiGo3()
     robot = Dexter(gpg)
