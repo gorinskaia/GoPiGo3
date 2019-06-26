@@ -3,12 +3,6 @@ import math
 
 class Dexter:
     'Robot class'
-
-    WHEEL_BASE_WIDTH         = 117  # distance (mm) de la roue gauche a la roue droite.
-    WHEEL_DIAMETER           = 66.5 #  diametre de la roue (mm)
-    WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # perimetre du cercle de rotation (mm)
-    WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # perimetre de la roue (mm)
-    
     def __init__(self, gpg):
         self.gpg = gpg
         self.dist_mm = gpg.init_distance_sensor()
@@ -17,8 +11,9 @@ class Dexter:
         self.gpg.set_motor_dps(self.gpg.MOTOR_LEFT,left_speed)
         self.gpg.set_motor_dps(self.gpg.MOTOR_RIGHT,right_speed)
 
-    def forward(self,speed):
-        self.set_speed(speed, speed)
+    """def forward(self,speed):
+        #print(self.gpg.get_offset())
+        self.set_speed(speed, speed)"""
 
 
     def setAngle(self, angle, speed = 300):
@@ -27,8 +22,8 @@ class Dexter:
         else:                               # Turn left
             self.set_speed(0,speed)    
         
-    def shutdown(self):
-        self.forward(0)
+    '''def shutdown(self):
+        self.forward(0)'''
 
     def reset(self):
         left_target = self.gpg.get_motor_encoder(self.gpg.MOTOR_LEFT)
@@ -44,15 +39,11 @@ class Dexter:
     def get_dist(self):
         return self.dist_mm.read_mm()
 
-    def shutdown(self):
-        self.set_speed(0,0)
-
-
     def condition(self, ctrl):
-        return self.get_dist() <= ctrl.dist
+        return self.gpg.get_dist() <= self.dist
 
     def angle_reached(self, ctrl):
-        res = self.get_offset()
+        res = self.gpg.get_offset()
         offset = max(abs(res[1]), abs(res[0]))
-        turn = ((self.WHEEL_CIRCUMFERENCE*offset)/(self.WHEEL_BASE_CIRCUMFERENCE))/2
-        return abs(turn)>=abs(ctrl.angle)  
+        turn = ((self.gpg.gpg.WHEEL_CIRCUMFERENCE*offset)/(self.gpg.gpg.WHEEL_BASE_CIRCUMFERENCE))/2
+        return abs(turn)>=abs(self.angle)  

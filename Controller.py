@@ -1,4 +1,5 @@
 import time
+from RobotCommands import ControlRobot
 
 class ControllerInit:
     'Initial state'
@@ -22,6 +23,8 @@ class ControllerForward:
         self.dist = dist
         self.robot = robot
         self.flag = False
+
+        self.command = ControlRobot(self.robot)
         
     def start(self):
         self.robot.reset()
@@ -33,8 +36,7 @@ class ControllerForward:
     def update(self):
         if self.stop():
             return
-        self.robot.forward(self.speed)
-
+        self.command.forward(self.speed)
 
 class ControllerTurn:
     'Politics to turn'
@@ -43,7 +45,9 @@ class ControllerTurn:
         self.angle = angle
         self.robot = robot
         self.start_time = 0
-        self.t_rotation = abs(angle/32.7)
+        self.t_rotation = abs(angle/32.727)
+
+        self.command = ControlRobot(self.robot)
         
     def start(self):
         self.robot.reset()

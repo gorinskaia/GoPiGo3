@@ -1,8 +1,4 @@
 from RobotModel3D import Robot
-from Controller import ControllerForward
-from Controller import ControllerTurn
-from Controller import ControllerSequence
-from Controller import ControllerInit
 
 import sys
 import math
@@ -39,7 +35,6 @@ class Simulation(ShowBase):
     def update(self, task):
         dt = globalClock.getDt()
         world.doPhysics(dt, 50, 0.008)
-    
         if not self.ctrl.stop():
             self.ctrl.update()
         else:

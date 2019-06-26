@@ -37,7 +37,6 @@ elif option == "b":
     
     # --- Import local libraries --- 
     from easygopigo3 import EasyGoPiGo3
-    from RobotDexter import Dexter
     import main_robotA
     
     gpg = EasyGoPiGo3()
@@ -50,7 +49,7 @@ forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 300, 90)
 turn360 = ControllerTurn(robot, 300, 360)
 
-sequence = [turn90, forward, turn90, forward, turn90]
+sequence = [turn90, forward, turn90, forward, turn90, forward, turn90, forward, turn90]
 
 # --- End Your Code ---
 # --------------------------
@@ -60,6 +59,7 @@ if option == "a":
     sim.ctrl = ControllerSequence(sequence)
     sim.ctrl.start()
     base.run()
+    robot.shutdown()
 
 elif option == "b":
     ctrl = ControllerSequence(sequence)
