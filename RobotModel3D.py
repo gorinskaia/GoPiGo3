@@ -82,21 +82,15 @@ class Robot (BulletVehicle):
 
 
     def set_speed(self, left_speed, right_speed):
-        if left_speed == 0 and right_speed == 0:
-            self.setBrake(100, 2)
-            self.applyEngineForce(left_speed/20, 0)
-            self.applyEngineForce(right_speed/20, 1)
-        else:
-            self.setBrake(0, 2)
-            self.applyEngineForce(left_speed/20, 0)
-            self.applyEngineForce(right_speed/20, 1)
+        self.setBrake(0.3, 2)
+        self.applyEngineForce(left_speed/15, 0)
+        self.applyEngineForce(right_speed/15, 1)
             
     def reset(self):
         print ('reset')
         self.set_speed(0,0)
         self.setBrake(100, 2)
-        
-        
+
     def condition(self, ctrl):
         if ctrl.flag == True:
             self.setBrake(10, 2)

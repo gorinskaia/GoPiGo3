@@ -18,7 +18,7 @@ class ControllerInit:
 class ControllerForward:
     'Politics to move forward'
     def __init__(self, robot, speed = 300, dist = 150):
-        self.speed = speed/10
+        self.speed = speed
         self.dist = dist
         self.robot = robot
         self.flag = False
@@ -37,8 +37,8 @@ class ControllerForward:
 
 class ControllerTurn:
     'Politics to turn'
-    def __init__(self, robot, speed = 300, angle = 90):
-        self.speed = speed
+    def __init__(self, robot, angle = 90):
+        self.speed = 300
         self.angle = angle
         self.robot = robot
         self.start_time = 0

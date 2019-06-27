@@ -46,8 +46,8 @@ elif option == "b":
 # --- Your Sequence Goes Here ---
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 300, 90)
-turn360 = ControllerTurn(robot, 250, 360)
+turn90 = ControllerTurn(robot, 90)
+turn360 = ControllerTurn(robot, 360)
 
 sequence = [turn90, forward, turn90, forward, turn90, forward, turn90, forward, turn90]
 
