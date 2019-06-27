@@ -18,11 +18,11 @@ class ControllerInit:
 class ControllerForward:
     'Politics to move forward'
     def __init__(self, robot, speed = 300, dist = 150):
-        self.speed = speed
+        self.speed = speed/10
         self.dist = dist
         self.robot = robot
         self.flag = False
-        
+
     def start(self):
         self.robot.reset()
         self.flag = False
@@ -31,11 +31,9 @@ class ControllerForward:
         return self.robot.condition(self)
     
     def update(self):
-        print (self.robot.get_offset())
         if self.stop():
             return
-        self.robot.forward(self.speed)
-
+        self.robot.set_speed(self.speed, self.speed)
 
 class ControllerTurn:
     'Politics to turn'
@@ -44,8 +42,8 @@ class ControllerTurn:
         self.angle = angle
         self.robot = robot
         self.start_time = 0
-        self.t_rotation = abs(angle/32.7)
-        
+        self.t_rotation = abs(angle/22.5)
+
     def start(self):
         self.robot.reset()
         self.start_time = time.time()
@@ -56,7 +54,10 @@ class ControllerTurn:
     def update(self):
         if self.stop(): 
             return
-        self.robot.setAngle(self.angle, self.speed)
+        if self.angle>0:                         # Turn right
+            self.robot.set_speed(-self.speed,self.speed)
+        else:                                    # Turn left
+            self.robot.set_speed(self.speed,self.speed)
 
 class ControllerSequence:
     'Sequence of commands'

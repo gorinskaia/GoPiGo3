@@ -71,36 +71,31 @@ class Robot (BulletVehicle):
         wheel.setFrictionSlip(100.0)
         wheel.setRollInfluence(0.1)
 
-    def setAngle(self, angle, speed = 300):
+    '''def setAngle(self, angle, speed = 300):
         if angle>0:                         # Turn right
             self.applyEngineForce(-speed/18, 0)
             self.applyEngineForce(speed/18, 1)
-            #self.set_speed(-speed/18*100, speed/18*100)
-            #self.setBrake(1, 2)
+
         else:                               # Turn left
             self.applyEngineForce(speed/18, 0)
-            self.applyEngineForce(-speed/18, 1)
-            #self.set_speed(speed/18*100, -speed/18*100)
-            #self.setBrake(1, 2)
+            self.applyEngineForce(-speed/18, 1)'''
+
 
     def set_speed(self, left_speed, right_speed):
         if left_speed == 0 and right_speed == 0:
-            self.setBrake(10, 2)
-            self.applyEngineForce(left_speed/100, 0)
-            self.applyEngineForce(right_speed/100, 1)
+            self.setBrake(100, 2)
+            self.applyEngineForce(left_speed/20, 0)
+            self.applyEngineForce(right_speed/20, 1)
         else:
             self.setBrake(0, 2)
-            self.applyEngineForce(left_speed/100, 0)
-            self.applyEngineForce(right_speed/100, 1)
-        
-    '''def forward(self, speed):
-        self.applyEngineForce(engineForce/100, 0)
-        self.applyEngineForce(engineForce/100, 1)
-        self.set_speed(speed, speed)'''
-
+            self.applyEngineForce(left_speed/20, 0)
+            self.applyEngineForce(right_speed/20, 1)
+            
     def reset(self):
-        self.setBrake(100, 2)
+        print ('reset')
         self.set_speed(0,0)
+        self.setBrake(100, 2)
+        
         
     def condition(self, ctrl):
         if ctrl.flag == True:
@@ -111,3 +106,6 @@ class Robot (BulletVehicle):
         if time.time() - ctrl.start_time > ctrl.t_rotation:
             return True
         return False
+
+    def shutdown(self):
+        self.forward(0)
