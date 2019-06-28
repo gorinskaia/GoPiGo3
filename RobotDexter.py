@@ -41,4 +41,3 @@ class Dexter:
 
     def condition(self, ctrl):
         return self.get_dist() <= ctrl.dist
-

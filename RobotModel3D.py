@@ -76,11 +76,10 @@ class Robot (BulletVehicle):
         wheel.setRollInfluence(0.1)
 
     def set_speed(self, left_speed, right_speed):
-        
         if left_speed == 0 and right_speed == 0:
             self.setBrake(100, 2)
-            self.setBrake(10, 0)
-            self.setBrake(10, 1)
+            self.setBrake(50, 0)
+            self.setBrake(50, 1)
             self.applyEngineForce(0, 0)
             self.applyEngineForce(0, 1)
         else:        
@@ -89,10 +88,8 @@ class Robot (BulletVehicle):
             self.applyEngineForce(right_speed/15, 1)
             
     def reset(self):
-        print ('reset')
-  
         self.set_speed(0,0)
-
+        
         # For encoders
         self.total_distl = 0
         self.total_distr = 0
@@ -102,8 +99,10 @@ class Robot (BulletVehicle):
         self.x1l, self.y1l  = (self.last_posl[0], self.last_posl[1])
         self.x1r, self.y1r  = (self.last_posr[0], self.last_posr[1])
 
-    def get_offset(self):
+        #left_target, right_target = self.get_offset()
+        #self.set_speed(left_target, right_target)
 
+    def get_offset(self):
         self.curr_posl = self.wheelL.getPos()
         self.curr_posr = self.wheelR.getPos()
         x2l, y2l  = (self.curr_posl[0], self.curr_posl[1])
