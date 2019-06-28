@@ -16,8 +16,8 @@ SPEED = 300
     if option in ['a', 'b']:
         break
 '''
-option = "a"
-#option = "b"
+#option = "a"
+option = "b"
 
 if option == "a":
 
@@ -41,6 +41,7 @@ elif option == "b":
     
     # --- Import local libraries --- 
     from easygopigo3 import EasyGoPiGo3
+    from RobotDexter import Dexter
     import main_robotA
     
     gpg = EasyGoPiGo3()
@@ -63,7 +64,6 @@ if option == "a":
     sim.ctrl = ControllerSequence(sequence)
     sim.ctrl.start()
     base.run()
-    robot.shutdown()
 
 elif option == "b":
     ctrl = ControllerSequence(sequence)
@@ -71,4 +71,5 @@ elif option == "b":
     while not ctrl.stop():
         ctrl.update()
         time.sleep(0.01)
-    robot.shutdown()
+
+robot.shutdown()
