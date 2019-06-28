@@ -65,7 +65,7 @@ class Simulation(ShowBase):
     def initCollisionSphere(self, obj, show, center):
         collSphereStr = 'CollisionRobot' + "_" + obj.getName()
         cNode = CollisionNode(collSphereStr)
-        cNode.addSolid(CollisionSphere (center, 0.5))
+        cNode.addSolid(CollisionSphere (center, 0.2))
         cNodepath = obj.attachNewNode(cNode) 
         if show:
             cNodepath.show()

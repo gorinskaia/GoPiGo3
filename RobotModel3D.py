@@ -122,9 +122,7 @@ class Robot (BulletVehicle):
         return res
 
     def condition(self, ctrl):
-        if ctrl.flag == True:
-            self.setBrake(10, 2)
-            return ctrl.flag
+        return ctrl.flag # Collision detections
 
     def angle_reached(self, ctrl):
         if time.time() - ctrl.start_time > ctrl.t_rotation:
