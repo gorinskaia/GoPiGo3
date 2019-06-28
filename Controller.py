@@ -1,4 +1,5 @@
 import time
+import math
 
 class ControllerInit:
     'Initial state'
@@ -54,10 +55,12 @@ class ControllerTurn:
     def update(self):
         if self.stop(): 
             return
+        self.robot.get_offset()
+        
         if self.angle>0:                         # Turn right
-            self.robot.set_speed(-self.speed,self.speed)
+            self.robot.set_speed(0, self.speed)
         else:                                    # Turn left
-            self.robot.set_speed(self.speed,self.speed)
+            self.robot.set_speed(self.speed, 0)
 
 class ControllerSequence:
     'Sequence of commands'

@@ -71,16 +71,6 @@ class Robot (BulletVehicle):
         wheel.setFrictionSlip(100.0)
         wheel.setRollInfluence(0.1)
 
-    '''def setAngle(self, angle, speed = 300):
-        if angle>0:                         # Turn right
-            self.applyEngineForce(-speed/18, 0)
-            self.applyEngineForce(speed/18, 1)
-
-        else:                               # Turn left
-            self.applyEngineForce(speed/18, 0)
-            self.applyEngineForce(-speed/18, 1)'''
-
-
     def set_speed(self, left_speed, right_speed):
         self.setBrake(0.3, 2)
         self.applyEngineForce(left_speed/15, 0)
@@ -90,6 +80,30 @@ class Robot (BulletVehicle):
         print ('reset')
         self.set_speed(0,0)
         self.setBrake(100, 2)
+        
+        # For encoders
+        self.total_distl = 0
+        self.total_distr = 0
+        
+        self.last_posl = self.wheelL.getPos()
+        self.last_posr = self.wheelR.getPos()
+        self.x1l, self.y1l  = (self.last_posl[0], self.last_posl[1])
+        self.x1r, self.y1r  = (self.last_posr[0], self.last_posr[1])
+
+    def get_offset(self):
+
+        self.curr_posl = self.wheelL.getPos()
+        self.curr_posr = self.wheelR.getPos()
+        x2l, y2l  = (self.curr_posl[0], self.curr_posl[1])
+        x2r, y2r  = (self.curr_posr[0], self.curr_posr[1])
+
+        self.total_distl += math.sqrt(pow((x2l- self.x1l), 2) + pow((y2l- self.y1l), 2))
+        self.total_distr += math.sqrt(pow((x2r- self.x1r), 2) + pow((y2r- self.y1r), 2))
+
+        self.x1l, self.y1l  = (x2l, y2l)
+        self.x1r, self.y1r  = (x2r, y2r)
+
+        print ('Left', "%.2f" %self.total_distl, ' Right', "%.2f" %self.total_distr)
 
     def condition(self, ctrl):
         if ctrl.flag == True:
