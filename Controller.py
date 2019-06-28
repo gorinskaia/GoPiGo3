@@ -33,24 +33,30 @@ class ControllerForward:
     
     def update(self):
         if self.stop():
+            shutdown() #new
             return
         self.robot.set_speed(self.speed, self.speed)
 
 class ControllerTurn:
     'Politics to turn'
-    def __init__(self, robot, angle = 90):
-        self.speed = 300
+    def __init__(self, robot, speed = 300, angle = 90):
+        self.speed = speed
         self.angle = angle
         self.robot = robot
         self.start_time = 0
-        self.t_rotation = abs(angle/22.5)
 
     def start(self):
         self.robot.reset()
-        self.start_time = time.time()
+
+    def angle_reached(self):
+        res = self.robot.get_offset()
+        offset = max(abs(res[1]), abs(res[0]))
+        turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
+        #print (turn)
+        return abs(turn)>=abs(self.angle)
 
     def stop(self):
-        return self.robot.angle_reached(self)
+        return self.angle_reached()
          
     def update(self):
         if self.stop(): 

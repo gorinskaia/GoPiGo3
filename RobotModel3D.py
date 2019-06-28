@@ -11,6 +11,10 @@ class Robot (BulletVehicle):
     def __init__ (self, render, world):
 
         self.world = world
+        WHEEL_BASE_WIDTH         = 0.0065
+        WHEEL_DIAMETER           = 0.66
+        self.WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi
+        self.WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi
 
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
@@ -72,15 +76,23 @@ class Robot (BulletVehicle):
         wheel.setRollInfluence(0.1)
 
     def set_speed(self, left_speed, right_speed):
-        self.setBrake(0.3, 2)
-        self.applyEngineForce(left_speed/15, 0)
-        self.applyEngineForce(right_speed/15, 1)
+        
+        if left_speed == 0 and right_speed == 0:
+            self.setBrake(100, 2)
+            self.setBrake(10, 0)
+            self.setBrake(10, 1)
+            self.applyEngineForce(0, 0)
+            self.applyEngineForce(0, 1)
+        else:        
+            self.setBrake(0.3, 2)
+            self.applyEngineForce(left_speed/15, 0)
+            self.applyEngineForce(right_speed/15, 1)
             
     def reset(self):
         print ('reset')
+  
         self.set_speed(0,0)
-        self.setBrake(100, 2)
-        
+
         # For encoders
         self.total_distl = 0
         self.total_distr = 0
@@ -103,7 +115,11 @@ class Robot (BulletVehicle):
         self.x1l, self.y1l  = (x2l, y2l)
         self.x1r, self.y1r  = (x2r, y2r)
 
-        print ('Left', "%.2f" %self.total_distl, ' Right', "%.2f" %self.total_distr)
+        #print ('Left', "%.2f" %self.total_distl, ' Right', "%.2f" %self.total_distr)
+
+        res = (self.total_distl, self.total_distr)
+
+        return res
 
     def condition(self, ctrl):
         if ctrl.flag == True:
@@ -116,4 +132,4 @@ class Robot (BulletVehicle):
         return False
 
     def shutdown(self):
-        self.forward(0)
+        self.set_speed(0,0)

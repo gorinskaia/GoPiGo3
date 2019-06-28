@@ -6,7 +6,7 @@ from Controller import ControllerTurn
 from Controller import ControllerSequence
 
 # --- Global variables --- 
-COLLISION_DIST = 100
+COLLISION_DIST = 120
 SPEED = 300
 
 # --- Choose an option between 3D Simulation and Real World Action
@@ -46,8 +46,8 @@ elif option == "b":
 # --- Your Sequence Goes Here ---
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 90)
-turn90_ = ControllerTurn(robot, -90)
+turn90 = ControllerTurn(robot, 350, 90)
+turn90_ = ControllerTurn(robot, 350, -90)
 
 sequence = [turn90, forward, turn90_, forward, turn90, forward, turn90, forward, turn90]
 
