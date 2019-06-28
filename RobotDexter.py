@@ -17,10 +17,6 @@ class Dexter:
         self.gpg.set_motor_dps(self.gpg.MOTOR_LEFT,left_speed)
         self.gpg.set_motor_dps(self.gpg.MOTOR_RIGHT,right_speed)
 
-    def forward(self,speed):
-        self.set_speed(speed, speed)
-
-
     def setAngle(self, angle, speed = 300):
         if angle>0:                         # Turn right
             self.set_speed(speed,0)
@@ -28,7 +24,7 @@ class Dexter:
             self.set_speed(0,speed)    
         
     def shutdown(self):
-        self.forward(0)
+        self.set_speed(0,0)
 
     def reset(self):
         left_target, right_target = self.get_offset()
@@ -43,15 +39,6 @@ class Dexter:
     def get_dist(self):
         return self.dist_mm.read_mm()
 
-    def shutdown(self):
-        self.set_speed(0,0)
-
-
     def condition(self, ctrl):
         return self.get_dist() <= ctrl.dist
 
-    def angle_reached(self, ctrl):
-        res = self.get_offset()
-        offset = max(abs(res[1]), abs(res[0]))
-        turn = ((self.WHEEL_CIRCUMFERENCE*offset)/(self.WHEEL_BASE_CIRCUMFERENCE))/2
-        return abs(turn)>=abs(ctrl.angle)  
