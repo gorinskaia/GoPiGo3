@@ -7,6 +7,7 @@ from Controller import ControllerSequence
 from panda3d.core import *
 from panda3d.bullet import *
 import numpy
+import threading
 
 class Proxy:
     def __init__(self, option):
@@ -29,7 +30,7 @@ class Proxy:
             self.robot = self.sim.robot
             return self.robot
 
-        elif self.option == "b":
+        else:
             
             # --- Import local libraries --- 
             from easygopigo3 import EasyGoPiGo3
@@ -44,7 +45,7 @@ class Proxy:
             self.sim.ctrl = ControllerSequence(sequence)
             self.sim.ctrl.start()
             base.run()
-
+            
         else:
             ctrl = ControllerSequence(sequence)
             ctrl.start()
@@ -54,7 +55,30 @@ class Proxy:
 
     def shutdown(self):
         self.robot.shutdown()
+        
+    def get_speed(self):
+        if self.option == "a":
+            print(self.robot.current_speed_km_hour)
+            return self.robot.current_speed_km_hour
+        else:
+            print (self.robot.get_speed())
+            return self.robot.get_speed()
 
+    def get_dist(self):
+        if self.option == "a":
+            print('Sorry, no input data (simulation)')
+        else:
+            print (self.robot.get_dist())
+            return self.robot.get_dist()
+
+    def get_degrees(self):
+        res = self.robot.get_offset()
+        offset = max(abs(res[1]), abs(res[0]))
+        turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
+        print (turn)
+        return turn
+        
+        
 
 
 # --- Global variables ---
@@ -76,7 +100,7 @@ forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 400, 90)
 turn90_ = ControllerTurn(robot, 350, -45)
 
-sequence = [turn90, forward, turn90_, forward]
+sequence = [forward, turn90_, forward]
 # --- End Your Code ---
 
 
