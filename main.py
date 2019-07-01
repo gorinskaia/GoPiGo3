@@ -92,14 +92,11 @@ while True:
 proxy = Proxy(option)
 robot = proxy.setup()
 
-# --- Your Sequence Goes Here ---
 forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 400, 90)
 turn_ = ControllerTurn(robot, 350, -45)
 
 sequence = [turn_, forward, turn_, forward]
-# --- End Your Code ---
-
 
 proxy.run(sequence)
 proxy.shutdown()
