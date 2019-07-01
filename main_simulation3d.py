@@ -14,6 +14,8 @@ class Simulation(ShowBase):
         import direct.directbase.DirectStart
 
         base.cTrav = CollisionTraverser()
+        base.disableMouse()
+        
         self.collHandEvent = CollisionHandlerEvent()
         self.collHandEvent.addInPattern('into-%in')
 
@@ -21,9 +23,24 @@ class Simulation(ShowBase):
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
   
         base.setFrameRateMeter(True)
-        base.cam.setPos(0, 0, 35)
-        base.cam.lookAt(0, 0, 0)
-        
+        base.cam.setPos(0, -0, 1)
+        #base.cam.lookAt(0, 0, 0)
+        base.camera.reparentTo(self.robot.chassisNP)
+
+        # Light
+        alight = AmbientLight('ambientLight')
+        alight.setColor(Vec4(0.5, 0.6, 0.5, 1))
+        alightNP = render.attachNewNode(alight)
+
+        dlight = DirectionalLight('directionalLight')
+        dlight.setDirection(Vec3(-1, 1, -1))
+        dlight.setColor(Vec4(0.5, 0.7, 0.7, 1))
+        dlightNP = render.attachNewNode(dlight)
+
+        render.clearLight()
+        render.setLight(alightNP)
+        render.setLight(dlightNP)
+            
         self.setup()
         self.walls(Point3(0,9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
         self.walls(Point3(0,-9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
@@ -73,7 +90,7 @@ class Simulation(ShowBase):
 
 
     def walls (self, pos, scale, wall1, wall2, shape):
-        tex = loader.loadTexture("textures/wall.jpg")
+        tex = loader.loadTexture("textures/texture.jpg")
         
         node = BulletRigidBodyNode('Box')
         node.setMass(0)

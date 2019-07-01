@@ -4,8 +4,8 @@ from Controller import ControllerInit
 from Controller import ControllerForward
 from Controller import ControllerTurn
 from Controller import ControllerSequence
-#from panda3d.core import *
-#from panda3d.bullet import *
+from panda3d.core import *
+from panda3d.bullet import *
 import numpy
 import threading
 
@@ -76,9 +76,9 @@ turn_ = ControllerTurn(robot, 350, -45)
 
 sequence = [turn, forward, turn, forward]
 
-thread = threading.Thread(target=robot.get_image, daemon = True)
+'''thread = threading.Thread(target=robot.get_image, daemon = True)
 thread.start()
-image = thread.join()
+image = thread.join()'''
 
 opt_robot.run(sequence)
 robot.shutdown()
