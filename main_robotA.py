@@ -3,11 +3,6 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import cv2
 import threading
-from Controller import ControllerForward
-from Controller import ControllerTurn
-from Controller import ControllerSequence
-from RobotDexter import Dexter
-from easygopigo3 import EasyGoPiGo3
 
 # Camera Thread
 def image_stream ():
