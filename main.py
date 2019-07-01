@@ -4,8 +4,8 @@ from Controller import ControllerInit
 from Controller import ControllerForward
 from Controller import ControllerTurn
 from Controller import ControllerSequence
-from panda3d.core import *
-from panda3d.bullet import *
+#from panda3d.core import *
+#from panda3d.bullet import *
 import numpy
 import threading
 
@@ -35,7 +35,7 @@ class Option:
             # --- Import local libraries --- 
             from easygopigo3 import EasyGoPiGo3
             from RobotDexter import Dexter
-            import main_robotA
+            #import main_robotA #Camera thread continious
             gpg = EasyGoPiGo3()
             self.robot = Dexter(gpg)
             return self.robot
@@ -43,7 +43,6 @@ class Option:
     def run(self, sequence):
 
         self.sequence = sequence
-        threading.Thread(target=self.get_degrees, daemon=True).start()
         
         if self.option == "a":
             self.sim.ctrl = ControllerSequence(self.sequence)
@@ -72,10 +71,14 @@ opt_robot = Option(option)
 robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 300, 90)
+turn = ControllerTurn(robot, 300, 90)
 turn_ = ControllerTurn(robot, 350, -45)
 
-sequence = [turn_, forward, turn_, forward]
+sequence = [turn, forward, turn, forward]
+
+thread = threading.Thread(target=robot.get_image, daemon = True)
+thread.start()
+image = thread.join()
 
 opt_robot.run(sequence)
-opt_robot.shutdown()
+robot.shutdown()

@@ -1,5 +1,8 @@
 import time
 import math
+from picamera import PiCamera
+from io import BytesIO
+from PIL import Image
 
 class Dexter:
     'Robot class'
@@ -12,6 +15,9 @@ class Dexter:
     def __init__(self, gpg):
         self.gpg = gpg
         self.dist_mm = gpg.init_distance_sensor()
+        self.camera = PiCamera()
+        self.camera.resolution = (320, 240)
+        self.camera.framerate = 30
 
     def set_speed(self, left_speed, right_speed):
         self.gpg.set_motor_dps(self.gpg.MOTOR_LEFT,left_speed)
@@ -44,3 +50,13 @@ class Dexter:
 
     def condition(self, ctrl):
         return self.get_dist() <= ctrl.dist
+
+    def get_image(self):
+        print ('Cheese!')
+        stream = BytesIO()
+        self.camera.capture(stream,format="jpeg")
+        self.camera.capture('result.jpeg')
+        stream.seek(0)
+        img = Image.open(stream).copy()
+        stream.close()
+        return img

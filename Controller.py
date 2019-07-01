@@ -1,5 +1,6 @@
 import time
 import math
+import threading
 
 class ControllerInit:
     'Initial state'
@@ -21,7 +22,7 @@ class ControllerForward:
         self.speed = speed
         self.dist = dist
         self.robot = robot
-        self.flag = False  # For collisions in 3D
+        self.flag = False
 
     def start(self):
         self.robot.reset()
@@ -31,9 +32,8 @@ class ControllerForward:
         return self.robot.condition(self)
     
     def update(self):
-        print (self.robot.get_offset())
         if self.stop():
-            self.robot.shutdown()
+            self.robot.shutdown() #new
             return
         self.robot.set_speed(self.speed, self.speed)
 
@@ -52,8 +52,7 @@ class ControllerTurn:
         res = self.robot.get_offset()
         offset = max(abs(res[1]), abs(res[0]))
         turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
-
-        #print (turn)
+    
         return abs(turn)>=abs(self.angle)
 
     def stop(self):
@@ -62,7 +61,7 @@ class ControllerTurn:
     def update(self):
         if self.stop(): 
             return
-        #self.robot.get_offset()
+        self.robot.get_offset()
         
         if self.angle>0:                         # Turn right
             self.robot.set_speed(0, self.speed)
@@ -91,3 +90,4 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
+        
