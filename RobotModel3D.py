@@ -92,6 +92,9 @@ class Robot (BulletVehicle):
             self.applyEngineForce(left_speed/15, 0)
             self.applyEngineForce(right_speed/15, 1)
             
+    def shutdown(self):
+        self.set_speed(0,0)
+            
     def reset(self):
         self.set_speed(0,0)
         
@@ -123,17 +126,18 @@ class Robot (BulletVehicle):
 
         res = (self.total_distl, self.total_distr)
         return res
-
-    def condition(self, ctrl):
-        return ctrl.flag # Collision detections
+            
+    def get_dist(self):
+        print ('Not possible in 3D simulation')
+        return 0
 
     def get_speed(self):
         return self.current_speed_km_hour
 
-    def angle_reached(self, ctrl):
-        if time.time() - ctrl.start_time > ctrl.t_rotation:
-            return True
-        return False
+    def condition(self, ctrl):
+        return ctrl.flag # Collision detections
 
-    def shutdown(self):
-        self.set_speed(0,0)
+    def get_image(self):
+        print ('Cheese!')
+
+
