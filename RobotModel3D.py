@@ -8,8 +8,9 @@ import math
 #--- Main class ---
 
 class Robot (BulletVehicle):
-    def __init__ (self, render, world):
+    def __init__ (self, render, world, sim):
 
+        self.sim = sim
         self.world = world
         WHEEL_BASE_WIDTH         = 0.0065
         WHEEL_DIAMETER           = 0.66
@@ -22,7 +23,7 @@ class Robot (BulletVehicle):
         self.last_posr = 0
         self.x1l, self.y1l  = (0, 0)
         self.x1r, self.y1r  = (0, 0)
-        
+
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
@@ -139,5 +140,7 @@ class Robot (BulletVehicle):
 
     def get_image(self):
         print ('Cheese!')
+        self.sim.take_screenshot()
+
 
 

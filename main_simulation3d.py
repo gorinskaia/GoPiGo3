@@ -19,7 +19,7 @@ class Simulation(ShowBase):
         self.collHandEvent = CollisionHandlerEvent()
         self.collHandEvent.addInPattern('into-%in')
 
-        self.robot = Robot (worldNP, world)
+        self.robot = Robot (worldNP, world, self)
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
   
         base.setFrameRateMeter(True)
@@ -104,7 +104,12 @@ class Simulation(ShowBase):
         self.box1.setTexture(tex, 1)
 
         tColl = self.initCollisionWall( self.box1, False, wall1, wall2) 
-        base.cTrav.addCollider(tColl[0], self.collHandEvent) 
+        base.cTrav.addCollider(tColl[0], self.collHandEvent)
+
+    def take_screenshot(self):
+        screen = base.win.getScreenshot()
+        screen.write('res.png')
+
 
 
 worldNP = render.attachNewNode('World')
