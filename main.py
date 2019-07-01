@@ -9,7 +9,7 @@ from panda3d.bullet import *
 import numpy
 import threading
 
-class Proxy:
+class Option:
     def __init__(self, option):
         self.option = option
 
@@ -56,27 +56,6 @@ class Proxy:
                 ctrl.update()
                 time.sleep(0.01)
 
-    def shutdown(self):
-        self.robot.shutdown()
-        
-    def get_speed(self):
-        print (self.robot.get_speed())
-        return self.robot.get_speed()
-
-    def get_dist(self):
-        if self.option == "a":
-            print('Sorry, no input data (simulation)')
-        else:
-            print (self.robot.get_dist())
-            return self.robot.get_dist()
-
-    def get_degrees(self):
-        res = self.robot.get_offset()
-        offset = max(abs(res[1]), abs(res[0])) 
-        turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
-        print ('Degrees: ', turn)
-        return turn
-        
         
 # --- Global variables ---
 
@@ -89,14 +68,14 @@ while True:
     if option in ['a', 'b']:
         break
 
-proxy = Proxy(option)
-robot = proxy.setup()
+opt_robot = Option(option)
+robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn90 = ControllerTurn(robot, 400, 90)
+turn90 = ControllerTurn(robot, 300, 90)
 turn_ = ControllerTurn(robot, 350, -45)
 
 sequence = [turn_, forward, turn_, forward]
 
-proxy.run(sequence)
-proxy.shutdown()
+opt_robot.run(sequence)
+opt_robot.shutdown()
