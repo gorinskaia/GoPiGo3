@@ -41,11 +41,13 @@ class Proxy:
             return self.robot
             
     def run(self):
+        
+        #threading.Thread(target=self.get_degrees).start()
+        
         if self.option == "a":
             self.sim.ctrl = ControllerSequence(sequence)
             self.sim.ctrl.start()
             base.run()
-            
         else:
             ctrl = ControllerSequence(sequence)
             ctrl.start()
@@ -57,12 +59,8 @@ class Proxy:
         self.robot.shutdown()
         
     def get_speed(self):
-        if self.option == "a":
-            print(self.robot.current_speed_km_hour)
-            return self.robot.current_speed_km_hour
-        else:
-            print (self.robot.get_speed())
-            return self.robot.get_speed()
+        print (self.robot.get_speed())
+        return self.robot.get_speed()
 
     def get_dist(self):
         if self.option == "a":
@@ -73,14 +71,12 @@ class Proxy:
 
     def get_degrees(self):
         res = self.robot.get_offset()
-        offset = max(abs(res[1]), abs(res[0]))
+        offset = max(abs(res[1]), abs(res[0])) 
         turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
-        print (turn)
+        print ('Degrees: ', turn)
         return turn
         
         
-
-
 # --- Global variables ---
 
 COLLISION_DIST = 120
@@ -98,9 +94,9 @@ robot = proxy.setup()
 # --- Your Sequence Goes Here ---
 forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn90 = ControllerTurn(robot, 400, 90)
-turn90_ = ControllerTurn(robot, 350, -45)
+turn_ = ControllerTurn(robot, 350, -45)
 
-sequence = [forward, turn90_, forward]
+sequence = [turn_, forward, turn_, forward]
 # --- End Your Code ---
 
 

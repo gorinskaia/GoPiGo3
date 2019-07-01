@@ -16,6 +16,13 @@ class Robot (BulletVehicle):
         self.WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi
         self.WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi
 
+        self.total_distl = 0
+        self.total_distr = 0
+        self.last_posl = 0
+        self.last_posr = 0
+        self.x1l, self.y1l  = (0, 0)
+        self.x1r, self.y1r  = (0, 0)
+        
         # Chassis body
         shape = BulletBoxShape(Vec3(0.5,0.8,0.5))
         ts = TransformState.makePos(Point3(0, 0, 0.06))
@@ -54,8 +61,6 @@ class Robot (BulletVehicle):
         self.wheelB.reparentTo(render)
         self.addWheel(Point3(0, -0.75, 0.3), self.wheelB)
 
-        engineForce = 0.0
-        brakeForce = 0.0
         
     def addWheel(self, pos, np):
         wheel = self.createWheel()
@@ -117,11 +122,13 @@ class Robot (BulletVehicle):
         #print ('Left', "%.2f" %self.total_distl, ' Right', "%.2f" %self.total_distr)
 
         res = (self.total_distl, self.total_distr)
-
         return res
 
     def condition(self, ctrl):
         return ctrl.flag # Collision detections
+
+    def get_speed(self):
+        return self.current_speed_km_hour
 
     def angle_reached(self, ctrl):
         if time.time() - ctrl.start_time > ctrl.t_rotation:

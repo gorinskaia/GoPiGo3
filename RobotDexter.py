@@ -38,6 +38,9 @@ class Dexter:
         
     def get_dist(self):
         return self.dist_mm.read_mm()
+    
+    def get_speed(self):
+        return self.gpg.get_speed()
 
     def condition(self, ctrl):
         return self.get_dist() <= ctrl.dist
