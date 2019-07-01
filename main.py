@@ -40,16 +40,17 @@ class Proxy:
             self.robot = Dexter(gpg)
             return self.robot
             
-    def run(self):
-        
-        #threading.Thread(target=self.get_degrees).start()
+    def run(self, sequence):
+
+        self.sequence = sequence
+        threading.Thread(target=self.get_degrees, daemon=True).start()
         
         if self.option == "a":
-            self.sim.ctrl = ControllerSequence(sequence)
+            self.sim.ctrl = ControllerSequence(self.sequence)
             self.sim.ctrl.start()
             base.run()
         else:
-            ctrl = ControllerSequence(sequence)
+            ctrl = ControllerSequence(self.sequence)
             ctrl.start()
             while not ctrl.stop():
                 ctrl.update()
@@ -100,5 +101,5 @@ sequence = [turn_, forward, turn_, forward]
 # --- End Your Code ---
 
 
-proxy.run()
+proxy.run(sequence)
 proxy.shutdown()
