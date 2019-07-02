@@ -24,7 +24,7 @@ class Option:
             self.sim = Simulation()
 
             for i in numpy.arange(0, COLLISION_DIST/30, 0.5):
-                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, False, Point3(0,(COLLISION_DIST/30)-i,1))
+                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i,1))
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
             self.robot = self.sim.robot
@@ -72,9 +72,9 @@ robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn = ControllerTurn(robot, 300, 90)
-turn_ = ControllerTurn(robot, 350, -45)
+turn_ = ControllerTurn(robot, 300, -90)
 
-sequence = [forward, turn]
+sequence = [turn_, forward, turn]
 
 '''thread = threading.Thread(target=robot.get_image, daemon = True)
 thread.start()

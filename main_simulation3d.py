@@ -34,14 +34,14 @@ class Simulation(ShowBase):
         my_cam2 = Camera('cam2')
         self.my_camera2 = render.attachNewNode(my_cam2)
         self.my_camera2.setName('camera2')
-        self.my_camera2.setPos(0, 0, 35)
+        self.my_camera2.setPos(0, 0, 90)
         self.my_camera2.lookAt(0,0,0)
 
         dr = base.camNode.getDisplayRegion(0)
         dr.setActive(0) 
         window = dr.getWindow()
 
-        w, h = 640, 240 
+        w, h = 640*2, 240*2 
         props = WindowProperties() 
         props.setSize(w, h) 
         window.requestProperties(props)
@@ -69,10 +69,11 @@ class Simulation(ShowBase):
         render.setLight(dlightNP)
             
         self.setup()
-        self.walls(Point3(0,9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
-        self.walls(Point3(0,-9,0), Point3(10, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
-        self.walls(Point3(-10,0,0), Point3(0.1, 10, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
-        self.walls(Point3(10,0,0), Point3(0.1, 10, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
+        
+        self.walls(Point3(0,18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
+        self.walls(Point3(0,-18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
+        self.walls(Point3(-18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
+        self.walls(Point3(18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
  
         taskMgr.add(self.update, 'updateWorld')
 
@@ -117,7 +118,7 @@ class Simulation(ShowBase):
 
 
     def walls (self, pos, scale, wall1, wall2, shape):
-        tex = loader.loadTexture("textures/texture.jpg")
+        tex = loader.loadTexture("textures/target2.jpg")
         
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
@@ -130,7 +131,7 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        tColl = self.initCollisionWall( self.box1, False, wall1, wall2) 
+        tColl = self.initCollisionWall( self.box1, True, wall1, wall2) 
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
     def take_screenshot(self):
