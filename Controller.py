@@ -33,21 +33,7 @@ class ControllerForward:
     
     def update(self):
         # Calibration parameters:
-        cl = 1
-        cr = 1
-        coeff = 0
-        
-        left_steps, right_steps = self.robot.get_offset()
-        if left_steps>0 and right_steps>0:
-            cl = self.robot.WHEEL_CIRCUMFERENCE / left_steps
-            cr = self.robot.WHEEL_CIRCUMFERENCE / right_steps
-            coeff = abs(cl-cr)
-            if cr<cl:
-                cl = 1
-                cr = 1+coeff
-            else:
-                cr = 1
-                cl = 1+coeff
+        cl, cr = self.robot.odometry()
 
         if self.stop():
             self.robot.shutdown() #new
@@ -64,9 +50,6 @@ class ControllerTurn:
 
     def start(self):
         self.robot.reset()
-        thread = threading.Thread(target=self.robot.get_image, daemon = True)
-        thread.start()
-        image = thread.join()
 
     def angle_reached(self):
         res = self.robot.get_offset()
@@ -110,3 +93,4 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
+        

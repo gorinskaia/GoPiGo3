@@ -51,6 +51,26 @@ class Dexter:
 
     def condition(self, ctrl):
         return self.get_dist() <= ctrl.dist
+    
+    def odometry(self):
+        cl = 1
+        cr = 1
+        coeff = 0
+        
+        left_steps, right_steps = self.get_offset()
+        if left_steps>0 and right_steps>0:
+            cl = self.WHEEL_CIRCUMFERENCE / left_steps
+            cr = self.WHEEL_CIRCUMFERENCE / right_steps
+            coeff = abs(cl-cr)
+            if cr<cl:
+                cl = 1
+                cr = 1+coeff
+            else:
+                cr = 1
+                cl = 1+coeff
+
+        return cl, cr
+        
 
     def get_image(self):
         print ('Cheese!')
