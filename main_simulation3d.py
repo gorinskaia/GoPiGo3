@@ -14,19 +14,46 @@ class Simulation(ShowBase):
         import direct.directbase.DirectStart
 
         base.cTrav = CollisionTraverser()
-        base.disableMouse()
+        #base.disableMouse()
         
         self.collHandEvent = CollisionHandlerEvent()
         self.collHandEvent.addInPattern('into-%in')
 
         self.robot = Robot (worldNP, world, self)
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
-  
-        base.setFrameRateMeter(True)
-        base.cam.setPos(0, -0, 1)
-        #base.cam.lookAt(0, 0, 0)
-        base.camera.reparentTo(self.robot.chassisNP)
 
+
+        # Camera setting
+
+        my_cam1 = Camera('cam1')
+        self.my_camera1 = render.attachNewNode(my_cam1)
+        self.my_camera1.setName('camera1')
+        self.my_camera1.setPos(0, -0, 1)
+        self.my_camera1.reparentTo(self.robot.chassisNP)
+
+        my_cam2 = Camera('cam2')
+        self.my_camera2 = render.attachNewNode(my_cam2)
+        self.my_camera2.setName('camera2')
+        self.my_camera2.setPos(0, 0, 35)
+        self.my_camera2.lookAt(0,0,0)
+
+        dr = base.camNode.getDisplayRegion(0)
+        dr.setActive(0) 
+        window = dr.getWindow()
+
+        w, h = 640, 240 
+        props = WindowProperties() 
+        props.setSize(w, h) 
+        window.requestProperties(props)
+        
+        self.dr1 = window.makeDisplayRegion(0, 0.5, 0, 1)
+        self.dr1.setSort(dr.getSort())
+        self.dr2 = window.makeDisplayRegion(0.5, 1, 0, 1)
+        self.dr2.setSort(dr.getSort())
+
+        self.dr1.setCamera(self.my_camera1)
+        self.dr2.setCamera(self.my_camera2)
+        
         # Light
         alight = AmbientLight('ambientLight')
         alight.setColor(Vec4(0.5, 0.6, 0.5, 1))
@@ -107,7 +134,7 @@ class Simulation(ShowBase):
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
     def take_screenshot(self):
-        screen = base.win.getScreenshot()
+        screen = self.dr1.getScreenshot()
         screen.write('res.png')
 
 
