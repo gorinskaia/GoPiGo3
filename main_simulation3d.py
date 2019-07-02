@@ -34,7 +34,7 @@ class Simulation(ShowBase):
         my_cam2 = Camera('cam2')
         self.my_camera2 = render.attachNewNode(my_cam2)
         self.my_camera2.setName('camera2')
-        self.my_camera2.setPos(0, 0, 90)
+        self.my_camera2.setPos(0, 0, 70)
         self.my_camera2.lookAt(0,0,0)
 
         dr = base.camNode.getDisplayRegion(0)

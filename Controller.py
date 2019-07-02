@@ -93,4 +93,3 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
-        
