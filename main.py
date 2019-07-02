@@ -4,8 +4,8 @@ from Controller import ControllerInit
 from Controller import ControllerForward
 from Controller import ControllerTurn
 from Controller import ControllerSequence
-from panda3d.core import *
-from panda3d.bullet import *
+#from panda3d.core import *
+#from panda3d.bullet import *
 import numpy
 import threading
 
@@ -24,7 +24,7 @@ class Option:
             self.sim = Simulation()
 
             for i in numpy.arange(0, COLLISION_DIST/30, 0.5):
-                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, False, Point3(0,(COLLISION_DIST/30)-i,1))
+                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i,1))
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
             self.robot = self.sim.robot
@@ -71,15 +71,14 @@ opt_robot = Option(option)
 robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn = ControllerTurn(robot, 300, 90)
+turn = ControllerTurn(robot, 300, 270)
 turn_ = ControllerTurn(robot, 350, -45)
 
-sequence = [turn, forward, turn, forward]
+sequence = [forward]
 
-#thread = threading.Thread(target=robot.get_image, daemon = True)
-#thread.start()
-#image = thread.join()
-
+thread = threading.Thread(target=robot.get_image, daemon = True)
+thread.start()
+image = thread.join()
 
 opt_robot.run(sequence)
 robot.shutdown()
