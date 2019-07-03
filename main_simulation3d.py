@@ -24,7 +24,6 @@ class Simulation(ShowBase):
         self.robot = Robot (worldNP, world, self)
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
 
-
         # Camera setting
 
         my_cam1 = Camera('cam1')
@@ -120,7 +119,7 @@ class Simulation(ShowBase):
 
 
     def walls (self, pos, scale, wall1, wall2, shape):
-        tex = loader.loadTexture("textures/target2.jpg")
+        tex = loader.loadTexture("textures/target3.jpg")
         
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
