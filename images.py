@@ -7,7 +7,10 @@ import sys
 class Image_Processing:
 
     def __init__(self, image_name):
-    
+
+        self.cX = 0
+        self.cY = 0
+        
         self.image_name = image_name
         image = cv2.imread(image_name)
         
@@ -18,22 +21,22 @@ class Image_Processing:
         M = cv2.moments(thresh)
 
         try:
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
+            self.cX = int(M["m10"] / M["m00"])
+            self.cY = int(M["m01"] / M["m00"])
 
-            cv2.circle(image, (cX, cY), 5, (255, 255, 255), -1)
-            cv2.putText(image, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+            if self.cX == 199 and self.cY == 299:
+                return # for now
 
-            # Display Image
-            now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-            file_name = 'results/'+ now + '.jpg'
-            cv2.imwrite(file_name, image)
+            #print (cX, cY)
 
+            cv2.circle(image, (self.cX, self.cY), 5, (255, 255, 255), -1)
+            cv2.putText(image, "centroid", (self.cX - 25, self.cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+
+            cv2.imwrite('centroid.jpg', image)
 
         except ZeroDivisionError:
-            print ('Target not on screen')
             pass
-             
-        
-        #cv2.imshow("Images", image)
-        #cv2.waitKey(0)
+
+
+    def coord(self):
+        return self.cX, self.cY

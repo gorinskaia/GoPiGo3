@@ -142,6 +142,7 @@ class Simulation(ShowBase):
         file_name = 'results/res.jpg'
         screen.write(file_name)
         img = Image_Processing("results/res.jpg")
+        return img.coord()
 
 worldNP = render.attachNewNode('World')
 world = BulletWorld()

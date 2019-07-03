@@ -37,9 +37,6 @@ class ControllerForward:
         return self.robot.condition(self)
     
     def update(self):
-
-        #self.robot.get_image()
-        #img = Image_Processing("results/res.jpg")
         
         # Calibration parameters:
         cl, cr = self.robot.odometry()
@@ -59,16 +56,9 @@ class ControllerTurn:
 
     def start(self):
         self.robot.reset()
-
         t = threading.Timer(0.5, self.robot.get_image)
         t.start()
         t.join()
-        
-        #self.robot.get_image()
-        #img = Image_Processing("results/res.jpg")
-        
-        #thread = threading.Thread(target=self.robot.get_image, daemon = True)
-        #image = thread.join()
 
     def angle_reached(self):
         res = self.robot.get_offset()
@@ -112,3 +102,38 @@ class ControllerSequence:
                 return
             self.commands[self.count].start()
         self.commands[self.count].update()
+
+class ControllerFollow:
+    'Politics to follow an object'
+    def __init__(self, robot, speed = 300, dist = 150):
+        self.speed = speed
+        self.dist = dist
+        self.robot = robot
+        self.flag = False
+
+    def start(self):
+        self.robot.reset()
+        self.flag = False
+        self.robot.count = 1
+
+    def stop(self):
+        return self.robot.condition(self)
+    
+    def update(self):
+
+        cl = 1
+        cr = 1
+        cX, cY = self.robot.get_image()
+        
+        if cX < 315:
+            cr = 0.95
+        elif cX > 325:
+            cl = 0.95
+        else:
+            cl = 1
+            cr = 1
+            
+        if self.stop():
+            self.robot.shutdown() #new
+            return
+        self.robot.set_speed(self.speed*cl, self.speed*cr)

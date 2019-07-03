@@ -30,7 +30,7 @@ class Robot (BulletVehicle):
         
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
-        self.chassisNP.setPos(0, -5, 0)
+        self.chassisNP.setPos(-3, -5, 0)
         self.chassisNP.node().setMass(5)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
@@ -162,8 +162,8 @@ class Robot (BulletVehicle):
         return cl, cr
 
     def get_image(self): 
-        print ('Cheese!')
-        self.sim.take_screenshot()
+        #print ('Cheese!')
+        return self.sim.take_screenshot()
 
         
         
