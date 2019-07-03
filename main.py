@@ -70,10 +70,10 @@ opt_robot = Option(option)
 robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn = ControllerTurn(robot, 300, 30)
-turn_ = ControllerTurn(robot, 300, -10)
+turn = ControllerTurn(robot, 300, 50)
+turn_ = ControllerTurn(robot, 300, -18)
 
-sequence = [turn_,forward, turn_, forward]
+sequence = [turn_,forward, turn, forward]
 
 
 opt_robot.run(sequence)

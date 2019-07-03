@@ -1,6 +1,7 @@
 import time
 import math
 import threading
+from images import Image_Processing
 
 class ControllerInit:
     'Initial state'
@@ -28,10 +29,8 @@ class ControllerForward:
         self.robot.reset()
         self.flag = False
         self.robot.count = 1
-        
-        thread = threading.Thread(target=self.robot.get_image, daemon = True)
-        thread.start()
-        image = thread.join()
+        self.robot.get_image()
+        img = Image_Processing("results/res.jpg")
 
     def stop(self):
         return self.robot.condition(self)

@@ -141,7 +141,6 @@ class Simulation(ShowBase):
         #file_name = Filename('results/'+ now + '.jpg')
         file_name = 'results/res.jpg'
         screen.write(file_name)
-        import detection_colors
 
 worldNP = render.attachNewNode('World')
 world = BulletWorld()
