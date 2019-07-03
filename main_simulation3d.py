@@ -3,6 +3,7 @@ from RobotModel3D import Robot
 import sys
 import math
 import datetime
+from images import Image_Processing
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
@@ -141,6 +142,7 @@ class Simulation(ShowBase):
         #file_name = Filename('results/'+ now + '.jpg')
         file_name = 'results/res.jpg'
         screen.write(file_name)
+        img = Image_Processing("results/res.jpg")
 
 worldNP = render.attachNewNode('World')
 world = BulletWorld()

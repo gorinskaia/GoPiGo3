@@ -1,7 +1,7 @@
 import time
 import math
 import threading
-from images import Image_Processing
+
 
 class ControllerInit:
     'Initial state'
@@ -29,13 +29,18 @@ class ControllerForward:
         self.robot.reset()
         self.flag = False
         self.robot.count = 1
-        self.robot.get_image()
-        img = Image_Processing("results/res.jpg")
+        t = threading.Timer(0.5, self.robot.get_image)
+        t.start()
+        t.join()
 
     def stop(self):
         return self.robot.condition(self)
     
     def update(self):
+
+        #self.robot.get_image()
+        #img = Image_Processing("results/res.jpg")
+        
         # Calibration parameters:
         cl, cr = self.robot.odometry()
 
@@ -54,8 +59,15 @@ class ControllerTurn:
 
     def start(self):
         self.robot.reset()
+
+        t = threading.Timer(0.5, self.robot.get_image)
+        t.start()
+        t.join()
+        
+        #self.robot.get_image()
+        #img = Image_Processing("results/res.jpg")
+        
         #thread = threading.Thread(target=self.robot.get_image, daemon = True)
-        #thread.start()
         #image = thread.join()
 
     def angle_reached(self):
