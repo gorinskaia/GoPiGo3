@@ -2,6 +2,7 @@ from RobotModel3D import Robot
 
 import sys
 import math
+import datetime
 
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
@@ -131,14 +132,16 @@ class Simulation(ShowBase):
         self.box1.reparentTo(np)
         self.box1.setTexture(tex, 1)
 
-        tColl = self.initCollisionWall( self.box1, True, wall1, wall2) 
+        tColl = self.initCollisionWall( self.box1, False, wall1, wall2) 
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
     def take_screenshot(self):
         screen = self.dr1.getScreenshot()
-        screen.write('res.png')
-
-
+        #now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
+        #file_name = Filename('results/'+ now + '.jpg')
+        file_name = 'results/res.jpg'
+        screen.write(file_name)
+        import detection_colors
 
 worldNP = render.attachNewNode('World')
 world = BulletWorld()

@@ -27,6 +27,11 @@ class ControllerForward:
     def start(self):
         self.robot.reset()
         self.flag = False
+        self.robot.count = 1
+        
+        thread = threading.Thread(target=self.robot.get_image, daemon = True)
+        thread.start()
+        image = thread.join()
 
     def stop(self):
         return self.robot.condition(self)
@@ -50,6 +55,9 @@ class ControllerTurn:
 
     def start(self):
         self.robot.reset()
+        #thread = threading.Thread(target=self.robot.get_image, daemon = True)
+        #thread.start()
+        #image = thread.join()
 
     def angle_reached(self):
         res = self.robot.get_offset()
@@ -77,7 +85,7 @@ class ControllerSequence:
         self.commands = []
         self.commands = [x for x in commands]
         self.count = 0
-        
+            
     def start(self):
         self.count = -1
 

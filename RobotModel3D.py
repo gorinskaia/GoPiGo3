@@ -62,6 +62,8 @@ class Robot (BulletVehicle):
         self.wheelB.reparentTo(render)
         self.addWheel(Point3(0, -0.75, 0.3), self.wheelB)
 
+        self.count = 1
+
         
     def addWheel(self, pos, np):
         wheel = self.createWheel()
@@ -82,6 +84,8 @@ class Robot (BulletVehicle):
         wheel.setRollInfluence(0.1)
 
     def set_speed(self, left_speed, right_speed):
+        self.count -=0.0001
+
         if left_speed == 0 and right_speed == 0:
             self.setBrake(100, 2)
             self.setBrake(50, 0)
@@ -90,8 +94,8 @@ class Robot (BulletVehicle):
             self.applyEngineForce(0, 1)
         else:        
             self.setBrake(0.3, 2)
-            self.applyEngineForce(left_speed/15, 0)
-            self.applyEngineForce(right_speed/15, 1)
+            self.applyEngineForce((left_speed/15) * self.count, 0)
+            self.applyEngineForce((right_speed/15) * self.count, 1)
             
     def shutdown(self):
         self.set_speed(0,0)
@@ -107,9 +111,6 @@ class Robot (BulletVehicle):
         self.last_posr = self.wheelR.getPos()
         self.x1l, self.y1l  = (self.last_posl[0], self.last_posl[1])
         self.x1r, self.y1r  = (self.last_posr[0], self.last_posr[1])
-
-        #left_target, right_target = self.get_offset()
-        #self.set_speed(left_target, right_target)
 
     def get_offset(self):
         self.curr_posl = self.wheelL.getPos()
@@ -144,6 +145,7 @@ class Robot (BulletVehicle):
         coeff = 0
         
         left_steps, right_steps = self.get_offset()
+        
         if left_steps>0 and right_steps>0:
             cl = self.WHEEL_CIRCUMFERENCE / left_steps
             cr = self.WHEEL_CIRCUMFERENCE / right_steps
@@ -159,9 +161,13 @@ class Robot (BulletVehicle):
             cr = 1
         return cl, cr
 
-    def get_image(self):
+    def get_image(self): 
         print ('Cheese!')
         self.sim.take_screenshot()
+
+        
+        
+            
 
 
 
