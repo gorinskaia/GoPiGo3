@@ -13,7 +13,7 @@ class Image_Processing:
         
         self.image_name = image_name
         image = cv2.imread(image_name)
-        image = equalize_hist(image)
+        image = self.equalize_hist(image)
         
         # FInding binary regions of red
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -36,7 +36,7 @@ class Image_Processing:
         cY = int(round(res[1]))
 
     # Equalizing the histogramm
-    def equalize_hist(img):
+    def equalize_hist(self, img):
         img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
         img_yuv[:,:,0] = cv2.equalizeHist(img_yuv[:,:,0])
         img_output = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
