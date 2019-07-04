@@ -8,35 +8,38 @@ class Image_Processing:
 
     def __init__(self, image_name):
 
-        self.cX = 0
-        self.cY = 0
+        self.cX = 320
+        self.cY = 240
         
         self.image_name = image_name
         image = cv2.imread(image_name)
+        image = equalize_hist(image)
         
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        ret, thresh = cv2.threshold(gray_image,100,255,cv2.THRESH_BINARY)
-        thresh = cv2.bitwise_not(thresh)
+        # FInding binary regions of red
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        M = cv2.moments(thresh)
+        mask1 = cv2.inRange(hsv, (0,50,20), (5,255,255))
+        mask2 = cv2.inRange(hsv, (175,50,20), (180,255,255))
+        mask = cv2.bitwise_or(mask1, mask2 ) # Important
 
-        try:
-            self.cX = int(M["m10"] / M["m00"])
-            self.cY = int(M["m01"] / M["m00"])
+        # Find the biggest red region
+        (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in cnts:
+            if cv2.contourArea(cnt)<50: # Don't count the noise
+                pass
+            else:
+                c = max(cnts, key = cv2.contourArea)
+                res = np.mean(c, axis=0)
+                res = res[0]
+                cX = int(round(res[0]))
+                cY = int(round(res[1]))
 
-            if self.cX == 199 and self.cY == 299:
-                return # for now
-
-            #print (cX, cY)
-
-            cv2.circle(image, (self.cX, self.cY), 5, (255, 255, 255), -1)
-            cv2.putText(image, "centroid", (self.cX - 25, self.cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-
-            cv2.imwrite('centroid.jpg', image)
-
-        except ZeroDivisionError:
-            pass
-
+    # Equalizing the histogramm
+    def equalize_hist(img):
+        img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+        img_yuv[:,:,0] = cv2.equalizeHist(img_yuv[:,:,0])
+        img_output = cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
+        return img
 
     def coord(self):
         return self.cX, self.cY
