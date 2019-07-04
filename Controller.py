@@ -120,15 +120,14 @@ class ControllerFollow:
         return self.robot.condition(self)
     
     def update(self):
-
-        cl = 1
-        cr = 1
         cX, cY = self.robot.get_image()
-        
-        if cX < 315:
-            cr = 0.95
-        elif cX > 325:
-            cl = 0.95
+        #print (cX, cY)
+        if cX < 310:
+            cr = 0.9
+            cl = 1
+        elif cX > 330:
+            cl = 0.9
+            cr = 1
         else:
             cl = 1
             cr = 1

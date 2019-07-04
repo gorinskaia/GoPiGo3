@@ -57,13 +57,15 @@ class Simulation(ShowBase):
         
         # Light
         alight = AmbientLight('ambientLight')
-        alight.setColor(Vec4(0.5, 0.6, 0.5, 1))
+        alight.setColor(Vec4(0.9, 0.9, 0.9, 1))
         alightNP = render.attachNewNode(alight)
+        alightNP.setPos(0,0,5)
 
         dlight = DirectionalLight('directionalLight')
-        dlight.setDirection(Vec3(-1, 1, -1))
-        dlight.setColor(Vec4(0.5, 0.7, 0.7, 1))
+        #dlight.setDirection(Vec3(-1, 1, -1))
+        dlight.setColor(Vec4(0.9, 0.9, 0.9, 1))
         dlightNP = render.attachNewNode(dlight)
+        dlightNP.setPos(0,0, 5)
 
         render.clearLight()
         render.setLight(alightNP)
@@ -119,7 +121,7 @@ class Simulation(ShowBase):
 
 
     def walls (self, pos, scale, wall1, wall2, shape):
-        tex = loader.loadTexture("textures/target3.jpg")
+        tex = loader.loadTexture("textures/text_photo.jpg")
         
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
