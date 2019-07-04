@@ -137,13 +137,11 @@ class Simulation(ShowBase):
         tColl = self.initCollisionWall( self.box1, False, wall1, wall2) 
         base.cTrav.addCollider(tColl[0], self.collHandEvent)
 
-    def take_screenshot(self):
+    def take_screenshot(self, CAMX, CAMY):
         screen = self.dr1.getScreenshot()
-        #now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-        #file_name = Filename('results/'+ now + '.jpg')
         file_name = 'results/res.jpg'
         screen.write(file_name)
-        img = Image_Processing("results/res.jpg")
+        img = Image_Processing("results/res.jpg", CAMX, CAMY)
         return img.coord()
 
 worldNP = render.attachNewNode('World')

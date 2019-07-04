@@ -131,22 +131,22 @@ class ControllerFollow:
     def update(self):
         cl = 1
         cr = 1
-        #print ('upd')
-        #self.cX = self.robot.CAMX/2
-        #self.cY = self.robot.CAMY/2
+        #print (self.cY, self.cY)
 
         if self.cX < (self.robot.CAMX/2 - 10):
-            cl = 0.75
-            cr = 1
+            #print ('turn right')
+            cr = 0.85
+            cl = 1
         elif self.cX > (self.robot.CAMX/2 + 10):
-            cr = 0.75
-            cl = 1
-        else:
-            cl = 1
+            #print ('turn left')
             cr = 1
+            cl = 0.85
+        else:
+            cr = 1
+            cl = 1
             
         if self.stop():
             self.robot.shutdown() #new
             self.flag = False
             return
-        self.robot.set_speed(self.speed*cl, self.speed*cr)
+        self.robot.set_speed(self.speed*cr, self.speed*cl)

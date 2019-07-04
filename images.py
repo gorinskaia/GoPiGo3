@@ -26,7 +26,7 @@ class Image_Processing:
         mask = cv2.erode(mask,kernel,iterations = 1)
 
         # Find the biggest red region
-        (_,cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         try:
             c = max(cnts, key = cv2.contourArea)
             res = np.mean(c, axis=0)
@@ -45,5 +45,4 @@ class Image_Processing:
         return img
 
     def coord(self):
-        print (self.cX, self.cY)
         return self.cX, self.cY
