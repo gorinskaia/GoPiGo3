@@ -16,7 +16,7 @@ class Dexter:
         self.gpg = gpg
         self.dist_mm = gpg.init_distance_sensor()
         self.camera = PiCamera()
-        self.camera.resolution = (320, 240)
+        self.camera.resolution = (640, 480)
         self.camera.framerate = 30
 
     def set_speed(self, left_speed, right_speed):
