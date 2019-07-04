@@ -76,8 +76,10 @@ class Dexter:
         print ('Cheese!')
         stream = BytesIO()
         self.camera.capture(stream,format="jpeg")
-        self.camera.capture('result.jpeg')
+        file_name = 'result.jpg'
+        self.camera.capture(file_name)
         stream.seek(0)
         img = Image.open(stream).copy()
         stream.close()
-        return img
+        img = Image_Processing(file_name)
+        return img.coord()
