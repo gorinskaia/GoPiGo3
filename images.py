@@ -33,10 +33,10 @@ class Image_Processing:
             res = res[0]
             self.cX = int(round(res[0]))
             self.cY = int(round(res[1]))
-        except ValueError:
-            print ('Error')
+        except ValueError: # Empty one
+            self.cX = 320
+            self.cY = 240
         
-
     # Equalizing the histogramm
     def equalize_hist(self, img):
         img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
