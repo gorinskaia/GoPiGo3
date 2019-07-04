@@ -110,29 +110,43 @@ class ControllerFollow:
         self.dist = dist
         self.robot = robot
         self.flag = False
+        self.cX = self.robot.CAMX/2
+        self.cY = self.robot.CAMY/2
+        self.flag = True
+        
+        t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
+        t.start()
 
     def start(self):
         self.robot.reset()
-        self.flag = False
         self.robot.count = 1
+
+    def image(self):
+        while True:
+            self.cX, self.cY = self.robot.get_image()
 
     def stop(self):
         return self.robot.condition(self)
     
     def update(self):
-        cX, cY = self.robot.get_image()
-        #print (cX, cY)
-        if cX < 310:
-            cr = 0.9
-            cl = 1
-        elif cX > 330:
-            cl = 0.9
+        cl = 1
+        cr = 1
+        #print ('upd')
+        #self.cX = self.robot.CAMX/2
+        #self.cY = self.robot.CAMY/2
+
+        if self.cX < (self.robot.CAMX/2 - 10):
+            cl = 0.75
             cr = 1
+        elif self.cX > (self.robot.CAMX/2 + 10):
+            cr = 0.75
+            cl = 1
         else:
             cl = 1
             cr = 1
             
         if self.stop():
             self.robot.shutdown() #new
+            self.flag = False
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)

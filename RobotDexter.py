@@ -3,6 +3,7 @@ import math
 from picamera import PiCamera
 from io import BytesIO
 from PIL import Image
+from images import Image_Processing
 
 class Dexter:
     'Robot class'
@@ -11,12 +12,14 @@ class Dexter:
     WHEEL_DIAMETER           = 66.5 #  diametre de la roue (mm)
     WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # perimetre du cercle de rotation (mm)
     WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # perimetre de la roue (mm)
+    CAMX = 640
+    CAMY = 480
     
     def __init__(self, gpg):
         self.gpg = gpg
         self.dist_mm = gpg.init_distance_sensor()
         self.camera = PiCamera()
-        self.camera.resolution = (640, 480)
+        self.camera.resolution = (self.CAMX, self.CAMY)
         self.camera.framerate = 30
 
     def set_speed(self, left_speed, right_speed):
@@ -70,16 +73,9 @@ class Dexter:
                 cl = 1+coeff
 
         return cl, cr
-        
 
     def get_image(self):
-        print ('Cheese!')
-        stream = BytesIO()
-        self.camera.capture(stream,format="jpeg")
         file_name = 'result.jpg'
         self.camera.capture(file_name)
-        stream.seek(0)
-        img = Image.open(stream).copy()
-        stream.close()
-        img = Image_Processing(file_name)
+        img = Image_Processing(file_name, self.CAMX, self.CAMY)
         return img.coord()

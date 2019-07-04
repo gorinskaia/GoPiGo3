@@ -6,10 +6,10 @@ import sys
 
 class Image_Processing:
 
-    def __init__(self, image_name):
+    def __init__(self, image_name, CAMX, CAMY):
 
-        self.cX = 320
-        self.cY = 240
+        self.cX = CAMX/2
+        self.cY = CAMY/2
         
         self.image_name = image_name
         image = cv2.imread(image_name)
@@ -26,16 +26,16 @@ class Image_Processing:
         mask = cv2.erode(mask,kernel,iterations = 1)
 
         # Find the biggest red region
-        (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        (_,cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         try:
             c = max(cnts, key = cv2.contourArea)
             res = np.mean(c, axis=0)
             res = res[0]
             self.cX = int(round(res[0]))
             self.cY = int(round(res[1]))
-        except ValueError: # Empty one
-            self.cX = 320
-            self.cY = 240
+        except : # Empty one
+            self.cX = CAMX/2
+            self.cY = CAMY/2
         
     # Equalizing the histogramm
     def equalize_hist(self, img):
@@ -45,4 +45,5 @@ class Image_Processing:
         return img
 
     def coord(self):
+        print (self.cX, self.cY)
         return self.cX, self.cY
