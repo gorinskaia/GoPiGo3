@@ -135,12 +135,12 @@ class ControllerFollow:
 
         if self.cX < (self.robot.CAMX/2 - 10):
             #print ('turn right')
-            cr = 0.85
-            cl = 1
+            cr = 0.95
+            cl = 1.05
         elif self.cX > (self.robot.CAMX/2 + 10):
             #print ('turn left')
-            cr = 1
-            cl = 0.85
+            cr = 1.05
+            cl = 0.95
         else:
             cr = 1
             cl = 1
