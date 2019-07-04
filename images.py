@@ -22,17 +22,18 @@ class Image_Processing:
         mask2 = cv2.inRange(hsv, (175,50,20), (180,255,255))
         mask = cv2.bitwise_or(mask1, mask2 ) # Important
 
+        
+        kernel = np.ones((5,5),np.uint8)
+        mask = cv2.erode(mask,kernel,iterations = 1)
+
         # Find the biggest red region
         (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        for cnt in cnts:
-            if cv2.contourArea(cnt)<50: # Don't count the noise
-                pass
-            else:
-                c = max(cnts, key = cv2.contourArea)
-                res = np.mean(c, axis=0)
-                res = res[0]
-                cX = int(round(res[0]))
-                cY = int(round(res[1]))
+
+        c = max(cnts, key = cv2.contourArea)
+        res = np.mean(c, axis=0)
+        res = res[0]
+        cX = int(round(res[0]))
+        cY = int(round(res[1]))
 
     # Equalizing the histogramm
     def equalize_hist(img):
