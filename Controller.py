@@ -132,13 +132,13 @@ class ControllerFollow:
     def update(self):
         cl = 1
         cr = 1
-        print (self.cX, self.cY)
+        #print (self.cX, self.cY)
 
-        if self.cX < (self.robot.CAMX/2 - 10):
+        if self.cX < (self.robot.CAMX/2 - 15):
             #print ('turn left')
             cl = 0.75
             cr = 1.25
-        elif self.cX > (self.robot.CAMX/2 + 10):
+        elif self.cX > (self.robot.CAMX/2 + 15):
             #print ('turn right')
             cl = 1.25
             cr = 0.75
