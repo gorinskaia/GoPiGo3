@@ -16,6 +16,8 @@ class Robot (BulletVehicle):
         WHEEL_DIAMETER           = 0.66
         self.WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi
         self.WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi
+        self.CAMX = 640
+        self.CAMY = 480
 
         self.total_distl = 0
         self.total_distr = 0
@@ -94,8 +96,8 @@ class Robot (BulletVehicle):
             self.applyEngineForce(0, 1)
         else:        
             self.setBrake(0.3, 2)
-            self.applyEngineForce((left_speed/15) * self.count, 0)
-            self.applyEngineForce((right_speed/15) * self.count, 1)
+            self.applyEngineForce((left_speed/15) * self.count, 1)
+            self.applyEngineForce((right_speed/15) * self.count, 0)
             
     def shutdown(self):
         self.set_speed(0,0)
@@ -162,8 +164,7 @@ class Robot (BulletVehicle):
         return cl, cr
 
     def get_image(self): 
-        #print ('Cheese!')
-        return self.sim.take_screenshot()
+        return self.sim.take_screenshot(self.CAMX, self.CAMY)
 
         
         

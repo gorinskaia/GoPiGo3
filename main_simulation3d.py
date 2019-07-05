@@ -141,7 +141,7 @@ class Simulation(ShowBase):
         screen = self.dr1.getScreenshot()
         file_name = 'results/res.jpg'
         screen.write(file_name)
-        img = Image_Processing("results/res.jpg", CAMX, CAMY)
+        img = Image_Processing(file_name, CAMX, CAMY)
         return img.coord()
 
 worldNP = render.attachNewNode('World')

@@ -111,19 +111,20 @@ class ControllerFollow:
         self.robot = robot
         self.cX = self.robot.CAMX/2
         self.cY = self.robot.CAMY/2
-        self.flag = True
+        self.flag = False
+        self.taking_photo = True
         
         t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
         t.start()
 
     def start(self):
         self.robot.reset()
+        self.flag = False
         self.robot.count = 1
 
     def image(self):
-        while self.flag:
+        while self.taking_photo:
             self.cX, self.cY = self.robot.get_image()
-            #print (self.flag)
 
     def stop(self):
         return self.robot.condition(self)
@@ -131,7 +132,7 @@ class ControllerFollow:
     def update(self):
         cl = 1
         cr = 1
-        #print (self.cY, self.cY)
+        print (self.cX, self.cY)
 
         if self.cX < (self.robot.CAMX/2 - 10):
             #print ('turn left')
@@ -143,11 +144,12 @@ class ControllerFollow:
             cr = 0.75
         else:
             #print ('forward')
-            cr = 0.8
-            cl = 0.8
+            cr = 1
+            cl = 1
             
         if self.stop():
-            self.flag = False
+            self.taking_photo = False
             self.robot.shutdown() #new
             return
-        #self.robot.set_speed(self.speed*cl, self.speed*cr)
+        self.robot.set_speed(self.speed*cl, self.speed*cr)
+            

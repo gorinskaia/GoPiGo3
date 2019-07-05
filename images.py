@@ -26,7 +26,7 @@ class Image_Processing:
         mask = cv2.erode(mask,kernel,iterations = 1)
 
         # Find the biggest red region
-        (_,cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
         try:
             for cnt in cnts:
