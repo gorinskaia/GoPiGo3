@@ -109,7 +109,6 @@ class ControllerFollow:
         self.speed = speed
         self.dist = dist
         self.robot = robot
-        self.flag = False
         self.cX = self.robot.CAMX/2
         self.cY = self.robot.CAMY/2
         self.flag = True
@@ -122,8 +121,9 @@ class ControllerFollow:
         self.robot.count = 1
 
     def image(self):
-        while True:
+        while self.flag:
             self.cX, self.cY = self.robot.get_image()
+            #print (self.flag)
 
     def stop(self):
         return self.robot.condition(self)
@@ -134,19 +134,20 @@ class ControllerFollow:
         #print (self.cY, self.cY)
 
         if self.cX < (self.robot.CAMX/2 - 10):
-            #print ('turn right')
-            cr = 0.95
-            cl = 1.05
-        elif self.cX > (self.robot.CAMX/2 + 10):
             #print ('turn left')
-            cr = 1.05
             cl = 0.95
+            cr = 1.05
+        elif self.cX > (self.robot.CAMX/2 + 10):
+            #print ('turn right')
+            cl = 1.05
+            cr = 0.95
         else:
+            #print ('forward')
             cr = 1
             cl = 1
             
         if self.stop():
-            self.robot.shutdown() #new
             self.flag = False
+            self.robot.shutdown() #new
             return
-        self.robot.set_speed(self.speed*cr, self.speed*cl)
+        self.robot.set_speed(self.speed*cl, self.speed*cr)

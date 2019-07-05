@@ -6,8 +6,8 @@ from Controller import ControllerTurn
 from Controller import ControllerSequence
 from Controller import ControllerFollow
 
-from panda3d.core import *
-from panda3d.bullet import *
+#from panda3d.core import *
+#from panda3d.bullet import *
 
 import numpy
 import threading
@@ -76,11 +76,10 @@ forward = ControllerForward(robot, 300, COLLISION_DIST)
 turn = ControllerTurn(robot, 300, 50)
 turn_ = ControllerTurn(robot, 300, -18)
 
-follow = ControllerFollow(robot, 300, COLLISION_DIST)
+follow = ControllerFollow(robot, 250, COLLISION_DIST)
 
 #sequence = [turn_, forward]
 sequence = [follow]
-
 
 opt_robot.run(sequence)
 robot.shutdown()
