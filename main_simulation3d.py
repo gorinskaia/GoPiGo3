@@ -42,7 +42,7 @@ class Simulation(ShowBase):
         dr.setActive(0) 
         window = dr.getWindow()
 
-        w, h = 640*2, 240*2 
+        w, h = self.robot.CAMX*2, self.robot.CAMY
         props = WindowProperties() 
         props.setSize(w, h) 
         window.requestProperties(props)

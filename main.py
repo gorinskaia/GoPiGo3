@@ -6,8 +6,8 @@ from Controller import ControllerTurn
 from Controller import ControllerSequence
 from Controller import ControllerFollow
 
-#from panda3d.core import *
-#from panda3d.bullet import *
+from panda3d.core import *
+from panda3d.bullet import *
 
 import numpy
 import threading
@@ -31,6 +31,7 @@ class Option:
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
             self.robot = self.sim.robot
+            
             return self.robot
 
         else:
@@ -60,7 +61,7 @@ class Option:
         
 # --- Global variables ---
 
-COLLISION_DIST = 120
+COLLISION_DIST = 150
 SPEED = 300
 
 # --- Choose an option between 3D Simulation and Real World Action
@@ -73,13 +74,13 @@ opt_robot = Option(option)
 robot = opt_robot.setup()
 
 forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn = ControllerTurn(robot, 300, 50)
-turn_ = ControllerTurn(robot, 300, -18)
+turn = ControllerTurn(robot, 300, -95)
+turn_ = ControllerTurn(robot, 300, -130)
 
-follow = ControllerFollow(robot, 250, COLLISION_DIST)
+follow = ControllerFollow(robot, 300, COLLISION_DIST)
 
 #sequence = [turn_, forward]
-sequence = [follow]
+sequence = [turn, follow, turn_, follow]
 
 opt_robot.run(sequence)
 robot.shutdown()

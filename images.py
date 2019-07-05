@@ -30,7 +30,7 @@ class Image_Processing:
 
         try:
             for cnt in cnts:
-                if cv2.contourArea(cnt)<50: # Don't count the noise
+                if cv2.contourArea(cnt)<CAMX/5: # Don't count the noise
                     pass
                 else:
                     c = max(cnts, key = cv2.contourArea)
