@@ -135,19 +135,19 @@ class ControllerFollow:
 
         if self.cX < (self.robot.CAMX/2 - 10):
             #print ('turn left')
-            cl = 0.95
-            cr = 1.05
+            cl = 0.75
+            cr = 1.25
         elif self.cX > (self.robot.CAMX/2 + 10):
             #print ('turn right')
-            cl = 1.05
-            cr = 0.95
+            cl = 1.25
+            cr = 0.75
         else:
             #print ('forward')
-            cr = 1
-            cl = 1
+            cr = 0.8
+            cl = 0.8
             
         if self.stop():
             self.flag = False
             self.robot.shutdown() #new
             return
-        self.robot.set_speed(self.speed*cl, self.speed*cr)
+        #self.robot.set_speed(self.speed*cl, self.speed*cr)
