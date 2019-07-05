@@ -28,11 +28,15 @@ class Image_Processing:
         # Find the biggest red region
         (cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         try:
-            c = max(cnts, key = cv2.contourArea)
-            res = np.mean(c, axis=0)
-            res = res[0]
-            self.cX = int(round(res[0]))
-            self.cY = int(round(res[1]))
+            for cnt in cnts:
+                if cv2.contourArea(cnt)<50: # Don't count the noise
+                    pass
+                else:
+                    c = max(cnts, key = cv2.contourArea)
+                    res = np.mean(c, axis=0)
+                    res = res[0]
+                    self.cX = int(round(res[0]))
+                    self.cY = int(round(res[1]))
         except : # Empty one
             self.cX = CAMX/2
             self.cY = CAMY/2
