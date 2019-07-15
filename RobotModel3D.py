@@ -16,8 +16,8 @@ class Robot (BulletVehicle):
         WHEEL_DIAMETER           = 0.66
         self.WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi
         self.WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi
-        self.CAMX = 640
-        self.CAMY = 480
+        self.CAMX = 320
+        self.CAMY = 240
 
         self.total_distl = 0
         self.total_distr = 0
@@ -32,7 +32,7 @@ class Robot (BulletVehicle):
         
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
-        self.chassisNP.setPos(-3, -5, 0)
+        self.chassisNP.setPos(0, 3, 0)
         self.chassisNP.node().setMass(5)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
@@ -125,22 +125,19 @@ class Robot (BulletVehicle):
 
         self.x1l, self.y1l  = (x2l, y2l)
         self.x1r, self.y1r  = (x2r, y2r)
-
-        #print ('Left', "%.2f" %self.total_distl, ' Right', "%.2f" %self.total_distr)
-
         res = (self.total_distl, self.total_distr)
         return res
             
     def get_dist(self):
-        print ('Not possible in 3D simulation')
-        return 0
+        return self.sim.distance
 
     def get_speed(self):
         return self.current_speed_km_hour
 
     def condition(self, ctrl):
+        print (float(self.get_dist()))
         return ctrl.flag # Collision detections
-
+        
     def odometry(self):
         cl = 1
         cr = 1

@@ -10,6 +10,7 @@ from panda3d.core import *
 from panda3d.bullet import *
 from direct.task import Task
 
+
 class Simulation(ShowBase):
     
     def __init__(self):
@@ -62,7 +63,6 @@ class Simulation(ShowBase):
         alightNP.setPos(0,0,5)
 
         dlight = DirectionalLight('directionalLight')
-        #dlight.setDirection(Vec3(-1, 1, -1))
         dlight.setColor(Vec4(0.9, 0.9, 0.9, 1))
         dlightNP = render.attachNewNode(dlight)
         dlightNP.setPos(0,0, 5)
@@ -79,6 +79,8 @@ class Simulation(ShowBase):
         self.walls(Point3(18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
  
         taskMgr.add(self.update, 'updateWorld')
+
+        self.distance = 1000
 
     def update(self, task):
         dt = globalClock.getDt()
@@ -98,7 +100,8 @@ class Simulation(ShowBase):
         world.attachRigidBody(node) 
 
     def collide(self, collEntry):
-        print('collide')
+        #print('Collision distance', collEntry.getIntoNode().getName())
+        self.distance = float(collEntry.getIntoNode().getName())
         self.ctrl.commands[self.ctrl.count].flag = True
         
     def initCollisionWall(self, obj, show, dist, center):
@@ -110,11 +113,11 @@ class Simulation(ShowBase):
             cNodepath.show()
         return (cNodepath, collWallStr)
         
-    def initCollisionSphere(self, obj, show, center):
-        collSphereStr = 'CollisionRobot' + "_" + obj.getName()
+    def initCollisionSphere(self, obj, show, center, num=0):
+        collSphereStr = str(center[1]*30)
         cNode = CollisionNode(collSphereStr)
         cNode.addSolid(CollisionSphere (center, 0.2))
-        cNodepath = obj.attachNewNode(cNode) 
+        cNodepath = obj.attachNewNode(cNode)
         if show:
             cNodepath.show()
         return (cNodepath, collSphereStr)
