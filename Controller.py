@@ -37,7 +37,7 @@ class ControllerForward:
         return self.robot.condition(self)
     
     def update(self):
-        
+        print (self.robot.get_dist())
         # Calibration parameters:
         cl, cr = self.robot.odometry()
 
@@ -71,6 +71,7 @@ class ControllerTurn:
         return self.angle_reached()
          
     def update(self):
+        print (self.robot.get_dist())
         if self.stop(): 
             return
         self.robot.get_offset()
@@ -152,3 +153,25 @@ class ControllerFollow:
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
             
+#############
+class ControllerLearn:
+    'Learning'
+    def __init__(self, robot, speed = 300, dist = 150):
+        self.speed = speed
+        self.dist = dist
+        self.robot = robot
+        self.flag = False
+
+    def start(self):
+        self.robot.reset()
+        self.flag = False
+        self.robot.count = 1
+        t = threading.Timer(0.5, self.robot.get_image)
+        t.start()
+        t.join()
+
+    def stop(self):
+        return self.robot.condition(self)
+    
+    def update(self):
+        

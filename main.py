@@ -5,6 +5,7 @@ from Controller import ControllerForward
 from Controller import ControllerTurn
 from Controller import ControllerSequence
 from Controller import ControllerFollow
+from Controller import ControllerLearn
 
 from panda3d.core import *
 from panda3d.bullet import *
@@ -77,8 +78,9 @@ robot = opt_robot.setup()
 forward = ControllerForward(robot, SPEED, COLLISION_DIST)
 turn = ControllerTurn(robot, SPEED, 25)
 turn_ = ControllerTurn(robot, SPEED, -120)
-
 follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
+
+learn = ControllerLearn(robot)
 
 sequence = [forward, turn_, forward, turn, forward, turn]
 

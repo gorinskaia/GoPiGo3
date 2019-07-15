@@ -6,7 +6,7 @@ import os
 class Env():
     def __init__(self):
         self.actions = [0, 1, 2, 3]  #speed values
-        self.states = [0, 1, 2, 3, 4] #distance from the wall
+        self.states = [1000, 150, 120, 90, 60] #distance from the wall
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
 
@@ -28,7 +28,7 @@ class Env():
 
         done = (self.robot.get_dist() == 50)
     
-        nextState = ???
+        nextState = self.robot.get_dist()
 
         if done:
             reward = 10
