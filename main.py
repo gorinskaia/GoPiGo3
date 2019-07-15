@@ -74,13 +74,13 @@ while True:
 opt_robot = Option(option)
 robot = opt_robot.setup()
 
-forward = ControllerForward(robot, 300, COLLISION_DIST)
-turn = ControllerTurn(robot, 300, 25)
-turn_ = ControllerTurn(robot, 300, -130)
+forward = ControllerForward(robot, SPEED, COLLISION_DIST)
+turn = ControllerTurn(robot, SPEED, 25)
+turn_ = ControllerTurn(robot, SPEED, -120)
 
-follow = ControllerFollow(robot, 300, COLLISION_DIST)
+follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
-sequence = [follow, turn_, follow, turn, forward]
+sequence = [forward, turn_, forward, turn, forward, turn]
 
 opt_robot.run(sequence)
 robot.shutdown()

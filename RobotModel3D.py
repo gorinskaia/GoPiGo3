@@ -135,7 +135,8 @@ class Robot (BulletVehicle):
         return self.current_speed_km_hour
 
     def condition(self, ctrl):
-        print (float(self.get_dist()))
+        if ctrl.flag == False:
+            self.sim.distance = 1000
         return ctrl.flag # Collision detections
         
     def odometry(self):
