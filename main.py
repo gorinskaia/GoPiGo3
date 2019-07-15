@@ -19,7 +19,6 @@ class Option:
 
     def setup(self):
         if self.option == "a":
-
             # --- Import local libraries ---
             import direct.directbase.DirectStart
             from RobotModel3D import Robot
@@ -37,7 +36,6 @@ class Option:
             return self.robot
 
         else:
-            
             # --- Import local libraries --- 
             from easygopigo3 import EasyGoPiGo3
             from RobotDexter import Dexter
@@ -46,9 +44,7 @@ class Option:
             return self.robot
             
     def run(self, sequence):
-
         self.sequence = sequence
-        
         if self.option == "a":
             self.sim.ctrl = ControllerSequence(self.sequence)
             self.sim.ctrl.start()
@@ -82,7 +78,8 @@ follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
 learn = ControllerLearn(robot)
 
-sequence = [forward, turn_, forward, turn, forward, turn]
+#sequence = [forward, turn_, forward, turn, forward, turn]
+sequence = [learn]
 
 opt_robot.run(sequence)
 robot.shutdown()

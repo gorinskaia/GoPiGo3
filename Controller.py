@@ -159,8 +159,9 @@ class ControllerFollow:
 
 
 class Env:
-    def __init__(self, robot):
+    def __init__(self, robot, speed):
         self.robot = robot
+        self.speed = speed
         self.actions = [0, 1, 2, 3]  #speed values
         self.states = [1000, 150, 120, 90, 60] #distance from the wall
         self.stateCount = len(self.states)
@@ -209,14 +210,14 @@ class ControllerLearn:
         self.flag = False
 
     def start(self):
-        env = Env(self.robot)
+        env = Env(self.robot, self.speed)
         self.robot.reset()
         self.flag = False
         # QTable : contains the Q-Values for every (state,action) pair
         qtable = np.random.rand(env.stateCount, env.actionCount).tolist()
 
         # hyperparameters
-        epochs = 60
+        epochs = 20
         gamma = 0.1
         epsilon = 0.08
         decay = 0.1
