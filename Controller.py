@@ -164,7 +164,7 @@ class Env:
     def __init__(self, ctrl):
         self.ctrl = ctrl
         self.actions = [0, 1, 2, 3]  #speed values
-        self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 4 = close
+        self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 5 = close
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
         self.done = False
@@ -206,7 +206,7 @@ class Env:
         elif self.dist_value == 75:
             reward = 1
         elif self.dist_value == 90:
-            reward = 1
+            reward = 0
         elif  120 >= self.dist_value >= 105:
             reward = 0
         elif self.dist_value == 45:
@@ -246,10 +246,10 @@ class ControllerLearn:
         self.flag = False
 
         # hyperparameters
-        self.epochs = 10
+        self.epochs = 20
         self.gamma = 0.1
-        self.epsilon = 0.08
-        self.decay = 0.1
+        self.epsilon = 0.1
+        self.decay = 0.05
 
         self.reward_list = []
 
@@ -266,8 +266,6 @@ class ControllerLearn:
 
         # QTable : contains the Q-Values for every (state,action) pair
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
-
-        
 
     def next_episode(self): # End of one episode
         return self.done
@@ -286,6 +284,9 @@ class ControllerLearn:
             plt.ylabel('reward')
             plt.xlabel('time')
             plt.show()
+
+            print (self.qtable)
+            
             self.stop_simulation = True
             return
 
@@ -305,4 +306,5 @@ class ControllerLearn:
 
         # The more we learn, the less we take random actions
         self.epsilon -= self.decay*self.epsilon
+
 
