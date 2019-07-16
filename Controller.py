@@ -3,6 +3,7 @@ import math
 import threading
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 
 class ControllerInit:
@@ -244,6 +245,12 @@ class ControllerLearn:
         self.robot = robot
         self.flag = False
 
+        # hyperparameters
+        self.epochs = 10
+        self.gamma = 0.1
+        self.epsilon = 0.08
+        self.decay = 0.1
+
         self.reward_list = []
 
     def start(self):
@@ -255,34 +262,33 @@ class ControllerLearn:
         self.state = 0
         self.reward = 0
 
+        self.stop_simulation = False
+
         # QTable : contains the Q-Values for every (state,action) pair
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
-        # hyperparameters
-        self.epochs = 10
-        self.gamma = 0.1
-        self.epsilon = 0.08
-        self.decay = 0.1
+        
 
     def next_episode(self): # End of one episode
         return self.done
     
     def over(self): # End of learning # Changed fron STOP cause otherwise sequence controller intervenes
         return self.k >= self.epochs
+    
     def stop(self):
-        pass
+        return self.stop_simulation
     
     def update(self):
         if self.over():
             print ('GAME OVER')
-
-            import matplotlib.pyplot as plt
+            
             plt.plot(self.reward_list, 'bs')
             plt.ylabel('reward')
-            plt.xlabel('episode')
+            plt.xlabel('time')
             plt.show()
+            self.stop_simulation = True
             return
-          
+
         if self.next_episode():
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
