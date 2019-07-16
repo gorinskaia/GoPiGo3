@@ -27,7 +27,7 @@ class Option:
             self.sim = Simulation()
             j=1 # For the number of a collision sphere
             for i in numpy.arange(0, COLLISION_DIST/30, 0.5):
-                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, False, Point3(0,(COLLISION_DIST/30)-i,1),j)
+                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i,1),j)
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
                 j+=1
@@ -59,8 +59,8 @@ class Option:
         
 # --- Global variables ---
 
-COLLISION_DIST = 120
-SPEED = 310
+COLLISION_DIST = 150
+SPEED = 600
 
 # --- Choose an option between 3D Simulation and Real World Action
 while True:
@@ -76,7 +76,7 @@ turn = ControllerTurn(robot, SPEED, 25)
 turn_ = ControllerTurn(robot, SPEED, -120)
 follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
-learn = ControllerLearn(robot)
+learn = ControllerLearn(robot, SPEED)
 
 #sequence = [forward, turn_, forward, turn, forward, turn]
 sequence = [learn]

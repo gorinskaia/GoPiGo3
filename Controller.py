@@ -73,7 +73,7 @@ class ControllerTurn:
         return self.angle_reached()
          
     def update(self):
-        print (self.robot.get_dist())
+        #print (self.robot.get_dist())
         if self.stop(): 
             return
         self.robot.get_offset()
@@ -163,13 +163,13 @@ class Env:
         self.robot = robot
         self.speed = speed
         self.actions = [0, 1, 2, 3]  #speed values
-        self.states = [0, 1, 2, 3, 4]  #distance from the wall
+        self.states = [0, 1, 2, 3, 4]  #distance from the wall, 0 = far, 4 = close
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
 
     def reset(self):
         self.robot.set_speed(0, 0)
-        self.robot.chassisNP.setPos(0, 3, 0)
+        self.robot.chassisNP.setPos(0, 11, 0)
         self.done = False
         return 0, 0, False
 
@@ -179,24 +179,28 @@ class Env:
             print ('Full speed')
             self.robot.set_speed(self.speed, self.speed)
         if action==1: # Half-speed
+            print ('Half-speed')
             self.robot.set_speed(self.speed/2, self.speed/2)
         if action==2: # Quarter-speed
+            print ('Quarter-speed')
             self.robot.set_speed(self.speed/4, self.speed/4)
         if action==3: # Stop
+            #print ('Full stop')
             self.robot.set_speed(0, 0)
 
         dist_value = self.robot.get_dist()
+        print (dist_value)
         done = False
         
         # Choosing next state?..
         if dist_value == 60:
             done = True
             nextState = 4
-        elif dist_value == 90:
+        elif dist_value == 75:
             nextState = 3
-        elif dist_value == 120:
+        elif dist_value == 90:
             nextState = 2
-        elif dist_value == 150:
+        elif dist_value == 105:
             nextState = 1
         else: 
             nextState = 0
@@ -204,11 +208,11 @@ class Env:
         # Reward table
         if dist_value == 60:
             reward = 10
-        elif dist_value == 90:
+        elif dist_value == 75:
             reward = 3
-        elif dist_value == 120:
+        elif dist_value == 90:
             reward = 4
-        elif dist_value == 150:
+        elif dist_value == 105:
             reward = 5
         else:
             reward = 0
@@ -220,9 +224,8 @@ class Env:
         
 class ControllerLearn:
     'Training'
-    def __init__(self, robot, speed = 300, dist = 150):
+    def __init__(self, robot, speed = 300):
         self.speed = speed
-        self.dist = dist
         self.robot = robot
 
     def start(self):
@@ -233,35 +236,38 @@ class ControllerLearn:
 
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
-        self.k = 0
+        #self.k = 0
         # hyperparameters
         self.epochs = 20
         self.gamma = 0.1
         self.epsilon = 0.08
         self.decay = 0.1
 
+        self.state, self.reward, self.done = self.env.reset()
+
         ''' ----- '''
 
     def stop(self):
-        return self.k > self.epochs
+        #return self.k > self.epochs
+        return self.done
     
     def update(self):
         if self.stop():
             return
         else:
-            state, reward, done = self.env.reset()
+            
             
             #while not done:
             if np.random.uniform() < self.epsilon:
                 action = self.env.randomAction()
             else:
-                action = self.qtable[state].index(max(self.qtable[state]))
+                action = self.qtable[self.state].index(max(self.qtable[self.state]))
            
-            next_state, reward, done = self.env.step(action) # take action
-            self.qtable[state][action] = reward + self.gamma * max(self.qtable[next_state]) # update qtable 
-            state = next_state  # update state
+            next_state, self.reward, self.done = self.env.step(action) # take action
+            self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
+            self.state = next_state  # update state
 
             # The more we learn, the less we take random actions
             self.epsilon -= self.decay*self.epsilon
-            self.k+=1
+            #self.k+=1
   
