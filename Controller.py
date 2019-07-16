@@ -187,22 +187,22 @@ class Env:
 
     # take action
     def step(self, action):
+
+        self.dist_value = self.robot.get_dist()
+        print ('Distance is '+str(self.dist_value))
         
         if action==0: # Full speed
             print ('Full speed')
             self.robot.set_speed(self.speed, self.speed)
         if action==1: # Half-speed
-            print ('speed 0.75')
-            self.robot.set_speed(self.speed*0.75, self.speed*0.75)
+            print ('speed 0.8')
+            self.robot.set_speed(self.speed*0.8, self.speed*0.8)
         if action==2: # Quarter-speed
-            print ('speed 0.4')
-            self.robot.set_speed(self.speed*0.4, self.speed*0.4)
+            print ('speed 0.6')
+            self.robot.set_speed(self.speed*0.6, self.speed*0.6)
         if action==3: # Stop
-            print ('speed 0.1')
+            print ('speed 0')
             self.robot.set_speed(0, 0)
-
-        self.dist_value = self.robot.get_dist()
-        print ('Distance is '+str(self.dist_value))
 
         # Reward table
         if self.dist_value == 60:
@@ -240,6 +240,8 @@ class Env:
 
     def randomAction(self):
         return np.random.choice(self.actions);
+
+
         
 class ControllerLearn:
     'Training'
@@ -259,7 +261,7 @@ class ControllerLearn:
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
         # hyperparameters
-        self.epochs = 20
+        self.epochs = 5
         self.gamma = 0.1
         self.epsilon = 0.08
         self.decay = 0.1
@@ -271,7 +273,6 @@ class ControllerLearn:
         return self.k > self.epochs
     
     def update(self):
-
         if self.stop(): # Done, over
             print ('GAME OVER')
             return
