@@ -126,7 +126,6 @@ class Simulation(ShowBase):
 
     def walls (self, pos, scale, wall1, wall2, shape):
         tex = loader.loadTexture("textures/text_photo.jpg")
-        
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
         node.addShape(shape)

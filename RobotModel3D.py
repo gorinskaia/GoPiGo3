@@ -87,7 +87,6 @@ class Robot (BulletVehicle):
 
     def set_speed(self, left_speed, right_speed):
         self.count -=0.0001
-
         if left_speed == 0 and right_speed == 0:
             self.setBrake(100, 2)
             self.setBrake(50, 0)
@@ -104,8 +103,6 @@ class Robot (BulletVehicle):
             
     def reset(self):
         self.set_speed(0,0)
-        
-        # For encoders
         self.total_distl = 0
         self.total_distr = 0
         

@@ -7,8 +7,8 @@ import os
 
 class ControllerInit:
     'Initial state'
-    def __init__(self,gpg):
-        self.gpg = gpg
+    def __init__(self,robot):
+        self.robot = robot
         
     def start(self):
         pass
@@ -154,14 +154,13 @@ class ControllerFollow:
             self.robot.shutdown() #new
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
+
             
 #############
 
 
 class Env:
-    def __init__(self, robot, speed, ctrl):
-        self.robot = robot
-        self.speed = speed
+    def __init__(self, ctrl):
         self.ctrl = ctrl
         self.actions = [0, 1, 2, 3]  #speed values
         self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 4 = close
@@ -172,12 +171,12 @@ class Env:
 
     def reset(self):
         time.sleep(0.5)
-        self.robot.chassisNP.setPos(0, 0, 0.1)
+        self.ctrl.robot.chassisNP.setPos(0, 0, 0.1)
         self.done = False
-        
+        self.ctrl.robot.condition(self.ctrl) #to force distance reset?..
         self.ctrl.k+=1
         
-        self.robot.sim.dist_value = 1000
+        self.ctrl.robot.sim.distance = 1000
         self.dist_value = 1000
         self.stop_count = 0
 
@@ -185,24 +184,24 @@ class Env:
         
         return 0, 0, False
 
-    # take action
     def step(self, action):
 
-        self.dist_value = self.robot.get_dist()
+        self.dist_value = self.ctrl.robot.get_dist()
+        print ('For the love of god '+str(self.ctrl.robot.sim.distance))
         print ('Distance is '+str(self.dist_value))
         
         if action==0: # Full speed
-            print ('Full speed')
-            self.robot.set_speed(self.speed, self.speed)
+            #print ('Full speed')
+            self.ctrl.robot.set_speed(self.ctrl.speed, self.ctrl.speed)
         if action==1: # Half-speed
-            print ('speed 0.8')
-            self.robot.set_speed(self.speed*0.8, self.speed*0.8)
+            #print ('speed 0.8')
+            self.ctrl.robot.set_speed(self.ctrl.speed*0.8, self.ctrl.speed*0.8)
         if action==2: # Quarter-speed
-            print ('speed 0.6')
-            self.robot.set_speed(self.speed*0.6, self.speed*0.6)
+            #print ('speed 0.6')
+            self.ctrl.robot.set_speed(self.ctrl.speed*0.6, self.ctrl.speed*0.6)
         if action==3: # Stop
-            print ('speed 0')
-            self.robot.set_speed(0, 0)
+            #print ('speed 0')
+            self.ctrl.robot.set_speed(0, 0)
 
         # Reward table
         if self.dist_value == 60:
@@ -248,11 +247,13 @@ class ControllerLearn:
     def __init__(self, robot, speed = 300):
         self.speed = speed
         self.robot = robot
+        self.flag = False
 
     def start(self):
-        self.env = Env(self.robot, self.speed, self)
+        self.env = Env(self)
         self.robot.reset()
         self.k = 0
+        self.flag = False
         self.done = False
         self.state = 0
         self.reward = 0
@@ -273,7 +274,7 @@ class ControllerLearn:
         return self.k > self.epochs
     
     def update(self):
-        if self.stop(): # Done, over
+        if self.stop():
             print ('GAME OVER')
             return
           
@@ -281,8 +282,8 @@ class ControllerLearn:
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
             self.env.dist_value = 1000
-            print ('FUCK '+ str(self.env.dist_value))
-            print ('ME '+ str(self.robot.get_dist()))
+            print ('AAA '+ str(self.env.dist_value))
+            print ('BBB '+ str(self.robot.get_dist()))
         
         if np.random.uniform() < self.epsilon:
             action = self.env.randomAction()
@@ -293,6 +294,6 @@ class ControllerLearn:
         self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
         self.state = next_state  # update state
 
-            # The more we learn, the less we take random actions
+        # The more we learn, the less we take random actions
         self.epsilon -= self.decay*self.epsilon
 
