@@ -163,13 +163,13 @@ class Env:
         self.robot = robot
         self.speed = speed
         self.actions = [0, 1, 2, 3]  #speed values
-        self.states = [0, 1, 2, 3, 4]  #distance from the wall, 0 = far, 4 = close
+        self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 4 = close
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
 
     def reset(self):
         self.robot.set_speed(0, 0)
-        self.robot.chassisNP.setPos(0, 11, 0)
+        self.robot.chassisNP.setPos(0, 0, 0)
         self.done = False
         return 0, 0, False
 
@@ -179,13 +179,13 @@ class Env:
             print ('Full speed')
             self.robot.set_speed(self.speed, self.speed)
         if action==1: # Half-speed
-            print ('Half-speed')
-            self.robot.set_speed(self.speed/2, self.speed/2)
+            print ('0.75')
+            self.robot.set_speed(self.speed*0.75, self.speed*0.75)
         if action==2: # Quarter-speed
-            print ('Quarter-speed')
-            self.robot.set_speed(self.speed/4, self.speed/4)
+            print ('0.4')
+            self.robot.set_speed(self.speed*0.4, self.speed*0.4)
         if action==3: # Stop
-            #print ('Full stop')
+            print ('0')
             self.robot.set_speed(0, 0)
 
         dist_value = self.robot.get_dist()
@@ -202,6 +202,8 @@ class Env:
             nextState = 2
         elif dist_value == 105:
             nextState = 1
+        elif dist_value = 45:
+            nextState = 5
         else: 
             nextState = 0
 
@@ -214,6 +216,8 @@ class Env:
             reward = 4
         elif dist_value == 105:
             reward = 5
+        elif dist_value = 45:
+            reward = -100
         else:
             reward = 0
         
@@ -231,33 +235,35 @@ class ControllerLearn:
     def start(self):
         self.env = Env(self.robot, self.speed)
         self.robot.reset()
+        self.k = 0
+        self.done = False
+        self.state = 0
+        self.reward = 0
 
         # QTable : contains the Q-Values for every (state,action) pair
-
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
-        #self.k = 0
         # hyperparameters
-        self.epochs = 20
+        self.epochs = 10
         self.gamma = 0.1
         self.epsilon = 0.08
         self.decay = 0.1
 
-        self.state, self.reward, self.done = self.env.reset()
-
-        ''' ----- '''
-
-    def stop(self):
-        #return self.k > self.epochs
+    def next_episode(self): # End of one episode
         return self.done
     
+    def stop(self): # End of learning
+        return self.k > self.epochs
+    
     def update(self):
-        if self.stop():
+
+        if self.stop(): # Done, over
             return
+          
+        if self.next_episode():
+            self.k+=1
+            self.state, self.reward, self.done = self.env.reset() # this one, move
         else:
-            
-            
-            #while not done:
             if np.random.uniform() < self.epsilon:
                 action = self.env.randomAction()
             else:
@@ -269,5 +275,4 @@ class ControllerLearn:
 
             # The more we learn, the less we take random actions
             self.epsilon -= self.decay*self.epsilon
-            #self.k+=1
-  
+
