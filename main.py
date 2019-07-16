@@ -59,7 +59,7 @@ class Option:
         
 # --- Global variables ---
 
-COLLISION_DIST = 300
+COLLISION_DIST = 150
 SPEED = 300
 
 # --- Choose an option between 3D Simulation and Real World Action

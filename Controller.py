@@ -44,7 +44,7 @@ class ControllerForward:
         cl, cr = self.robot.odometry()
 
         if self.stop():
-            self.robot.shutdown() #new
+            self.robot.shutdown()
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
 
@@ -171,46 +171,41 @@ class Env:
 
     def reset(self):
         time.sleep(0.5)
-        self.ctrl.robot.chassisNP.setPos(0, 0, 0.1)
+        print ('-----RESET-----')
+        self.ctrl.robot.chassisNP.setPos(0, 0, 0)
+        self.ctrl.robot.set_speed(0,0)
         self.done = False
-        self.ctrl.robot.condition(self.ctrl) #to force distance reset?..
         self.ctrl.k+=1
-        
         self.ctrl.robot.sim.distance = 1000
-        self.dist_value = 1000
+        self.ctrl.robot.count = 1
         self.stop_count = 0
 
-        print ('-----RESET-----')
-        
         return 0, 0, False
 
     def step(self, action):
-
         self.dist_value = self.ctrl.robot.get_dist()
-        print ('For the love of god '+str(self.ctrl.robot.sim.distance))
         print ('Distance is '+str(self.dist_value))
-        
         if action==0: # Full speed
-            #print ('Full speed')
+            print ('Full speed')
             self.ctrl.robot.set_speed(self.ctrl.speed, self.ctrl.speed)
         if action==1: # Half-speed
-            #print ('speed 0.8')
+            print ('speed 0.8')
             self.ctrl.robot.set_speed(self.ctrl.speed*0.8, self.ctrl.speed*0.8)
         if action==2: # Quarter-speed
-            #print ('speed 0.6')
-            self.ctrl.robot.set_speed(self.ctrl.speed*0.6, self.ctrl.speed*0.6)
+            print ('speed 0.65')
+            self.ctrl.robot.set_speed(self.ctrl.speed*0.65, self.ctrl.speed*0.65)
         if action==3: # Stop
-            #print ('speed 0')
-            self.ctrl.robot.set_speed(0, 0)
+            print ('speed 0.4')
+            self.ctrl.robot.set_speed(self.ctrl.speed*0.3, self.ctrl.speed*0.3)
 
         # Reward table
         if self.dist_value == 60:
-            reward = 100
+            reward = 10
         elif self.dist_value == 75:
-            reward = 0
+            reward = 1
         elif self.dist_value == 90:
-            reward = 0
-        elif self.dist_value == 105:
+            reward = 1
+        elif  120 >= self.dist_value >= 105:
             reward = 0
         elif self.dist_value == 45:
             reward = -1000
@@ -221,7 +216,7 @@ class Env:
         if self.dist_value == 60:
             nextState = 4
             self.stop_count +=1
-            if self.stop_count>50:
+            if self.stop_count>100:
                 self.done = True
         elif self.dist_value == 75:
             nextState = 3
@@ -239,7 +234,6 @@ class Env:
 
     def randomAction(self):
         return np.random.choice(self.actions);
-
 
         
 class ControllerLearn:
@@ -262,7 +256,7 @@ class ControllerLearn:
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
         # hyperparameters
-        self.epochs = 5
+        self.epochs = 10
         self.gamma = 0.1
         self.epsilon = 0.08
         self.decay = 0.1
@@ -281,10 +275,7 @@ class ControllerLearn:
         if self.next_episode():
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
-            self.env.dist_value = 1000
-            print ('AAA '+ str(self.env.dist_value))
-            print ('BBB '+ str(self.robot.get_dist()))
-        
+
         if np.random.uniform() < self.epsilon:
             action = self.env.randomAction()
         else:
