@@ -32,7 +32,7 @@ class Robot (BulletVehicle):
         
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
-        self.chassisNP.setPos(0, 3, 0)
+        self.chassisNP.setPos(0, 0, 0)
         self.chassisNP.node().setMass(5)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)

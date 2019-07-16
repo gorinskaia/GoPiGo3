@@ -168,16 +168,20 @@ class Env:
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
         self.done = False
-
         self.stop_count = 0
 
     def reset(self):
-        #self.robot.set_speed(0, 0)
-        self.robot.chassisNP.setPos(0, 0, 0)
+        time.sleep(0.5)
+        self.robot.chassisNP.setPos(0, 0, 0.1)
         self.done = False
+        
         self.ctrl.k+=1
+        
+        self.robot.sim.dist_value = 1000
         self.dist_value = 1000
         self.stop_count = 0
+
+        print ('-----RESET-----')
         
         return 0, 0, False
 
@@ -195,11 +199,25 @@ class Env:
             self.robot.set_speed(self.speed*0.4, self.speed*0.4)
         if action==3: # Stop
             print ('speed 0.1')
-            self.robot.set_speed(self.speed*0.1, self.speed*0.1)
+            self.robot.set_speed(0, 0)
 
         self.dist_value = self.robot.get_dist()
         print ('Distance is '+str(self.dist_value))
 
+        # Reward table
+        if self.dist_value == 60:
+            reward = 100
+        elif self.dist_value == 75:
+            reward = 0
+        elif self.dist_value == 90:
+            reward = 0
+        elif self.dist_value == 105:
+            reward = 0
+        elif self.dist_value == 45:
+            reward = -1000
+        else:
+            reward = -1
+  
         # Choosing next state?..
         if self.dist_value == 60:
             nextState = 4
@@ -218,20 +236,6 @@ class Env:
         else: 
             nextState = 0
 
-        # Reward table
-        if self.dist_value == 60:
-            reward = 100
-        elif self.dist_value == 75:
-            reward = 3
-        elif self.dist_value == 90:
-            reward = 4
-        elif self.dist_value == 105:
-            reward = 5
-        elif self.dist_value == 45:
-            reward = -1000
-        else:
-            reward = -1
-        
         return nextState, reward, self.done
 
     def randomAction(self):
@@ -276,6 +280,8 @@ class ControllerLearn:
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
             self.env.dist_value = 1000
+            print ('FUCK '+ str(self.env.dist_value))
+            print ('ME '+ str(self.robot.get_dist()))
         
         if np.random.uniform() < self.epsilon:
             action = self.env.randomAction()
