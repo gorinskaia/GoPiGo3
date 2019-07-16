@@ -163,18 +163,20 @@ class Env:
         self.robot = robot
         self.speed = speed
         self.actions = [0, 1, 2, 3]  #speed values
-        self.states = [1000, 150, 120, 90, 60] #distance from the wall
+        self.states = [0, 1, 2, 3, 4]  #distance from the wall
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
 
     def reset(self):
         self.robot.set_speed(0, 0)
-        self.done = False;
-        return 0, 0, False;
+        self.robot.chassisNP.setPos(0, 3, 0)
+        self.done = False
+        return 0, 0, False
 
     # take action
     def step(self, action):
         if action==0: # Full speed
+            print ('Full speed')
             self.robot.set_speed(self.speed, self.speed)
         if action==1: # Half-speed
             self.robot.set_speed(self.speed/2, self.speed/2)
@@ -183,16 +185,31 @@ class Env:
         if action==3: # Stop
             self.robot.set_speed(0, 0)
 
-        done = (self.robot.get_dist() == 50)
-    
-        nextState = self.robot.get_dist()
+        dist_value = self.robot.get_dist()
+        done = False
+        
+        # Choosing next state?..
+        if dist_value == 60:
+            done = True
+            nextState = 4
+        elif dist_value == 90:
+            nextState = 3
+        elif dist_value == 120:
+            nextState = 2
+        elif dist_value == 150:
+            nextState = 1
+        else: 
+            nextState = 0
 
-        if done:
+        # Reward table
+        if dist_value == 60:
             reward = 10
-        elif self.robot.get_dist() == 100:
+        elif dist_value == 90:
+            reward = 3
+        elif dist_value == 120:
+            reward = 4
+        elif dist_value == 150:
             reward = 5
-        elif self.robot.get_dist() == 150:
-            reward = 1
         else:
             reward = 0
         
@@ -202,52 +219,49 @@ class Env:
         return np.random.choice(self.actions);
         
 class ControllerLearn:
-    'Learning'
+    'Training'
     def __init__(self, robot, speed = 300, dist = 150):
         self.speed = speed
         self.dist = dist
         self.robot = robot
-        self.flag = False
 
     def start(self):
-        env = Env(self.robot, self.speed)
+        self.env = Env(self.robot, self.speed)
         self.robot.reset()
-        self.flag = False
+
         # QTable : contains the Q-Values for every (state,action) pair
-        qtable = np.random.rand(env.stateCount, env.actionCount).tolist()
 
+        self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
+
+        self.k = 0
         # hyperparameters
-        epochs = 20
-        gamma = 0.1
-        epsilon = 0.08
-        decay = 0.1
+        self.epochs = 20
+        self.gamma = 0.1
+        self.epsilon = 0.08
+        self.decay = 0.1
 
-        # training loop
-        for i in range(epochs):
-            state, reward, done = env.reset()
-            steps = 0
+        ''' ----- '''
 
-            while not done:
+    def stop(self):
+        return self.k > self.epochs
+    
+    def update(self):
+        if self.stop():
+            return
+        else:
+            state, reward, done = self.env.reset()
+            
+            #while not done:
+            if np.random.uniform() < self.epsilon:
+                action = self.env.randomAction()
+            else:
+                action = self.qtable[state].index(max(self.qtable[state]))
+           
+            next_state, reward, done = self.env.step(action) # take action
+            self.qtable[state][action] = reward + self.gamma * max(self.qtable[next_state]) # update qtable 
+            state = next_state  # update state
 
-                # act randomly sometimes to allow exploration
-                if np.random.uniform() < epsilon:
-                    action = env.randomAction()
-                # if not select max action in Qtable (act greedy)
-                else:
-                    action = qtable[state].index(max(qtable[state]))
-
-                # take action
-                next_state, reward, done = env.step(action)
-
-                # update qtable value with Bellman equation
-                qtable[state][action] = reward + gamma * max(qtable[next_state])
-
-                # update state
-                state = next_state
             # The more we learn, the less we take random actions
-            epsilon -= decay*epsilon
-
-            #print("\nDone in", steps, "steps".format(steps))
-
-            time.sleep(0.4)
+            self.epsilon -= self.decay*self.epsilon
+            self.k+=1
   

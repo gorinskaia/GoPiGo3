@@ -82,4 +82,5 @@ learn = ControllerLearn(robot)
 sequence = [learn]
 
 opt_robot.run(sequence)
+
 robot.shutdown()
