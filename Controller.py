@@ -177,14 +177,15 @@ class Env:
         self.done = False
         self.ctrl.k+=1
         self.ctrl.robot.sim.distance = 1000
-        self.ctrl.robot.count = 1
+        self.ctrl.robot.count = 1   # Speed factor
         self.stop_count = 0
 
         return 0, 0, False
 
     def step(self, action):
+        
         self.dist_value = self.ctrl.robot.get_dist()
-        #print ('Distance is '+str(self.dist_value))
+        print ('Distance is '+str(self.dist_value))
         if action==0: # Full speed
             print ('Full speed')
             self.ctrl.robot.set_speed(self.ctrl.speed, self.ctrl.speed)
@@ -195,7 +196,7 @@ class Env:
             print ('speed 0.5')
             self.ctrl.robot.set_speed(self.ctrl.speed*0.5, self.ctrl.speed*0.5)
         if action==3: # Stop
-            print ('speed 0')
+            print ('Full stop')
             self.ctrl.robot.set_speed(0, 0)
 
         # Reward table
@@ -208,7 +209,7 @@ class Env:
         elif  120 >= self.dist_value >= 105:
             reward = 0
         elif self.dist_value == 45:
-            reward = -10
+            reward = -100
         else:
             reward = -1
   
@@ -276,7 +277,7 @@ class ControllerLearn:
             print ('GAME OVER')
 
             import matplotlib.pyplot as plt
-            plt.plot(self.reward_list)
+            plt.plot(self.reward_list, 'bs')
             plt.ylabel('reward')
             plt.xlabel('episode')
             plt.show()
