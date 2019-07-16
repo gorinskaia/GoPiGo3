@@ -184,7 +184,7 @@ class Env:
 
     def step(self, action):
         self.dist_value = self.ctrl.robot.get_dist()
-        print ('Distance is '+str(self.dist_value))
+        #print ('Distance is '+str(self.dist_value))
         if action==0: # Full speed
             print ('Full speed')
             self.ctrl.robot.set_speed(self.ctrl.speed, self.ctrl.speed)
@@ -192,15 +192,15 @@ class Env:
             print ('speed 0.8')
             self.ctrl.robot.set_speed(self.ctrl.speed*0.8, self.ctrl.speed*0.8)
         if action==2: # Quarter-speed
-            print ('speed 0.65')
-            self.ctrl.robot.set_speed(self.ctrl.speed*0.65, self.ctrl.speed*0.65)
+            print ('speed 0.5')
+            self.ctrl.robot.set_speed(self.ctrl.speed*0.5, self.ctrl.speed*0.5)
         if action==3: # Stop
-            print ('speed 0.4')
-            self.ctrl.robot.set_speed(self.ctrl.speed*0.3, self.ctrl.speed*0.3)
+            print ('speed 0')
+            self.ctrl.robot.set_speed(0, 0)
 
         # Reward table
         if self.dist_value == 60:
-            reward = 10
+            reward = 5
         elif self.dist_value == 75:
             reward = 1
         elif self.dist_value == 90:
@@ -208,7 +208,7 @@ class Env:
         elif  120 >= self.dist_value >= 105:
             reward = 0
         elif self.dist_value == 45:
-            reward = -1000
+            reward = -10
         else:
             reward = -1
   
@@ -243,6 +243,8 @@ class ControllerLearn:
         self.robot = robot
         self.flag = False
 
+        self.reward_list = []
+
     def start(self):
         self.env = Env(self)
         self.robot.reset()
@@ -264,12 +266,20 @@ class ControllerLearn:
     def next_episode(self): # End of one episode
         return self.done
     
-    def stop(self): # End of learning
-        return self.k > self.epochs
+    def over(self): # End of learning # Changed fron STOP cause otherwise sequence controller intervenes
+        return self.k >= self.epochs
+    def stop(self):
+        pass
     
     def update(self):
-        if self.stop():
+        if self.over():
             print ('GAME OVER')
+
+            import matplotlib.pyplot as plt
+            plt.plot(self.reward_list)
+            plt.ylabel('reward')
+            plt.xlabel('episode')
+            plt.show()
             return
           
         if self.next_episode():
@@ -284,6 +294,7 @@ class ControllerLearn:
         next_state, self.reward, self.done = self.env.step(action) # take action
         self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
         self.state = next_state  # update state
+        self.reward_list.append(self.reward)
 
         # The more we learn, the less we take random actions
         self.epsilon -= self.decay*self.epsilon
