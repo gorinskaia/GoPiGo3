@@ -159,69 +159,80 @@ class ControllerFollow:
 
 
 class Env:
-    def __init__(self, robot, speed):
+    def __init__(self, robot, speed, ctrl):
         self.robot = robot
         self.speed = speed
+        self.ctrl = ctrl
         self.actions = [0, 1, 2, 3]  #speed values
         self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 4 = close
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
+        self.done = False
+
+        self.stop_count = 0
 
     def reset(self):
-        self.robot.set_speed(0, 0)
+        #self.robot.set_speed(0, 0)
         self.robot.chassisNP.setPos(0, 0, 0)
         self.done = False
+        self.ctrl.k+=1
+        self.dist_value = 1000
+        self.stop_count = 0
+        
         return 0, 0, False
 
     # take action
     def step(self, action):
+        
         if action==0: # Full speed
             print ('Full speed')
             self.robot.set_speed(self.speed, self.speed)
         if action==1: # Half-speed
-            print ('0.75')
+            print ('speed 0.75')
             self.robot.set_speed(self.speed*0.75, self.speed*0.75)
         if action==2: # Quarter-speed
-            print ('0.4')
+            print ('speed 0.4')
             self.robot.set_speed(self.speed*0.4, self.speed*0.4)
         if action==3: # Stop
-            print ('0')
-            self.robot.set_speed(0, 0)
+            print ('speed 0.1')
+            self.robot.set_speed(self.speed*0.1, self.speed*0.1)
 
-        dist_value = self.robot.get_dist()
-        print (dist_value)
-        done = False
-        
+        self.dist_value = self.robot.get_dist()
+        print ('Distance is '+str(self.dist_value))
+
         # Choosing next state?..
-        if dist_value == 60:
-            done = True
+        if self.dist_value == 60:
             nextState = 4
-        elif dist_value == 75:
+            self.stop_count +=1
+            if self.stop_count>50:
+                self.done = True
+        elif self.dist_value == 75:
             nextState = 3
-        elif dist_value == 90:
+        elif self.dist_value == 90:
             nextState = 2
-        elif dist_value == 105:
+        elif self.dist_value == 105:
             nextState = 1
-        elif dist_value = 45:
+        elif self.dist_value == 45:
             nextState = 5
+            self.done = True
         else: 
             nextState = 0
 
         # Reward table
-        if dist_value == 60:
-            reward = 10
-        elif dist_value == 75:
+        if self.dist_value == 60:
+            reward = 100
+        elif self.dist_value == 75:
             reward = 3
-        elif dist_value == 90:
+        elif self.dist_value == 90:
             reward = 4
-        elif dist_value == 105:
+        elif self.dist_value == 105:
             reward = 5
-        elif dist_value = 45:
-            reward = -100
+        elif self.dist_value == 45:
+            reward = -1000
         else:
-            reward = 0
+            reward = -1
         
-        return nextState, reward, done
+        return nextState, reward, self.done
 
     def randomAction(self):
         return np.random.choice(self.actions);
@@ -233,7 +244,7 @@ class ControllerLearn:
         self.robot = robot
 
     def start(self):
-        self.env = Env(self.robot, self.speed)
+        self.env = Env(self.robot, self.speed, self)
         self.robot.reset()
         self.k = 0
         self.done = False
@@ -244,7 +255,7 @@ class ControllerLearn:
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
         # hyperparameters
-        self.epochs = 10
+        self.epochs = 20
         self.gamma = 0.1
         self.epsilon = 0.08
         self.decay = 0.1
@@ -258,21 +269,23 @@ class ControllerLearn:
     def update(self):
 
         if self.stop(): # Done, over
+            print ('GAME OVER')
             return
           
         if self.next_episode():
-            self.k+=1
-            self.state, self.reward, self.done = self.env.reset() # this one, move
+            print ('EPISODE OVER')
+            self.state, self.reward, self.done = self.env.reset()
+            self.env.dist_value = 1000
+        
+        if np.random.uniform() < self.epsilon:
+            action = self.env.randomAction()
         else:
-            if np.random.uniform() < self.epsilon:
-                action = self.env.randomAction()
-            else:
-                action = self.qtable[self.state].index(max(self.qtable[self.state]))
+            action = self.qtable[self.state].index(max(self.qtable[self.state]))
            
-            next_state, self.reward, self.done = self.env.step(action) # take action
-            self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
-            self.state = next_state  # update state
+        next_state, self.reward, self.done = self.env.step(action) # take action
+        self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
+        self.state = next_state  # update state
 
             # The more we learn, the less we take random actions
-            self.epsilon -= self.decay*self.epsilon
+        self.epsilon -= self.decay*self.epsilon
 
