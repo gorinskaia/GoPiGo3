@@ -137,17 +137,13 @@ class ControllerFollow:
     def update(self):
         cl = 1
         cr = 1
-        #print (self.cX, self.cY)
         if self.cX < (self.robot.CAMX/2 - 15):
-            #print ('turn left')
             cl = 0.75
             cr = 1.25
         elif self.cX > (self.robot.CAMX/2 + 15):
-            #print ('turn right')
             cl = 1.25
             cr = 0.75
         else:
-            #print ('forward')
             cr = 1
             cl = 1
             
@@ -167,7 +163,7 @@ class ControllerLearn:
         self.option = option
 
         # hyperparameters
-        self.epochs = 20
+        self.epochs = 3
         self.gamma = 0.1
         self.epsilon = 0.1
         self.decay = 0.05
@@ -175,11 +171,9 @@ class ControllerLearn:
         self.reward_list = []
 
     def start(self):
-        
         if self.option =="Q":
             self.env = EnvQLearning(self)
 
-        
         self.robot.reset()
         self.k = 0
         self.flag = False
@@ -192,17 +186,11 @@ class ControllerLearn:
         # QTable : contains the Q-Values for every (state,action) pair
         self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
-    def next_episode(self): # End of one episode
-        return self.done
-    
-    def over(self): # End of learning # Changed fron STOP cause otherwise sequence controller intervenes
-        return self.k >= self.epochs
-    
     def stop(self):
         return self.stop_simulation
     
     def update(self):
-        if self.over():
+        if self.k >= self.epochs:
             print ('GAME OVER')
             
             plt.plot(self.reward_list, 'bs')
@@ -215,7 +203,7 @@ class ControllerLearn:
             self.stop_simulation = True
             return
 
-        if self.next_episode():
+        if self.done:
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
 
@@ -229,7 +217,6 @@ class ControllerLearn:
         self.state = next_state  # update state
         self.reward_list.append(self.reward)
 
-        # The more we learn, the less we take random actions
         self.epsilon -= self.decay*self.epsilon
 
 

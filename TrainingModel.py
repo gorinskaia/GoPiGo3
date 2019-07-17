@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 class EnvQLearning:
     def __init__(self, ctrl):
