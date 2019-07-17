@@ -33,7 +33,7 @@ class Robot (BulletVehicle):
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
         self.chassisNP.setPos(0, 0, 0)
-        self.chassisNP.node().setMass(5)
+        self.chassisNP.node().setMass(1)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)
 
@@ -94,9 +94,9 @@ class Robot (BulletVehicle):
             self.applyEngineForce(0, 0)
             self.applyEngineForce(0, 1)
         else:        
-            self.setBrake(0.3, 2)
-            self.applyEngineForce((left_speed/15) * self.count, 1)
-            self.applyEngineForce((right_speed/15) * self.count, 0)
+            self.setBrake(0.23, 2)
+            self.applyEngineForce((left_speed/20) * self.count, 1)
+            self.applyEngineForce((right_speed/20) * self.count, 0)
             
     def shutdown(self):
         self.set_speed(0,0)

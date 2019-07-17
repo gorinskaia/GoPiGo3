@@ -12,14 +12,12 @@ class EnvQLearning:
         self.stop_count = 0
         
         # hyperparameters
-        self.epochs = 3
+        self.epochs = 15
         self.gamma = 0.1
         self.epsilon = 0.1
         self.decay = 0.05
 
         self.qtable = np.random.rand(self.stateCount, self.actionCount).tolist()
-
-
 
     def reset(self):
         time.sleep(0.5)

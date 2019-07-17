@@ -184,7 +184,7 @@ class ControllerLearn:
     def update(self):
         if self.k >= self.env.epochs:
             print ('GAME OVER')
-            print (self.qtable)
+            print (self.env.qtable)
             self.stop_simulation = True
             return
         
