@@ -42,7 +42,6 @@ class ControllerForward:
     
     def update(self):
         print (self.robot.get_dist())
-        # Calibration parameters:
         cl, cr = self.robot.odometry()
 
         if self.stop():
@@ -75,7 +74,6 @@ class ControllerTurn:
         return self.angle_reached()
          
     def update(self):
-        #print (self.robot.get_dist())
         if self.stop(): 
             return
         self.robot.get_offset()
@@ -149,7 +147,7 @@ class ControllerFollow:
             
         if self.stop():
             self.taking_photo = False
-            self.robot.shutdown() #new
+            self.robot.shutdown()
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
 
@@ -159,7 +157,6 @@ class ControllerLearn:
     def __init__(self, robot, option, speed = 300):
         self.speed = speed
         self.robot = robot
-        self.flag = False
         self.option = option
 
         self.reward_list = []
@@ -170,7 +167,6 @@ class ControllerLearn:
 
         self.robot.reset()
         self.k = 0
-        self.flag = False
         self.done = False
         self.state = 0
         self.reward = 0
@@ -184,14 +180,12 @@ class ControllerLearn:
     def update(self):
         if self.k >= self.env.epochs:
             print ('GAME OVER')
-            print (self.env.qtable)
             self.stop_simulation = True
             return
-        
+
         if self.done:
             print ('EPISODE OVER')
-            self.state, self.reward, self.done = self.env.reset()
-
+            self.env._reset()
         self.env._update()
 
         
