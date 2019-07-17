@@ -73,10 +73,10 @@ class Simulation(ShowBase):
             
         self.setup()
         
-        self.walls(Point3(0,18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
-        self.walls(Point3(0,-18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.1, 5)))
-        self.walls(Point3(-18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
-        self.walls(Point3(18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.1, 10, 5)))
+        self.walls(Point3(0,18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.01, 5)))
+        self.walls(Point3(0,-18,0), Point3(20, 0.1, 5), Point3(1, 0.05, 2.5), Point3(-1,-9,0), BulletBoxShape(Vec3(10, 0.01, 5)))
+        self.walls(Point3(-18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.01, 10, 5)))
+        self.walls(Point3(18,0,0), Point3(0.1, 20, 5), Point3(0.05, 1, 2.5), Point3(-10,-1,0), BulletBoxShape(Vec3(0.01, 10, 5)))
  
         taskMgr.add(self.update, 'updateWorld')
 
