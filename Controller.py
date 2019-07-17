@@ -162,12 +162,6 @@ class ControllerLearn:
         self.flag = False
         self.option = option
 
-        # hyperparameters
-        self.epochs = 3
-        self.gamma = 0.1
-        self.epsilon = 0.1
-        self.decay = 0.05
-
         self.reward_list = []
 
     def start(self):
@@ -183,40 +177,21 @@ class ControllerLearn:
 
         self.stop_simulation = False
 
-        # QTable : contains the Q-Values for every (state,action) pair
-        self.qtable = np.random.rand(self.env.stateCount, self.env.actionCount).tolist()
 
     def stop(self):
         return self.stop_simulation
     
     def update(self):
-        if self.k >= self.epochs:
+        if self.k >= self.env.epochs:
             print ('GAME OVER')
-            
-            plt.plot(self.reward_list, 'bs')
-            plt.ylabel('reward')
-            plt.xlabel('time')
-            plt.show()
-
             print (self.qtable)
-            
             self.stop_simulation = True
             return
-
+        
         if self.done:
             print ('EPISODE OVER')
             self.state, self.reward, self.done = self.env.reset()
 
-        if np.random.uniform() < self.epsilon:
-            action = self.env.randomAction()
-        else:
-            action = self.qtable[self.state].index(max(self.qtable[self.state]))
-           
-        next_state, self.reward, self.done = self.env.step(action) # take action
-        self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
-        self.state = next_state  # update state
-        self.reward_list.append(self.reward)
+        self.env._update()
 
-        self.epsilon -= self.decay*self.epsilon
-
-
+        

@@ -73,7 +73,7 @@ robot = opt_robot.setup()
 
 forward = ControllerForward(robot, SPEED, COLLISION_DIST)
 turn = ControllerTurn(robot, SPEED, 25)
-turn_ = ControllerTurn(robot, SPEED, -120)
+turn_ = ControllerTurn(robot, SPEED, -45)
 follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
 

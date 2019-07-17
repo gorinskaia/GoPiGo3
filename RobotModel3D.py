@@ -160,10 +160,3 @@ class Robot (BulletVehicle):
 
     def get_image(self): 
         return self.sim.take_screenshot(self.CAMX, self.CAMY)
-
-        
-        
-            
-
-
-

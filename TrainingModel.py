@@ -10,6 +10,16 @@ class EnvQLearning:
         self.actionCount = len(self.actions)
         self.done = False
         self.stop_count = 0
+        
+        # hyperparameters
+        self.epochs = 3
+        self.gamma = 0.1
+        self.epsilon = 0.1
+        self.decay = 0.05
+
+        self.qtable = np.random.rand(self.stateCount, self.actionCount).tolist()
+
+
 
     def reset(self):
         time.sleep(0.5)
@@ -76,4 +86,17 @@ class EnvQLearning:
         return nextState, reward, self.done
 
     def randomAction(self):
-        return np.random.choice(self.actions);
+        return np.random.choice(self.actions)
+
+    def _update(self):
+        if np.random.uniform() < self.epsilon:
+            action = self.randomAction()
+        else:
+            action = self.qtable[self.ctrl.state].index(max(self.qtable[self.ctrl.state]))
+           
+        next_state, self.ctrl.reward, self.ctrl.done = self.step(action) # take action
+        self.qtable[self.ctrl.state][action] = self.ctrl.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
+        self.ctrl.state = next_state  # update state
+
+        self.epsilon -= self.decay*self.epsilon
+        
