@@ -5,6 +5,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from TrainingModel import EnvQLearning
+from TrainingModel import EnvNN
 
 
 class ControllerInit:
@@ -162,25 +163,26 @@ class ControllerLearn:
     def start(self):
         if self.option =="Q":
             self.env = EnvQLearning(self)
+        if self.option =="NN":
+            self.env = EnvNN(self)
 
         self.robot.reset()
         self.k = 0
-        self.done = False
-
-
+        self.end_episode = False
         self.stop_simulation = False
-
 
     def stop(self):
         return self.stop_simulation
     
     def update(self):
+
+        if self.end_episode:
+            print ('EPISODE OVER')
+            self.env._reset()
+            
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
             return
 
-        if self.done:
-            print ('EPISODE OVER')
-            self.env._reset()
         self.env._update()
