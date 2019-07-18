@@ -8,32 +8,34 @@ class EnvQLearning:
         self.states = [0, 1, 2, 3, 4, 5]  #distance from the wall, 0 = far, 5 = close
         self.stateCount = len(self.states)
         self.actionCount = len(self.actions)
-        self.done = False
         self.stop_count = 0
         
         # hyperparameters
         self.epochs = 15
         self.gamma = 0.1
-        self.epsilon = 0.1
-        self.decay = 0.05
+        self.epsilon = 0.01
+        self.decay = 0.1
+
+        self.state = 0
+        self.reward = 0
 
         self.qtable = np.random.rand(self.stateCount, self.actionCount).tolist()
 
-    def reset(self):
+    def _reset(self):
         time.sleep(0.5)
         print ('-----RESET-----')
         self.ctrl.robot.chassisNP.setPos(0, 0, 0)
         self.ctrl.robot.set_speed(0,0)
-        self.done = False
         self.ctrl.k+=1
         self.ctrl.robot.sim.distance = 1000
         self.ctrl.robot.count = 1   # Speed factor
         self.stop_count = 0
+        self.epsilon -= self.decay*self.epsilon
 
         return 0, 0, False
 
     def step(self, action):
-        
+        done = False
         self.dist_value = self.ctrl.robot.get_dist()
         print ('Distance is '+str(self.dist_value))
         if action==0: # Full speed
@@ -68,7 +70,7 @@ class EnvQLearning:
             nextState = 4
             self.stop_count +=1
             if self.stop_count>100:
-                self.done = True
+                done = True
         elif self.dist_value == 75:
             nextState = 3
         elif self.dist_value == 90:
@@ -77,11 +79,11 @@ class EnvQLearning:
             nextState = 1
         elif self.dist_value == 45:
             nextState = 5
-            self.done = True
+            done = True
         else: 
             nextState = 0
 
-        return nextState, reward, self.done
+        return nextState, reward, done
 
     def randomAction(self):
         return np.random.choice(self.actions)
@@ -90,11 +92,9 @@ class EnvQLearning:
         if np.random.uniform() < self.epsilon:
             action = self.randomAction()
         else:
-            action = self.qtable[self.ctrl.state].index(max(self.qtable[self.ctrl.state]))
+            action = self.qtable[self.state].index(max(self.qtable[self.state]))
            
-        next_state, self.ctrl.reward, self.ctrl.done = self.step(action) # take action
-        self.qtable[self.ctrl.state][action] = self.ctrl.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
-        self.ctrl.state = next_state  # update state
+        next_state, self.reward, self.ctrl.done = self.step(action) # take action
+        self.qtable[self.state][action] = self.reward + self.gamma * max(self.qtable[next_state]) # update qtable 
+        self.state = next_state  # update state
 
-        self.epsilon -= self.decay*self.epsilon
-        

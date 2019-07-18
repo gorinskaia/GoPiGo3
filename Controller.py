@@ -159,8 +159,6 @@ class ControllerLearn:
         self.robot = robot
         self.option = option
 
-        self.reward_list = []
-
     def start(self):
         if self.option =="Q":
             self.env = EnvQLearning(self)
@@ -168,8 +166,7 @@ class ControllerLearn:
         self.robot.reset()
         self.k = 0
         self.done = False
-        self.state = 0
-        self.reward = 0
+
 
         self.stop_simulation = False
 
@@ -187,5 +184,3 @@ class ControllerLearn:
             print ('EPISODE OVER')
             self.env._reset()
         self.env._update()
-
-        
