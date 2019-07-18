@@ -77,7 +77,7 @@ turn_ = ControllerTurn(robot, SPEED, -45)
 follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
 
-learn = ControllerLearn(robot, "Q", SPEED)
+learn = ControllerLearn(robot, "NN", SPEED)
 
 #sequence = [forward, turn_, forward, turn, forward, turn]
 sequence = [learn]

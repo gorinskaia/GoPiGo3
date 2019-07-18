@@ -175,7 +175,6 @@ class ControllerLearn:
         return self.stop_simulation
     
     def update(self):
-
         if self.end_episode:
             print ('EPISODE OVER')
             self.env._reset()
