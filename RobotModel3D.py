@@ -86,7 +86,6 @@ class Robot (BulletVehicle):
         wheel.setRollInfluence(0.1)
 
     def set_speed(self, left_speed, right_speed):
-        self.count -=0.0001
         if left_speed == 0 and right_speed == 0:
             self.setBrake(100, 2)
             self.setBrake(50, 0)
@@ -95,8 +94,8 @@ class Robot (BulletVehicle):
             self.applyEngineForce(0, 1)
         else:        
             self.setBrake(0.23, 2)
-            self.applyEngineForce((left_speed/20) * self.count, 1)
-            self.applyEngineForce((right_speed/20) * self.count, 0)
+            self.applyEngineForce(left_speed/20, 1)
+            self.applyEngineForce(right_speed/20, 0)
             
     def shutdown(self):
         self.set_speed(0,0)

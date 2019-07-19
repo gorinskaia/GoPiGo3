@@ -2,6 +2,7 @@ import time
 import math
 import threading
 import numpy as np
+from numpy import random
 import os
 import matplotlib.pyplot as plt
 from TrainingModel import EnvQLearning
@@ -58,19 +59,18 @@ class ControllerTurn:
         self.speed = speed
         self.angle = angle
         self.robot = robot
-        self.start_time = 0
 
     def start(self):
         self.robot.reset()
-        t = threading.Timer(0.5, self.robot.get_image)
-        t.start()
-        t.join()
+        #t = threading.Timer(0.5, self.robot.get_image)
+        #t.start()
+        #t.join()
 
     def angle_reached(self):
         res = self.robot.get_offset()
         offset = max(abs(res[1]), abs(res[0]))
         turn = ((self.robot.WHEEL_CIRCUMFERENCE*offset)/(self.robot.WHEEL_BASE_CIRCUMFERENCE))/2
-    
+
         return abs(turn)>=abs(self.angle)
 
     def stop(self):
@@ -79,7 +79,6 @@ class ControllerTurn:
     def update(self):
         if self.stop(): 
             return
-        self.robot.get_offset()
         
         if self.angle>0:                         # Turn right
             self.robot.set_speed(0, self.speed)
@@ -154,13 +153,9 @@ class ControllerFollow:
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
 
-
-
-working_layer1 = NeuronLayer (4, 1)
-working_layer2 = NeuronLayer (1, 4)
+working_layer1 = NeuronLayer(4, 1)
+working_layer2 = NeuronLayer(1, 4)
 working_network = NeuralNetwork (working_layer1, working_layer2)
-#weights1 = []
-#weights2 = []
 
 class ControllerLearn:
     'Training'
@@ -192,25 +187,27 @@ class ControllerLearn:
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
-            working_network = self.env.neural_network
-            working_layer1, working_layer2 = self.env.neural_network.layer1, self.env.neural_network.layer2
             return
         self.env._update()
 
 
 class ControllerForwardSmart:
     'Testing the ANN'
-    def __init__(self, robot, speed = 300):
+    def __init__(self, robot, ctrl, speed = 300):
         self.robot = robot
         self.speed = speed
+        self.ctrl = ctrl
 
     def start(self):
-        self.env = EnvNN(self)
-        self.network = NeuralNetwork(working_layer1, working_layer2)
-        self.env.neural_network = self.network
+            
+        self.env = self.ctrl.env
+        
+        print (self.env.neural_network.layer1.weights)
+        print (self.env.neural_network.layer2.weights)
 
     def stop(self):
         return False
     
     def update(self):
+        #print (self.robot.get_dist())
         self.env._update()
