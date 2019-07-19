@@ -9,6 +9,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from panda3d.bullet import *
 from direct.task import Task
+from direct.showbase.InputStateGlobal import inputState
 
 
 class Simulation(ShowBase):
@@ -26,7 +27,6 @@ class Simulation(ShowBase):
         self.sColl = self.initCollisionSphere(self.robot.robotModel, True, Point3(0,0,0))
 
         # Camera setting
-
         my_cam1 = Camera('cam1')
         self.my_camera1 = render.attachNewNode(my_cam1)
         self.my_camera1.setName('camera1')
@@ -82,9 +82,38 @@ class Simulation(ShowBase):
 
         self.distance = 1000
 
+        # Input
+        inputState.watchWithModifiers('forward', 'w')
+        inputState.watchWithModifiers('left', 'a')
+        inputState.watchWithModifiers('reverse', 's')
+        inputState.watchWithModifiers('right', 'd')
+
+
+    def processInput(self, dt):
+        force = Vec3(0, 0, 0)
+        torque = Vec3(0, 0, 0)
+
+        if inputState.isSet('forward'): force.setY( 1.0)
+        if inputState.isSet('reverse'): force.setY(-1.0)
+        if inputState.isSet('left'):    force.setX(-1.0)
+        if inputState.isSet('right'):   force.setX( 1.0)
+
+        force *= 30.0
+        torque *= 10.0
+
+        force = render.getRelativeVector(self.boxNP, force)
+        torque = render.getRelativeVector(self.boxNP, torque)
+
+        self.boxNP.node().setActive(True)
+        self.boxNP.node().applyCentralForce(force)
+        self.boxNP.node().applyTorque(torque)
+
     def update(self, task):
         dt = globalClock.getDt()
         world.doPhysics(dt, 50, 0.008)
+
+        self.processInput(dt)
+        
         if not self.ctrl.stop():
             self.ctrl.update()
         else:
@@ -97,7 +126,21 @@ class Simulation(ShowBase):
         node.addShape(shape)   
         np = render.attachNewNode(node)
         np.setPos(0, 0, -1.5)
-        world.attachRigidBody(node) 
+        world.attachRigidBody(node)
+
+        # Box (dynamic)
+        shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+        self.boxNP = render.attachNewNode(BulletRigidBodyNode('Box'))
+        self.boxNP.node().setMass(1.0)
+        self.boxNP.node().addShape(shape)
+        self.boxNP.setPos(0, 0, 2)
+        #self.boxNP.setScale(2, 1, 0.5)
+        self.boxNP.setCollideMask(BitMask32.allOn())
+        world.attachRigidBody(self.boxNP.node())
+
+        visualNP = loader.loadModel('models/robot.egg')
+        visualNP.clearModelNodes()
+        visualNP.reparentTo(self.boxNP)
 
     def collide(self, collEntry):
         #print('Collision distance', collEntry.getIntoNode().getName())
