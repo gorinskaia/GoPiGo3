@@ -145,16 +145,17 @@ class EnvNN:
 
         self.ctrl = ctrl
         self.epochs = 200
-        
+
+    def train(self):
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
-        layer2 = NeuronLayer(1, 4)
+        layer2 = NeuronLayer(1, 4) # output
 
         self.neural_network = NeuralNetwork(layer1, layer2)
         training_set_inputs = array([[15.0],[45.0], [60.0], [75.0], [90.0], [135.0],[1000.0]])
  
         training_set_inputs = self.normalize(training_set_inputs)
         training_set_outputs = array([[ 0, 0, 0, 0.5, 0.8, 1, 1]]).T
-
+        
         self.neural_network.train(training_set_inputs, training_set_outputs, 40000)
 
     def normalize(self, arr):
@@ -164,7 +165,9 @@ class EnvNN:
         return _res
 
     def calculate_speed(self, dist_value):
+        
         new_input = (dist_value - 15.0)/(1000.0 - 15.0)
+
         hidden_state, output = self.neural_network.forward(array([new_input]))
         print (output[0])
         if output[0]<0.1:
@@ -175,4 +178,3 @@ class EnvNN:
         dist_value = self.ctrl.robot.get_dist()
         new_speed = self.calculate_speed(dist_value)
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed, self.ctrl.speed*new_speed)
-

@@ -6,6 +6,8 @@ import os
 import matplotlib.pyplot as plt
 from TrainingModel import EnvQLearning
 from TrainingModel import EnvNN
+from TrainingModel import NeuralNetwork
+from TrainingModel import NeuronLayer
 
 
 class ControllerInit:
@@ -152,7 +154,14 @@ class ControllerFollow:
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
 
-   
+
+
+working_layer1 = NeuronLayer (4, 1)
+working_layer2 = NeuronLayer (1, 4)
+working_network = NeuralNetwork (working_layer1, working_layer2)
+#weights1 = []
+#weights2 = []
+
 class ControllerLearn:
     'Training'
     def __init__(self, robot, option, speed = 300):
@@ -165,6 +174,7 @@ class ControllerLearn:
             self.env = EnvQLearning(self)
         if self.option =="NN":
             self.env = EnvNN(self)
+            self.env.train()
 
         self.robot.reset()
         self.k = 0
@@ -182,6 +192,25 @@ class ControllerLearn:
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
+            working_network = self.env.neural_network
+            working_layer1, working_layer2 = self.env.neural_network.layer1, self.env.neural_network.layer2
             return
+        self.env._update()
 
+
+class ControllerForwardSmart:
+    'Testing the ANN'
+    def __init__(self, robot, speed = 300):
+        self.robot = robot
+        self.speed = speed
+
+    def start(self):
+        self.env = EnvNN(self)
+        self.network = NeuralNetwork(working_layer1, working_layer2)
+        self.env.neural_network = self.network
+
+    def stop(self):
+        return False
+    
+    def update(self):
         self.env._update()
