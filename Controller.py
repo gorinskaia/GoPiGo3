@@ -45,7 +45,7 @@ class ControllerForward:
         return self.robot.condition(self)
     
     def update(self):
-        print (self.robot.get_dist())
+        #print (self.robot.get_dist())
         cl, cr = self.robot.odometry()
 
         if self.stop():
@@ -137,10 +137,11 @@ class ControllerFollow:
     def update(self):
         cl = 1
         cr = 1
-        if self.cX < (self.robot.CAMX/2 - 15):
+        diff = int(self.robot.CAMX/10)
+        if self.cX < (self.robot.CAMX/2 - diff):
             cl = 0.75
             cr = 1.25
-        elif self.cX > (self.robot.CAMX/2 + 15):
+        elif self.cX > (self.robot.CAMX/2 + diff):
             cl = 1.25
             cr = 0.75
         else:
@@ -152,10 +153,6 @@ class ControllerFollow:
             self.robot.shutdown()
             return
         self.robot.set_speed(self.speed*cl, self.speed*cr)
-
-working_layer1 = NeuronLayer(4, 1)
-working_layer2 = NeuronLayer(1, 4)
-working_network = NeuralNetwork (working_layer1, working_layer2)
 
 class ControllerLearn:
     'Training'

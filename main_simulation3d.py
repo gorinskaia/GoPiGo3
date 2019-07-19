@@ -93,10 +93,10 @@ class Simulation(ShowBase):
         force = Vec3(0, 0, 0)
         torque = Vec3(0, 0, 0)
 
-        if inputState.isSet('forward'): force.setY( 1.0)
-        if inputState.isSet('reverse'): force.setY(-1.0)
-        if inputState.isSet('left'):    force.setX(-1.0)
-        if inputState.isSet('right'):   force.setX( 1.0)
+        if inputState.isSet('forward'): force.setY( 0.5)
+        if inputState.isSet('reverse'): force.setY(-0.5)
+        if inputState.isSet('left'):    force.setX(-0.5)
+        if inputState.isSet('right'):   force.setX( 0.5)
 
         force *= 30.0
         torque *= 10.0
@@ -131,14 +131,16 @@ class Simulation(ShowBase):
         # Box (dynamic)
         shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
         self.boxNP = render.attachNewNode(BulletRigidBodyNode('Box'))
-        self.boxNP.node().setMass(1.0)
+        self.boxNP.node().setMass(0.7)
         self.boxNP.node().addShape(shape)
-        self.boxNP.setPos(0, 0, 2)
-        #self.boxNP.setScale(2, 1, 0.5)
+        self.boxNP.setPos(0, 7, 1)
+        tex = loader.loadTexture("textures/red.jpg")
+        self.boxNP.setTexture(tex, 1)
+        #self.boxNP.setScale(2, 1, 2)
         self.boxNP.setCollideMask(BitMask32.allOn())
         world.attachRigidBody(self.boxNP.node())
 
-        visualNP = loader.loadModel('models/robot.egg')
+        visualNP = loader.loadModel('models/box.egg')
         visualNP.clearModelNodes()
         visualNP.reparentTo(self.boxNP)
 
@@ -168,7 +170,7 @@ class Simulation(ShowBase):
 
 
     def walls (self, pos, scale, wall1, wall2, shape):
-        tex = loader.loadTexture("textures/text_photo.jpg")
+        tex = loader.loadTexture("textures/wall.jpg")
         node = BulletRigidBodyNode('Box')
         node.setMass(0)
         node.addShape(shape)
