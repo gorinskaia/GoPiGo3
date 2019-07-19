@@ -203,22 +203,15 @@ class ControllerForwardSmart:
         self.speed = speed
         self.ctrl = ctrl
         self.k = 0
-        
-    '''def start(self):
-        self.env = self.ctrl.env
-        self.ctrl.k = 0'''
 
     def start(self):
         self.env = EnvNN(self)
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
         layer2 = NeuronLayer(1, 4) # output
-        layer1.weights = [[-15.33142143,  -9.87276011,  13.2755884,  -1.25101618]]
-        layer2.weights = [[-18.23516411],[-11.63640391],[ 12.50025779],[ -2.86733605]]
+        layer1.weights = [[9.33508627 , -0.14762897, -13.5186365,  0.97483954]]
+        layer2.weights = [[  8.49960835], [ -1.6299063 ], [-17.82664448], [ -0.43608188]]
         self.env.neural_network = NeuralNetwork(layer1, layer2)
 
-    '''def stop(self):
-        return self.ctrl.k >= self.env.epochs'''
-    
     def stop(self):
         return self.k >= self.env.epochs
     

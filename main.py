@@ -28,7 +28,7 @@ class Option:
             self.sim = Simulation()
             j=1 # For the number of a collision sphere
             for i in numpy.arange(0, COLLISION_DIST/30, 0.5):
-                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i,1),j)
+                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i+1,1),j)
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
                 j+=1

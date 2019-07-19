@@ -151,10 +151,10 @@ class EnvNN:
         layer2 = NeuronLayer(1, 4) # output
 
         self.neural_network = NeuralNetwork(layer1, layer2)
-        training_set_inputs = array([[15.0],[45.0], [60.0], [75.0], [90.0], [150.0],[1000.0]])
+        training_set_inputs = array([[15.0],[30.0], [60.0], [75.0], [90.0], [150.0], [300], [1000.0]])
  
         training_set_inputs = self.normalize(training_set_inputs)
-        training_set_outputs = array([[ 0, 0, 0, 0.5, 0.7, 0.95, 1]]).T
+        training_set_outputs = array([[ 0, 0.1, 0.2, 0.5, 0.7, 0.95, 0.99, 1]]).T
         
         self.neural_network.train(training_set_inputs, training_set_outputs, 15000)
 
@@ -173,6 +173,6 @@ class EnvNN:
         dist_value = self.ctrl.robot.get_dist()
         new_speed = self.calculate_speed(dist_value)
         print (new_speed)
-        if new_speed < 0.1:
+        if new_speed < 0.15:
             self.ctrl.k+=1
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed, self.ctrl.speed*new_speed)
