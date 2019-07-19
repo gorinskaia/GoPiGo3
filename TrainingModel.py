@@ -143,7 +143,7 @@ class NeuralNetwork():
 class EnvNN:
     def __init__(self, ctrl):
         self.ctrl = ctrl
-        self.epochs = 200
+        self.epochs = 150
         self.ctrl.robot.sim.distance = 1000
 
     def train(self):
@@ -151,12 +151,12 @@ class EnvNN:
         layer2 = NeuronLayer(1, 4) # output
 
         self.neural_network = NeuralNetwork(layer1, layer2)
-        training_set_inputs = array([[15.0],[45.0], [65.0], [75.0], [90.0], [135.0],[1000.0]])
+        training_set_inputs = array([[15.0],[45.0], [60.0], [75.0], [90.0], [150.0],[1000.0]])
  
         training_set_inputs = self.normalize(training_set_inputs)
-        training_set_outputs = array([[ 0, 0, 0, 0.5, 0.8, 1, 1]]).T
+        training_set_outputs = array([[ 0, 0, 0, 0.5, 0.7, 0.95, 1]]).T
         
-        self.neural_network.train(training_set_inputs, training_set_outputs, 40000)
+        self.neural_network.train(training_set_inputs, training_set_outputs, 10000)
 
     def normalize(self, arr):
         _res = arr
@@ -167,12 +167,12 @@ class EnvNN:
     def calculate_speed(self, dist_value):
         new_input = (dist_value - 15.0)/(1000.0 - 15.0)
         hidden_state, output = self.neural_network.forward(array([new_input]))
-        print (output[0])
-        if output[0]<0.1:
-            self.ctrl.k+=1
         return (output[0])
 
     def _update(self):
         dist_value = self.ctrl.robot.get_dist()
         new_speed = self.calculate_speed(dist_value)
+        print (new_speed)
+        if new_speed < 0.1:
+            self.ctrl.k+=1
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed, self.ctrl.speed*new_speed)

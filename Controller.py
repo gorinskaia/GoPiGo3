@@ -197,16 +197,13 @@ class ControllerForwardSmart:
         self.robot = robot
         self.speed = speed
         self.ctrl = ctrl
-
-    def start(self):
-            
-        self.env = self.ctrl.env
         
-        print (self.env.neural_network.layer1.weights)
-        print (self.env.neural_network.layer2.weights)
+    def start(self):
+        self.env = self.ctrl.env
+        self.ctrl.k = 0
 
     def stop(self):
-        return False
+        return self.ctrl.k >= self.env.epochs
     
     def update(self):
         #print (self.robot.get_dist())
