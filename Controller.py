@@ -187,9 +187,14 @@ class ControllerLearn:
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
+
+            f = open("weights.txt","w+")
+            f.write(str(self.env.neural_network.layer1.weights))
+            f.write(str(self.env.neural_network.layer2.weights))
+            f.close()
+            
             return
         self.env._update()
-
 
 class ControllerForwardSmart:
     'Testing the ANN'
@@ -197,14 +202,25 @@ class ControllerForwardSmart:
         self.robot = robot
         self.speed = speed
         self.ctrl = ctrl
+        self.k = 0
         
-    def start(self):
+    '''def start(self):
         self.env = self.ctrl.env
-        self.ctrl.k = 0
+        self.ctrl.k = 0'''
 
+    def start(self):
+        self.env = EnvNN(self)
+        layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
+        layer2 = NeuronLayer(1, 4) # output
+        layer1.weights = [[-15.33142143,  -9.87276011,  13.2755884,  -1.25101618]]
+        layer2.weights = [[-18.23516411],[-11.63640391],[ 12.50025779],[ -2.86733605]]
+        self.env.neural_network = NeuralNetwork(layer1, layer2)
+
+    '''def stop(self):
+        return self.ctrl.k >= self.env.epochs'''
+    
     def stop(self):
-        return self.ctrl.k >= self.env.epochs
+        return self.k >= self.env.epochs
     
     def update(self):
-        #print (self.robot.get_dist())
         self.env._update()

@@ -9,7 +9,6 @@ import math
 
 class Robot (BulletVehicle):
     def __init__ (self, render, world, sim):
-
         self.sim = sim
         self.world = world
         WHEEL_BASE_WIDTH         = 0.0065
@@ -41,7 +40,6 @@ class Robot (BulletVehicle):
         self.robotModel.reparentTo (self.chassisNP) # Reparent the model to the node
         robot_tex = loader.loadTexture("textures/robot.jpeg")
         self.robotModel.setTexture(robot_tex, 1)
-
         self.world.attachRigidBody(self.chassisNP.node())
 
         # Vehicle
@@ -69,7 +67,6 @@ class Robot (BulletVehicle):
         
     def addWheel(self, pos, np):
         wheel = self.createWheel()
-        
         wheel.setNode(np.node())
         wheel.setChassisConnectionPointCs(pos)
         wheel.setFrontWheel(True)
@@ -101,6 +98,8 @@ class Robot (BulletVehicle):
         self.set_speed(0,0)
             
     def reset(self):
+
+        self.sim.distance = 1000
         self.set_speed(0,0)
         self.total_distl = 0
         self.total_distr = 0

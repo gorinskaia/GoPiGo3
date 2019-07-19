@@ -81,7 +81,7 @@ learn = ControllerLearn(robot, "NN", SPEED)
 forward_smart = ControllerForwardSmart (robot, learn, SPEED)
 
 #sequence = [forward, turn_, forward, turn, forward, turn]
-sequence = [learn, turn_, forward_smart]
+sequence = [forward_smart]
 
 opt_robot.run(sequence)
 

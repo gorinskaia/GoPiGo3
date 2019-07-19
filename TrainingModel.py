@@ -143,8 +143,8 @@ class NeuralNetwork():
 class EnvNN:
     def __init__(self, ctrl):
         self.ctrl = ctrl
-        self.epochs = 150
-        self.ctrl.robot.sim.distance = 1000
+        self.epochs = 100
+        self.ctrl.robot.reset()
 
     def train(self):
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
@@ -156,7 +156,7 @@ class EnvNN:
         training_set_inputs = self.normalize(training_set_inputs)
         training_set_outputs = array([[ 0, 0, 0, 0.5, 0.7, 0.95, 1]]).T
         
-        self.neural_network.train(training_set_inputs, training_set_outputs, 10000)
+        self.neural_network.train(training_set_inputs, training_set_outputs, 15000)
 
     def normalize(self, arr):
         _res = arr
