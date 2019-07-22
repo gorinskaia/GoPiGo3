@@ -1,6 +1,7 @@
 import numpy as np
 import time
 from numpy import exp, array, random, dot
+import threading
 
 class EnvQLearning:
     def __init__(self, ctrl):
@@ -121,7 +122,7 @@ class NeuralNetwork():
         for iteration in range(number_of_training_iterations):
 
             output_layer_1, output_layer_2 = self.forward(training_set_inputs)
-
+            
             layer2_error = training_set_outputs - output_layer_2
             layer2_delta = layer2_error * self.__sigmoid_derivative(output_layer_2)
 
@@ -146,17 +147,21 @@ class EnvNN:
         self.epochs = 100
         self.ctrl.robot.reset()
 
+        t = threading.Thread(target=self.ctrl.image, daemon = True) #or put it outside of controllers
+        t.start()
+
     def train(self):
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
         layer2 = NeuronLayer(1, 4) # output
 
         self.neural_network = NeuralNetwork(layer1, layer2)
+        
         training_set_inputs = array([[15.0],[30.0], [60.0], [75.0], [90.0], [150.0], [300], [1000.0]])
- 
         training_set_inputs = self.normalize(training_set_inputs)
+        
         training_set_outputs = array([[ 0, 0.1, 0.2, 0.5, 0.7, 0.95, 0.99, 1]]).T
         
-        self.neural_network.train(training_set_inputs, training_set_outputs, 15000)
+        self.neural_network.train(training_set_inputs, training_set_outputs, 50000)
 
     def normalize(self, arr):
         _res = arr
@@ -164,15 +169,55 @@ class EnvNN:
             _res[i][0] = (arr[i][0] - min(arr))/(max (arr) - min(arr))
         return _res
 
-    def calculate_speed(self, dist_value):
-        new_input = (dist_value - 15.0)/(1000.0 - 15.0)
+    def calculate_speed(self, value):
+        new_input = (value - 15.0)/(1000.0 - 15.0)
         hidden_state, output = self.neural_network.forward(array([new_input]))
         return (output[0])
 
     def _update(self):
         dist_value = self.ctrl.robot.get_dist()
-        new_speed = self.calculate_speed(dist_value)
-        print (new_speed)
-        if new_speed < 0.15: #stop condition
+        self.calculate_speed(self.ctrl.cX)
+        new_speed = self.calculate_speed(self.ctrl.cX)
+        if new_speed < 0.15:
             self.ctrl.k+=1
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed, self.ctrl.speed*new_speed)
+
+class EnvNNFollowColor:
+    def __init__(self, ctrl):
+        self.ctrl = ctrl
+        self.epochs = 100
+        self.ctrl.robot.reset()
+
+        t = threading.Thread(target=self.ctrl.image, daemon = True) #or put it outside of controllers
+        t.start()
+
+    def train(self):
+        layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
+        layer2 = NeuronLayer(2, 4) # output
+
+        self.neural_network = NeuralNetwork(layer1, layer2)
+        
+        training_set_inputs = array ([[320.0], [1.0], [60.0],[580.0], [640.0]])
+        training_set_inputs = self.normalize(training_set_inputs)
+        
+        training_set_outputs = array([[1.0, 1.0], [-1.1, 0.6], [-1.0, 0.5], [0.5, -1.0], [0.6, -1.1]])
+        
+        self.neural_network.train(training_set_inputs, training_set_outputs, 50000)
+
+    def normalize(self, arr):
+        _res = arr
+        for i in range(len(arr)):
+            _res[i][0] = (arr[i][0] - min(arr))/(max (arr) - min(arr))
+        return _res
+
+    def calculate_speed(self, value):
+        new_input = (value - 1.0)/(640.0 - 1.0)
+        hidden_state, output = self.neural_network.forward(array([new_input]))
+        return output
+
+    def _update(self):
+        self.calculate_speed(self.ctrl.cX)
+        print (self.ctrl.cX)
+        new_speed = self.calculate_speed(self.ctrl.cX)
+        print (new_speed)
+        self.ctrl.robot.set_speed(self.ctrl.speed*new_speed[0], self.ctrl.speed*new_speed[1])

@@ -7,6 +7,7 @@ import os
 import matplotlib.pyplot as plt
 from TrainingModel import EnvQLearning
 from TrainingModel import EnvNN
+from TrainingModel import EnvNNFollowColor
 from TrainingModel import NeuralNetwork
 from TrainingModel import NeuronLayer
 
@@ -139,11 +140,11 @@ class ControllerFollow:
         cr = 1
         diff = int(self.robot.CAMX/10)
         if self.cX < (self.robot.CAMX/2 - diff):
-            cl = 0.75
-            cr = 1.25
+            cl = 0.5
+            cr = 1.5
         elif self.cX > (self.robot.CAMX/2 + diff):
-            cl = 1.25
-            cr = 0.75
+            cl = 1.5
+            cr = 0.5
         else:
             cr = 1
             cl = 1
@@ -160,18 +161,24 @@ class ControllerLearn:
         self.speed = speed
         self.robot = robot
         self.option = option
+        self.taking_photo = True
 
     def start(self):
         if self.option =="Q":
             self.env = EnvQLearning(self)
         if self.option =="NN":
-            self.env = EnvNN(self)
+            #self.env = EnvNN(self)
+            self.env = EnvNNFollowColor(self)
             self.env.train()
 
         self.robot.reset()
         self.k = 0
         self.end_episode = False
         self.stop_simulation = False
+
+    def image(self):
+        while self.taking_photo:
+            self.cX, self.cY = self.robot.get_image()
 
     def stop(self):
         return self.stop_simulation
@@ -184,12 +191,10 @@ class ControllerLearn:
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
-
             f = open("weights.txt","w+")
             f.write(str(self.env.neural_network.layer1.weights))
             f.write(str(self.env.neural_network.layer2.weights))
             f.close()
-            
             return
         self.env._update()
 

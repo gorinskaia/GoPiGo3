@@ -61,7 +61,7 @@ class Option:
 # --- Global variables ---
 
 COLLISION_DIST = 100
-SPEED = 290
+SPEED = 300.0
 
 # --- Choose an option between 3D Simulation and Real World Action
 while True:
@@ -82,7 +82,7 @@ forward_smart = ControllerForwardSmart (robot, learn, SPEED)
 
 #sequence = [forward, turn_, forward, turn, forward, turn]
 #sequence = [forward_smart]
-sequence = [follow]
+sequence = [learn]
 
 opt_robot.run(sequence)
 
