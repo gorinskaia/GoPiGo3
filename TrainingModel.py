@@ -188,9 +188,6 @@ class EnvNNFollowColor:
         self.epochs = 100
         self.ctrl.robot.reset()
 
-        t = threading.Thread(target=self.ctrl.image, daemon = True) #or put it outside of controllers
-        t.start()
-
     def train(self):
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
         layer2 = NeuronLayer(2, 4) # output
@@ -200,7 +197,7 @@ class EnvNNFollowColor:
         training_set_inputs = array ([[320.0], [1.0], [60.0],[580.0], [640.0]])
         training_set_inputs = self.normalize(training_set_inputs)
         
-        training_set_outputs = array([[1.0, 1.0], [-1.1, 0.6], [-1.0, 0.5], [0.5, -1.0], [0.6, -1.1]])
+        training_set_outputs = array([[1.0, 1.0], [0.0, 0.6], [0.0, 0.5], [0.5, 0.0], [0.6, 0.0]])
         
         self.neural_network.train(training_set_inputs, training_set_outputs, 50000)
 
@@ -217,7 +214,5 @@ class EnvNNFollowColor:
 
     def _update(self):
         self.calculate_speed(self.ctrl.cX)
-        print (self.ctrl.cX)
         new_speed = self.calculate_speed(self.ctrl.cX)
-        print (new_speed)
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed[0], self.ctrl.speed*new_speed[1])

@@ -162,39 +162,39 @@ class ControllerLearn:
         self.robot = robot
         self.option = option
         self.taking_photo = True
+        self.cX, self.cY = self.robot.CAMX/2, self.robot.CAMY/2
 
     def start(self):
+
         if self.option =="Q":
             self.env = EnvQLearning(self)
         if self.option =="NN":
             #self.env = EnvNN(self)
+            t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
+            t.start()
+            
             self.env = EnvNNFollowColor(self)
             self.env.train()
+            f = open("weights.txt","w+")
+            f.write(str(self.env.neural_network.layer1.weights))
+            f.write(str(self.env.neural_network.layer2.weights))
+            f.close()
 
         self.robot.reset()
         self.k = 0
         self.end_episode = False
         self.stop_simulation = False
 
-    def image(self):
-        while self.taking_photo:
-            self.cX, self.cY = self.robot.get_image()
-
     def stop(self):
         return self.stop_simulation
     
     def update(self):
         if self.end_episode:
-            print ('EPISODE OVER')
             self.env._reset()
             
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
-            f = open("weights.txt","w+")
-            f.write(str(self.env.neural_network.layer1.weights))
-            f.write(str(self.env.neural_network.layer2.weights))
-            f.close()
             return
         self.env._update()
 
@@ -205,13 +205,33 @@ class ControllerForwardSmart:
         self.speed = speed
         self.ctrl = ctrl
         self.k = 0
+        self.taking_photo = True
+        self.cX, self.cY = self.robot.CAMX/2, self.robot.CAMY/2
 
+    def image(self):
+        while self.taking_photo:
+            self.cX, self.cY = self.robot.get_image()
     def start(self):
-        self.env = EnvNN(self)
+        
+        # --- Approach the wall ---
+        
+        #self.env = EnvNN(self)
+        #layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
+        #layer2 = NeuronLayer(1, 4) # output
+        #layer1.weights = [[9.33508627 , -0.14762897, -13.5186365,  0.97483954]]
+        #layer2.weights = [[  8.49960835], [ -1.6299063 ], [-17.82664448], [ -0.43608188]]
+        #self.env.neural_network = NeuralNetwork(layer1, layer2)
+
+        # --- Follow Color ---
+        
+        self.env = EnvNNFollowColor(self)
+        t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
+        t.start()
+            
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
-        layer2 = NeuronLayer(1, 4) # output
-        layer1.weights = [[9.33508627 , -0.14762897, -13.5186365,  0.97483954]]
-        layer2.weights = [[  8.49960835], [ -1.6299063 ], [-17.82664448], [ -0.43608188]]
+        layer2 = NeuronLayer(2, 4) # output
+        layer1.weights = [[-4.68038662, -1.7743828,   1.86610518,  4.53508851]]
+        layer2.weights = [[-22.71644982, -17.82326329], [ 16.26046127,  28.18960106], [-18.02872989, -23.23931767], [ 13.39816844,  12.61519465]]
         self.env.neural_network = NeuralNetwork(layer1, layer2)
 
     def stop(self):
