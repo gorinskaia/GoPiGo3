@@ -173,6 +173,6 @@ class EnvNN:
         dist_value = self.ctrl.robot.get_dist()
         new_speed = self.calculate_speed(dist_value)
         print (new_speed)
-        if new_speed < 0.15:
+        if new_speed < 0.15: #stop condition
             self.ctrl.k+=1
         self.ctrl.robot.set_speed(self.ctrl.speed*new_speed, self.ctrl.speed*new_speed)
