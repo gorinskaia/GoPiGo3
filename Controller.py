@@ -164,8 +164,11 @@ class ControllerLearn:
         self.taking_photo = True
         self.cX, self.cY = self.robot.CAMX/2, self.robot.CAMY/2
 
-    def start(self):
+    def image(self):
+        while self.taking_photo:
+            self.cX, self.cY = self.robot.get_image()
 
+    def start(self):
         if self.option =="Q":
             self.env = EnvQLearning(self)
         if self.option =="NN":
@@ -232,8 +235,11 @@ class ControllerForwardSmart:
             
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
         layer2 = NeuronLayer(2, 4) # output
-        layer1.weights = [[-4.68038662, -1.7743828,   1.86610518,  4.53508851]]
-        layer2.weights = [[-22.71644982, -17.82326329], [ 16.26046127,  28.18960106], [-18.02872989, -23.23931767], [ 13.39816844,  12.61519465]]
+        layer1.weights = [[1.42118996, -1.92753475, -5.08044704,  1.13369032]]
+        layer2.weights = [[ -3.43629242,  -4.35311457],
+                         [ 24.65651608,  36.16606826],
+                         [-31.92160833, -25.99358137],
+                         [ -0.50843814,  -6.09702519]]
         self.env.neural_network = NeuralNetwork(layer1, layer2)
 
     def stop(self):
