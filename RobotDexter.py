@@ -1,9 +1,7 @@
 import time
 import math
-from picamera import PiCamera
-from io import BytesIO
-from PIL import Image
 from images import Image_Processing
+from picamera import PiCamera
 
 class Dexter:
     'Robot class'
@@ -12,8 +10,8 @@ class Dexter:
     WHEEL_DIAMETER           = 66.5 #  diametre de la roue (mm)
     WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # perimetre du cercle de rotation (mm)
     WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # perimetre de la roue (mm)
-    CAMX = 640
-    CAMY = 480
+    CAMX = 320
+    CAMY = 280
     
     def __init__(self, gpg):
         self.gpg = gpg

@@ -119,11 +119,11 @@ class ControllerFollow:
         self.cY = self.robot.CAMY/2
         self.flag = False
         self.taking_photo = True
-        
-        t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
-        t.start()
 
     def start(self):
+        t = threading.Thread(target=self.image, daemon = True)
+        t.start()
+        
         self.robot.reset()
         self.flag = False
         self.robot.count = 1
@@ -207,12 +207,14 @@ class ControllerForwardSmart:
         self.k = 0
         self.taking_photo = True
         self.cX, self.cY = self.robot.CAMX/2, self.robot.CAMY/2
+        
+        
 
     def image(self):
         while self.taking_photo:
             self.cX, self.cY = self.robot.get_image()
+            
     def start(self):
-        
         # --- Approach the wall ---
         
         #self.env = EnvNN(self)
@@ -223,10 +225,10 @@ class ControllerForwardSmart:
         #self.env.neural_network = NeuralNetwork(layer1, layer2)
 
         # --- Follow Color ---
+        t = threading.Thread(target=self.image, daemon = True)
+        t.start()
         
         self.env = EnvNNFollowColor(self)
-        t = threading.Thread(target=self.image, daemon = True) #or put it outside of controllers
-        t.start()
             
         layer1 = NeuronLayer(4, 1) # 4 neurons, 1 input
         layer2 = NeuronLayer(2, 4) # output
@@ -235,7 +237,10 @@ class ControllerForwardSmart:
         self.env.neural_network = NeuralNetwork(layer1, layer2)
 
     def stop(self):
-        return self.k >= self.env.epochs
+        dist = self.robot.get_dist()
+        if self.k >= self.env.epochs or dist < 100:
+            self.taking_photo = False
+            return True
     
     def update(self):
         self.env._update()

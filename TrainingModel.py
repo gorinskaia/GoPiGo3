@@ -194,7 +194,7 @@ class EnvNNFollowColor:
 
         self.neural_network = NeuralNetwork(layer1, layer2)
         
-        training_set_inputs = array ([[320.0], [1.0], [60.0],[580.0], [640.0]])
+        training_set_inputs = array ([[320.0/2], [1.0], [60.0/2],[580.0/2], [640.0/2]])
         training_set_inputs = self.normalize(training_set_inputs)
         
         training_set_outputs = array([[1.0, 1.0], [0.0, 0.6], [0.0, 0.5], [0.5, 0.0], [0.6, 0.0]])
@@ -208,7 +208,7 @@ class EnvNNFollowColor:
         return _res
 
     def calculate_speed(self, value):
-        new_input = (value - 1.0)/(640.0 - 1.0)
+        new_input = (value - 1.0)/(640.0/2 - 1.0)
         hidden_state, output = self.neural_network.forward(array([new_input]))
         return output
 
