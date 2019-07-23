@@ -23,12 +23,6 @@ class Dexter:
     def set_speed(self, left_speed, right_speed):
         self.gpg.set_motor_dps(self.gpg.MOTOR_LEFT,left_speed)
         self.gpg.set_motor_dps(self.gpg.MOTOR_RIGHT,right_speed)
-
-    def setAngle(self, angle, speed = 300):
-        if angle>0:                         # Turn right
-            self.set_speed(speed,0)
-        else:                               # Turn left
-            self.set_speed(0,speed)    
         
     def shutdown(self):
         self.set_speed(0,0)
