@@ -15,8 +15,8 @@ class Robot (BulletVehicle):
         WHEEL_DIAMETER           = 0.66
         self.WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi
         self.WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi
-        self.CAMX = 640
-        self.CAMY = 480
+        self.CAMX = 320
+        self.CAMY = 240
 
         self.total_distl = 0
         self.total_distr = 0
@@ -31,7 +31,7 @@ class Robot (BulletVehicle):
         
         self.chassisNP = render.attachNewNode(BulletRigidBodyNode('Vehicle'))
         self.chassisNP.node().addShape(shape, ts)
-        self.chassisNP.setPos(0, -15, 0)
+        self.chassisNP.setPos(0, 0, 0)
         self.chassisNP.node().setMass(1)
         self.chassisNP.node().setDeactivationEnabled(False)
         self.chassisNP.setScale (0.5,0.9,0.5)

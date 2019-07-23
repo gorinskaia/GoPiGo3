@@ -193,11 +193,20 @@ class ControllerLearn:
     
     def update(self):
         if self.end_episode:
+            self.env.reward_list.append(self.env.cumulated_reward)
+            self.env.episode_list.append(int(self.k+1))
             self.env._reset()
             
         if self.k >= self.env.epochs:
             print ('GAME OVER')
             self.stop_simulation = True
+            print (self.env.reward_list)
+            print (self.env.episode_list)
+            plt.plot(self.env.episode_list, self.env.reward_list)
+            plt.ylabel('reward')
+            plt.xlabel('episode')
+            plt.show()
+            
             return
         self.env._update()
 
@@ -211,8 +220,6 @@ class ControllerForwardSmart:
         self.taking_photo = True
         self.cX, self.cY = self.robot.CAMX/2, self.robot.CAMY/2
         
-        
-
     def image(self):
         while self.taking_photo:
             self.cX, self.cY = self.robot.get_image()

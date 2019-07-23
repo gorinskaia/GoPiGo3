@@ -83,7 +83,7 @@ class Simulation(ShowBase):
         self.distance = 1000
 
         # Input
-        inputState.watchWithModifiers('forward', 'w')
+        '''inputState.watchWithModifiers('forward', 'w')
         inputState.watchWithModifiers('left', 'a')
         inputState.watchWithModifiers('reverse', 's')
         inputState.watchWithModifiers('right', 'd')
@@ -106,13 +106,13 @@ class Simulation(ShowBase):
 
         self.boxNP.node().setActive(True)
         self.boxNP.node().applyCentralForce(force)
-        self.boxNP.node().applyTorque(torque)
+        self.boxNP.node().applyTorque(torque)'''
 
     def update(self, task):
         dt = globalClock.getDt()
         world.doPhysics(dt, 50, 0.008)
 
-        self.processInput(dt)
+        '''self.processInput(dt)'''
         
         if not self.ctrl.stop():
             self.ctrl.update()
@@ -129,20 +129,19 @@ class Simulation(ShowBase):
         world.attachRigidBody(node)
 
         # Box (dynamic)
-        shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+        '''shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
         self.boxNP = render.attachNewNode(BulletRigidBodyNode('Box'))
         self.boxNP.node().setMass(0.7)
         self.boxNP.node().addShape(shape)
         self.boxNP.setPos(0, 7, 1)
         tex = loader.loadTexture("textures/red.jpg")
         self.boxNP.setTexture(tex, 1)
-        #self.boxNP.setScale(2, 1, 2)
         self.boxNP.setCollideMask(BitMask32.allOn())
         world.attachRigidBody(self.boxNP.node())
 
         visualNP = loader.loadModel('models/box.egg')
         visualNP.clearModelNodes()
-        visualNP.reparentTo(self.boxNP)
+        visualNP.reparentTo(self.boxNP)'''
 
     def collide(self, collEntry):
         #print('Collision distance', collEntry.getIntoNode().getName())

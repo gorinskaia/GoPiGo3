@@ -8,8 +8,8 @@ from Controller import ControllerFollow
 from Controller import ControllerLearn
 from Controller import ControllerForwardSmart
 
-#from panda3d.core import *
-#from panda3d.bullet import *
+from panda3d.core import *
+from panda3d.bullet import *
 
 import numpy
 import threading
@@ -28,7 +28,7 @@ class Option:
             self.sim = Simulation()
             j=1 # For the number of a collision sphere
             for i in numpy.arange(0, COLLISION_DIST/30, 0.5):
-                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, True, Point3(0,(COLLISION_DIST/30)-i+1,1),j)
+                self.sim.sColl = self.sim.initCollisionSphere(self.sim.robot.robotModel, False, Point3(0,(COLLISION_DIST/30)-i+1,1),j)
                 base.cTrav.addCollider(self.sim.sColl[0], self.sim.collHandEvent)
                 self.sim.accept('into-' + self.sim.sColl[1], self.sim.collide)
                 j+=1
@@ -61,7 +61,7 @@ class Option:
 # --- Global variables ---
 
 COLLISION_DIST = 150
-SPEED = 300
+SPEED = 295
 
 # --- Choose an option between 3D Simulation and Real World Action
 while True:
@@ -77,11 +77,12 @@ turn = ControllerTurn(robot, SPEED, 25)
 turn_ = ControllerTurn(robot, SPEED, -90)
 follow = ControllerFollow(robot, SPEED, COLLISION_DIST)
 
-learn = ControllerLearn(robot, "NN", SPEED)
+learn = ControllerLearn(robot, "Q", SPEED)
 forward_smart = ControllerForwardSmart (robot, learn, SPEED)
 
 #sequence = [forward, turn_, forward, turn, forward, turn]
-sequence = [forward_smart]
+sequence = [learn]
+#sequence = [forward_smart]
 
 opt_robot.run(sequence)
 
